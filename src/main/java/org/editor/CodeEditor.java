@@ -47,10 +47,23 @@ public class CodeEditor extends JPanel implements Dockable {
 	private DockKey key; // = new DockKey("textEditor");
 	public int tabIndex =0;
 
+	/**
+	 * Constructs a new CodeEditor with no associated file, initializing a temporary editor instance.
+	 */
 	public CodeEditor() {
 		this(null);
 	}
 
+	/**
+	 * Constructs a code editor panel with syntax highlighting, code completion, and docking support.
+	 *
+	 * <p>If a file path is provided, initializes the editor with that file; otherwise, creates a temporary file for editing.
+	 * Sets up syntax highlighting for the "piccode" language, enables code folding, line numbers, bookmarks, and installs code completion.
+	 * Configures docking integration with appropriate title, tooltip, and icon.
+	 * Adds focus and caret listeners to update the selected editor and cursor position display.
+	 *
+	 * @param path the file path to open in the editor, or {@code null} to create a temporary file
+	 */
 	public CodeEditor(Path path) {
 		super(new BorderLayout());
 		textArea = new TextEditorPane();
@@ -131,6 +144,13 @@ public class CodeEditor extends JPanel implements Dockable {
 		this.add(sp, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Saves the current file, writing the editor's content to disk.
+	 *
+	 * If the file is marked as temporary or an error occurs during saving, prompts the user to choose a save location. Updates the editor window's status and persists the file after saving.
+	 *
+	 * @return {@code true} if the file was saved successfully; {@code false} otherwise
+	 */
 	public boolean saveFile() {
 		if (isTmp) {
 			return saveFileAs();
@@ -155,6 +175,13 @@ public class CodeEditor extends JPanel implements Dockable {
 		this.isTmp = isTmp;
 	}
 
+	/**
+	 * Opens a file chooser dialog to save the current editor content to a user-selected file.
+	 *
+	 * Applies file filters for markdown and piccode files. If the user approves, saves the content to the chosen file, reloads it into the editor, updates the file path, persists the file, updates UI elements, and marks the file as non-temporary. Returns {@code true} if the save is successful, or {@code false} if the operation is canceled or an error occurs.
+	 *
+	 * @return {@code true} if the file was saved successfully; {@code false} otherwise
+	 */
 	public boolean saveFileAs() {
 		var fileChooser = new JFileChooser(".");
 		fileChooser.setFileFilter(FileFilter.mdFilter);
@@ -237,6 +264,11 @@ public class CodeEditor extends JPanel implements Dockable {
 
 	}
 
+	/**
+	 * Adds predefined code templates for common drawing operations to the global code template manager.
+	 *
+	 * These templates provide shorthand insertions for frequently used drawing functions in the editor.
+	 */
 	public static void createTemplateManager() {
 		CodeTemplateManager ctm = RSyntaxTextArea.getCodeTemplateManager();
 		String[][] templates = {
@@ -254,6 +286,12 @@ public class CodeEditor extends JPanel implements Dockable {
 		}
 	}
 
+	/**
+	 * Loads the specified file into the editor, applies appropriate syntax highlighting based on file extension, and persists the file.
+	 *
+	 * @param fp the file to load into the editor
+	 * @return true if the file was loaded successfully; false if an I/O error occurred
+	 */
 	public boolean load(File fp) {
 		setIsTmp(false);
 		var loc = FileLocation.create(fp);
@@ -276,11 +314,21 @@ public class CodeEditor extends JPanel implements Dockable {
 		}
 	}
 
+	/**
+	 * Returns the docking key associated with this editor for integration with the docking framework.
+	 *
+	 * @return the DockKey for this editor
+	 */
 	@Override
 	public DockKey getDockKey() {
 		return key;
 	}
 
+	/**
+	 * Returns the editor component for docking integration.
+	 *
+	 * @return this editor panel as a Swing component
+	 */
 	@Override
 	public Component getComponent() {
 		return this;

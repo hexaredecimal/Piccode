@@ -77,6 +77,11 @@ public final class EditorWindow extends JFrame implements SearchListener {
 	private DockingDesktop desk = new DockingDesktop();
 	private static CodeEditor selected = null;
 
+	/**
+	 * Returns the singleton instance of the EditorWindow, creating it if necessary.
+	 *
+	 * @return the single EditorWindow instance
+	 */
 	public static EditorWindow the() {
 		if (win == null) {
 			win = new EditorWindow();
@@ -86,6 +91,13 @@ public final class EditorWindow extends JFrame implements SearchListener {
 
 	public static JRootPane root = null;
 
+	/**
+	 * Constructs the main application window for the code editor, initializing the docking framework, UI components, toolbars, status bars, and dockable panels.
+	 *
+	 * <p>
+	 * Sets up the main window layout with a docking desktop for managing code editors and panels, configures toolbars for file and project actions, and initializes status indicators. Integrates dashboard, rendering, quick access, and access panels as dockable components. Installs look-and-feel, customizes docking UI, and sets up listeners to handle editor closing events with prompts for unsaved changes.
+	 * </p>
+	 */
 	public EditorWindow() {
 		super("Piccode - DashBoard");
 		var  _ =new CodeEditor();
@@ -226,6 +238,9 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Initializes the find and replace dialogs for text search operations, ensuring they share a common search context.
+	 */
 	private void initSearchDialogs() {
 		findDialog = new FindDialog(this, this);
 		replaceDialog = new ReplaceDialog(this, this);
@@ -234,6 +249,11 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		replaceDialog.setSearchContext(context);
 	}
 
+	/**
+	 * Adds a new empty code editor as a dockable tab in the main window.
+	 *
+	 * Creates a new {@code CodeEditor} instance, assigns it a unique index, updates the UI to reflect the new editor, and docks it within the docking desktop. The first editor is docked relative to the dashboard; subsequent editors are added as tabs alongside the first editor.
+	 */
 	public static void addTab(ActionEvent e) {
 		int index = tabEditors.size();
 		CodeEditor editor = new CodeEditor();
@@ -254,6 +274,11 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		}
 	}
 
+	/**
+	 * Opens a file in a new code editor dockable and adds it to the docking desktop.
+	 *
+	 * @param path the path to the file to open in the new editor
+	 */
 	public static void addTab(Path path, Void e) {
 		var index = tabEditors.size();
 		var editor = new CodeEditor(path);
@@ -272,10 +297,23 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		}
 	}
 
+	/**
+	 * Sets the currently selected code editor in the main window.
+	 *
+	 * @param ed the CodeEditor instance to set as selected
+	 */
 	public static void setSelectedEditor(CodeEditor ed) {
 		selected = ed;
 	}
 
+	/**
+	 * Returns the currently selected code editor.
+	 *
+	 * If no editor is explicitly selected, returns the editor whose text area has focus.
+	 * If none are focused, returns the first available editor as a fallback.
+	 *
+	 * @return the selected or focused {@link CodeEditor}, or the first editor if none are selected or focused
+	 */
 	public static CodeEditor getSelectedEditor() {
 		if (selected != null) {
 			return selected;
@@ -289,6 +327,13 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		return tabEditors.values().toArray(CodeEditor[]::new)[0]; // fallback if nothing has focus
 	}
 
+	/**
+	 * Adds a special "+" tab to the provided tabbed pane, allowing users to create new editor tabs.
+	 *
+	 * The "+" tab displays a button that, when clicked, triggers the addition of a new editor tab.
+	 *
+	 * @param tabs the JTabbedPane to which the "+" tab will be added
+	 */
 	private static void addPlusTab(JTabbedPane tabs) {
 		var dashb = new JPanel(new BorderLayout());
 		dashb.add(new DashboardPanel(), BorderLayout.CENTER);
@@ -304,6 +349,15 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		tabs.setTabComponentAt(tabs.getTabCount() - 1, plusBtn);
 	}
 
+	/**
+	 * Creates a custom tab header component with a title label and a close button for use in a tabbed pane.
+	 *
+	 * The close button triggers removal of the associated tab, prompting to save if the editor is modified.
+	 *
+	 * @param tabs the tabbed pane to which the header belongs
+	 * @param title the title to display on the tab header
+	 * @return a component representing the tab header with a close button
+	 */
 	private static Component makeTabHeader(JTabbedPane tabs, String title) {
 		JPanel tabHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		tabHeader.setOpaque(false);
@@ -333,6 +387,11 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		return tabHeader;
 	}
 
+	/**
+	 * Removes the currently selected code editor tab, prompting to save changes if the editor is modified.
+	 *
+	 * If only one editor is open or no editor is selected, the method does nothing.
+	 */
 	public static void removeTab() {
 		if (tabEditors.size() <= 1) {
 			return;
@@ -351,6 +410,9 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		removeIfDirty(index, selected);
 	}
 
+	/**
+	 * Removes all open code editor tabs, prompting to save any with unsaved changes before closing.
+	 */
 	public static void removeAllTabs() {
 		var editors = new HashMap<>(tabEditors); // Copy to avoid ConcurrentModificationException
 		for (var entry : editors.entrySet()) {
@@ -358,10 +420,22 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		}
 	}
 
+	/**
+	 * Returns the number of open code editor instances currently managed by the window.
+	 *
+	 * @return the count of open code editors
+	 */
 	public static int tabsCount() {
 		return tabEditors.size();
 	}
 
+	/**
+	 * Removes the specified code editor from the docking layout, prompting to save changes if the editor is modified.
+	 *
+	 * @param index the index of the editor in the internal map
+	 * @param ed the code editor to remove
+	 * @return true if the editor was removed (and saved if modified), false if the removal was canceled
+	 */
 	private static boolean removeIfDirty(Integer index, CodeEditor ed) {
 		if (ed.textArea.isDirty()) {
 			int result = JOptionPane.showConfirmDialog(win, "File " + ed.filePathTruncated() + " is modified. Save?");
@@ -376,6 +450,12 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		return true;
 	}
 
+	/**
+	 * Determines whether the specified dockable component is currently docked in the docking desktop.
+	 *
+	 * @param d the dockable component to check
+	 * @return true if the dockable is present in the docking desktop; false otherwise
+	 */
 	private static boolean isDocked(Dockable d) {
 		for (var state: win.desk.getDockables()) {
 			var dockable = state.getDockable();
@@ -386,6 +466,12 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		return false;
 	}
 	
+	/**
+	 * Returns the index associated with the specified code editor in the tab editors map.
+	 *
+	 * @param ed the code editor to look up
+	 * @return the index of the editor if found, or null if not present
+	 */
 	private static Integer getEditorIndex(CodeEditor ed) {
 		for (var entry : tabEditors.entrySet()) {
 			if (entry.getValue() == ed) {
@@ -395,6 +481,11 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		return null;
 	}
 
+	/**
+	 * Reindexes the tabEditors map to ensure editor indexes are sequential starting from zero.
+	 *
+	 * This method rebuilds the tabEditors map after editor removals to maintain contiguous integer keys.
+	 */
 	private static void migrateIndexes() {
 		HashMap<Integer, CodeEditor> newMap = new HashMap<>();
 		int idx = 0;
@@ -404,6 +495,9 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		tabEditors = newMap;
 	}
 
+	/**
+	 * Saves all open code editors by invoking their save operation.
+	 */
 	public static void saveAll() {
 		for (var kv : tabEditors.entrySet()) {
 			var editor = kv.getValue();
@@ -411,11 +505,23 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		}
 	}
 
+	/**
+	 * Sets the title of the currently selected tab in the tabbed pane.
+	 *
+	 * @param title the new title for the selected tab
+	 */
 	public static void setSeletedTabTitle(String title) {
 		int index = tabs.getSelectedIndex();
 		tabs.setTitleAt(index, title);
 	}
 
+	/**
+	 * Creates a vertical toolbar panel with action buttons and a settings button.
+	 *
+	 * @param height the preferred height of the toolbar panel
+	 * @param actions the actions to be added as buttons at the top of the toolbar
+	 * @return a JPanel containing the vertical toolbar with action buttons and a settings button at the bottom
+	 */
 	private JPanel makeCoolbar(int height, Action... actions) {
 		var cool_bar = new JPanel(new BorderLayout());
 		cool_bar.setPreferredSize(new Dimension(50, height));
@@ -520,11 +626,21 @@ public final class EditorWindow extends JFrame implements SearchListener {
 		}
 	}
 
+	/**
+	 * Returns the currently selected text from the active code editor.
+	 *
+	 * @return the selected text, or {@code null} if no text is selected
+	 */
 	@Override
 	public String getSelectedText() {
 		return getSelectedEditor().textArea.getSelectedText();
 	}
 
+	/**
+	 * Customizes the appearance and behavior of docking UI components.
+	 *
+	 * Sets custom icons for close buttons, enables the float button on dock view title bars, and adjusts the title font size for docked panels.
+	 */
 	private void customizeDock() {
 		UIManager.put("DockViewTitleBar.close", (Icon) Icons.getIcon("close"));
 		UIManager.put("DockTabbedPane.close", (Icon) Icons.getIcon("close"));

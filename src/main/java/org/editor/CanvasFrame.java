@@ -59,6 +59,11 @@ public class CanvasFrame extends JPanel implements MouseListener, MouseMotionLis
 	private static CanvasFrame _the = null;
 	private DockKey key = new DockKey("canvas");
 
+	/**
+	 * Initializes the CanvasFrame with grid rendering, mouse interaction, and a periodic repaint timer.
+	 *
+	 * Sets up the layout, background color, mouse listeners, grid image, preferred size, and starts a timer to repaint the canvas and update frame timing.
+	 */
 	private CanvasFrame() {
 		super(new BorderLayout());
 		this.setBackground(new Color(18, 18, 18));
@@ -306,6 +311,14 @@ public class CanvasFrame extends JPanel implements MouseListener, MouseMotionLis
 	public void mouseClicked(MouseEvent e) {
 	}
 
+	/**
+	 * Draws a red crosshair at the current mouse position on the canvas.
+	 *
+	 * If grid snapping is enabled, the crosshair aligns to the nearest grid intersection.
+	 * The crosshair consists of intersecting vertical and horizontal lines and a small circle at the intersection point.
+	 *
+	 * @param g2 the graphics context used for drawing
+	 */
 	private void drawCrosshair(Graphics2D g2) {
 		if (mouseX >= 0 && mouseY >= 0) {
 

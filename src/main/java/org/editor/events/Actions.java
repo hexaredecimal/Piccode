@@ -67,6 +67,13 @@ public class Actions {
 					gotoLine,
 					replaceAction;
 
+	/**
+	 * Initializes and assigns all static action fields for the editor's user interface.
+	 *
+	 * This method configures each action with its name, icon, tooltip, keyboard shortcut, and event handler,
+	 * enabling features such as file operations, editing commands, navigation, tool selection, and UI toggles.
+	 * Actions are linked to their respective handlers or marked as TODO where implementation is pending.
+	 */
 	public static void loadActions() {
 		compileAction
 						= AppAction

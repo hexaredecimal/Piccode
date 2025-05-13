@@ -24,6 +24,14 @@ import org.fife.ui.rtextarea.RTextArea;
  */
 public class Menus {
 
+	/**
+	 * Adds the main menus, search input, and navigation buttons to the specified menu bar for the editor UI.
+	 *
+	 * This method populates the provided {@code JMenuBar} with File, Edit, Navigate, Run, Tools, and Help menus,
+	 * inserts a search field with a maximum width, and appends navigation buttons for bottom, top, left, and right actions.
+	 *
+	 * @param menu_bar the menu bar to which menus and controls are added
+	 */
 	public static void addMenus(JMenuBar menu_bar) {
 		addFileMenu(menu_bar);
 		addEditMenu(menu_bar);
@@ -50,6 +58,13 @@ public class Menus {
 		}
 	}
 
+	/**
+	 * Adds a "File" menu to the specified menu bar, including project and file operations, dynamically populated recent projects and recent files submenus, and standard file management actions.
+	 *
+	 * The "Recent Files" submenu is populated with entries from the application's recent files list, allowing users to quickly reopen files in new editor tabs.
+	 *
+	 * @param menu_bar the menu bar to which the "File" menu will be added
+	 */
 	private static void addFileMenu(JMenuBar menu_bar) {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.add(new JMenuItem(Actions.newProjectAction));
@@ -117,6 +132,13 @@ public class Menus {
 		menu_bar.add(editMenu);
 	}
 
+	/**
+	 * Adds a "Navigate" menu to the specified menu bar, including tab management and file navigation options.
+	 *
+	 * The menu contains a "Tabs" submenu for switching, adding, removing, and restoring tabs, as well as an action to navigate to a file.
+	 *
+	 * @param menu_bar the menu bar to which the "Navigate" menu will be added
+	 */
 	private static void addNavigateMenu(JMenuBar menu_bar) {
 		JMenu navMenu = new JMenu("Navigage");
 
@@ -147,6 +169,13 @@ public class Menus {
 		menu_bar.add(runMenu);
 	}
 
+	/**
+	 * Adds a "Tools" menu to the specified menu bar, including actions for AI, plugins, options, and a submenu of rendering tools.
+	 *
+	 * The rendering tools submenu provides actions such as normal, grid, point, ruler, snap, brush, thick brush, paint bucket, and effects.
+	 *
+	 * @param menu_bar the menu bar to which the "Tools" menu will be added
+	 */
 	private static void addToolMenu(JMenuBar menu_bar) {
 		JMenu toolsMenu = new JMenu("Tools");
 		toolsMenu.add(new JMenuItem(Actions.AIAction));
@@ -172,6 +201,11 @@ public class Menus {
 		menu_bar.add(toolsMenu);
 	}
 
+	/**
+	 * Adds a "Help" menu to the specified menu bar with items for documentation, website, license, and about information.
+	 *
+	 * @param menu_bar the menu bar to which the Help menu will be added
+	 */
 	private static void addHelp(JMenuBar menu_bar) {
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.add(new JMenuItem(Actions.docsAction));
@@ -182,17 +216,40 @@ public class Menus {
 		menu_bar.add(helpMenu);
 	}
 
+	/**
+	 * Creates a menu item with the specified text label and icon.
+	 *
+	 * @param text the label for the menu item
+	 * @param icon the name of the icon to display on the menu item
+	 * @return a JMenuItem with the given text and icon
+	 */
 	private static JMenuItem createMenuItem(String text, String icon) {
 		JMenuItem item = new JMenuItem(text, Icons.getIcon(icon));
 		return item;
 	}
 
+	/**
+	 * Creates a menu item with the specified text label, icon, and action listener.
+	 *
+	 * @param text the label for the menu item
+	 * @param icon the name of the icon to display on the menu item
+	 * @param listener the action listener to be invoked when the menu item is selected
+	 * @return a JMenuItem configured with the given label, icon, and action listener
+	 */
 	private static JMenuItem createMenuItem(String text, String icon, ActionListener listener) {
 		JMenuItem item = new JMenuItem(text, Icons.getIcon(icon));
 		item.addActionListener(listener);
 		return item;
 	}
 
+	/**
+	 * Creates a JMenuItem with the specified icon, action, and tooltip.
+	 *
+	 * @param icon the name of the icon to display on the menu item
+	 * @param action the Action to associate with the menu item
+	 * @param tooltip the tooltip text to display for the menu item
+	 * @return a JMenuItem configured with the given icon, action, and tooltip
+	 */
 	private static JMenuItem createMenuItem(String icon, Action action, String tooltip) {
 		JMenuItem item = new JMenuItem(action);
 		item.setIcon(Icons.getIcon(icon));
