@@ -173,8 +173,28 @@ ELSE: 'else';
 MODULE: 'module';
 DO: 'do';
 
-// Matches both integers and floats (e.g., 123, 45.67)
-NUMBER: [0-9]+ ('.' [0-9]+)?;
+NUMBER
+    :   HEX_LITERAL
+    |   OCT_LITERAL
+    |   BIN_LITERAL
+    |   DECIMAL_NUMBER ;
+
+fragment HEX_LITERAL
+    :   '0' [xX] [0-9a-fA-F]+;
+
+fragment OCT_LITERAL
+    :   '0' [oO] [0-7]+ ;
+
+fragment BIN_LITERAL
+    :   '0' [bB] [01]+;
+
+fragment DECIMAL_NUMBER
+    :   [0-9]+ ('.' [0-9]+)? EXP?   // e.g. 123, 123.456, 123e10, 123.456e-2
+    |   '.' [0-9]+ EXP? ;             // e.g. .456, .456e+3
+    
+fragment EXP
+    :   [eE] [+-]? [0-9]+;
+
 
 // Matches strings like "hello world" or 'hello world'
 // Handles basic escaped quotes
