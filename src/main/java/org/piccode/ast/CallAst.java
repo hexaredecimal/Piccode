@@ -1,7 +1,7 @@
 package org.piccode.ast;
 
 import java.util.List;
-import org.piccode.piccode.Piccode;
+import org.piccode.piccodescript.Piccode;
 import org.piccode.rt.NativeFunction;
 import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeException;

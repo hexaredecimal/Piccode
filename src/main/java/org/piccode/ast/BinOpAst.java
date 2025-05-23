@@ -1,6 +1,6 @@
 package org.piccode.ast;
 
-import org.piccode.piccode.Piccode;
+import org.piccode.piccodescript.Piccode;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;

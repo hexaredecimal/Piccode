@@ -8,9 +8,27 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>21</maven.compiler.release>
-		<exec.mainClass>org.piccode.piccode.Piccode</exec.mainClass>
+		<exec.mainClass>org.piccode.piccodescript.Piccode</exec.mainClass>
 	</properties>
+	
+	<name>PiccodeScript</name>
+	<description>A small and simple embeddable, interpreted programming language</description>
+	<url>https://github.com/Glimmr-Lang/PiccodeScript/</url>
 
+	<licenses>
+		<license>
+			<name>The MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>hexaredecimal</id>
+			<name>Hexaredecimal</name>
+			<email>mfanakagama@gmail.com</email>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
@@ -111,7 +129,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.piccode.piccode.Piccode</mainClass>
+							<mainClass>org.piccode.piccodescript.Piccode</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -127,7 +145,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.piccode.piccode.Piccode</mainClass>
+							<mainClass>org.piccode.piccodescript.Piccode</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -194,7 +212,7 @@
 						</executions>
 
 						<configuration>
-							<mainClass>org.piccode.piccode.Piccode</mainClass>
+							<mainClass>org.piccode.piccodescript.Piccode</mainClass>
 							<imageName>piccasocode</imageName>
 							<verbose>true</verbose>
 							<buildArgs>
@@ -211,5 +229,4 @@
 			</build>
 		</profile>
 	</profiles>
-    <name>PiccodeScript</name>
 </project>

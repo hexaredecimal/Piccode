@@ -1,4 +1,4 @@
-package org.piccode.piccode;
+package org.piccode.piccodescript;
 
 import java.io.File;
 import java.io.IOException;
