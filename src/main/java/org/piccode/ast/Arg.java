@@ -1,0 +1,36 @@
+package org.piccode.ast;
+
+import org.piccode.rt.PiccodeValue;
+
+/**
+ *
+ * @author hexaredecimal
+ */
+public class Arg implements Ast {
+	public String name;
+	public Ast def_val;
+
+	public Arg(String name, Ast def_val) {
+		this.name = name;
+		this.def_val = def_val;
+	}
+
+	public Arg(String name) {
+		this.name = name;
+		this.def_val = null;
+	}
+
+	@Override
+	public String toString() {
+		if (def_val == null) {
+			return name;
+		}
+		return name  + "=" + def_val;
+	}
+
+	@Override
+	public PiccodeValue execute() {
+		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	}
+	
+}

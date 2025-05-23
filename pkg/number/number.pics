@@ -1,0 +1,28 @@
+module Number {
+
+  function isZero(n=0) = n == 0
+  function isPositive(n=0) = n > 0
+  function isNegative(n=0) = n < 0
+  function isEven(n=0) = (n % 2) == 0
+  function isOdd(n=0) = (n % 2) != 0
+  
+  function toString(n=0) = n + ""
+
+  function add(a=0, b=0) = a + b
+  function sub(a=0, b=0) = a - b
+  function mul(a=0, b=0) = a * b
+  function div(a=0, b=1) = a / b
+  function mod(a=0, b=1) = a % b
+  function pow(a=0, b=0) = pic_nat_pow(a, b)
+
+  function inc(n=0) = n + 1
+  function dec(n=0) = n - 1
+
+  function and(a=0, b=0) = a & b
+  function or(a=0, b=0) = a | b
+
+  function shl(a=0, b=0) = a << b
+  function shr(a=0, b=0) = a >> b
+
+  
+}

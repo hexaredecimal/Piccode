@@ -1,0 +1,33 @@
+
+module Tuple {
+
+	function size(tup=(0, 0)) = pic_nat_tuplesize(tup)
+	
+	function toArray(tup=(0, 0)) = pic_nat_tupletoarray(tup)
+
+	function map(tup=(0, 0), f) =
+		when tup {
+		  is (a, b) -> (f(a), f(b))
+		}
+
+	function zipWith(t1=(0, 0), t2=(0, 0), f) =
+		when [t1, t2] {
+		  is [(a1, b1), (a2, b2)] -> (f(a1, a2), f(b1, b2))
+		}
+
+	function swap(tup=(0, 0)) =
+		when tup {
+		  is (a, b) -> (b, a)
+		}
+
+	function equals(t1=(0, 0), t2=(0, 0)) =
+		when [t1, t2] {
+		  is [(a1, b1), (a2, b2)] -> (a1 == a2 and b1 == b2)
+		}
+
+	function toString(tup=(0, 0)) =
+	    when tup {
+	      is (a, b) -> "(" + a + ", " + b + ")"
+	    }	
+	
+}
