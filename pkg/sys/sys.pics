@@ -1,0 +1,6 @@
+
+module System {
+	function panic(message="") = pic_nat_panic(message) 
+	function todo(message="") = pic_nat_todo(message) 
+	function unreachable(message="") = pic_nat_unreachable(message) 
+}

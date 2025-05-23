@@ -23,6 +23,6 @@ module Number {
 
   function shl(a=0, b=0) = a << b
   function shr(a=0, b=0) = a >> b
-
+  function negate(x=1) = -x
   
 }
