@@ -3,6 +3,8 @@ package org.piccode.piccodescript;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +15,8 @@ import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import org.piccode.backend.Compiler;
+import org.piccode.rt.PiccodeString;
+import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -20,15 +24,16 @@ import org.piccode.backend.Compiler;
  */
 public class Piccode {
 
+  private static double VERSION = 0.1;
+
 	public static void main(String[] args) {
-		// Compiler.compile();
 		run(args);
 	}
 
-	public static void run(String[] args) {
+	private static void run(String[] args) {
 		var parser = ArgumentParsers.newFor("piccode").build()
 						.defaultHelp(true)
-						.version("PicodeScript 0.1")
+						.version(String.format("PicodeScript %s", VERSION))
 						.epilog(about())
 						.version("${prog} 0.1")
 						.description("The compiler for the PiccodeScript programming language");
@@ -116,11 +121,11 @@ public class Piccode {
 				System.out.println("==> dump:");
 				System.out.println("TC arg: " + res.getString("tc"));
 			} else if ("run".equals(command)) {
-				String[] _args = res.getList("extra_args").toArray(String[]::new);
+				List<PiccodeValue> user_args = makeUserArgs(res.getList("extra_args"));
 				String input = res.getString("file");
 				boolean repl = res.getBoolean("repl");
 				if (repl) {
-					repl();
+					repl(user_args);
 				} else {
 					if (input == null && isProject()) {
 						System.out.println("Project run");
@@ -130,7 +135,7 @@ public class Piccode {
 						return;
 					}
 					var code = readFile(input);
-					Compiler.compile(code);
+					Compiler.compile(code, user_args);
 				}
 			} else if ("help".equals(command)) {
 				String topic = res.getString("topic");
@@ -152,12 +157,13 @@ public class Piccode {
 	}
 
 	private static String about() {
-		return """
+		return String.format("""
 ▄▖▘       ▌  ▄▖    ▘  ▗ 
 ▙▌▌▛▘▛▘▛▌▛▌█▌▚ ▛▘▛▘▌▛▌▜▘
 ▌ ▌▙▖▙▖▙▌▙▌▙▖▄▌▙▖▌ ▌▙▌▐▖
                     ▌   
-  	""".indent(8);
+       [v%s]
+""", VERSION).indent(8);
 	}
 
 	private static boolean isProject() {
@@ -165,15 +171,15 @@ public class Piccode {
 		return fp.exists();
 	}
 
-	private static void repl() {
+	private static void repl(List<PiccodeValue> user_args) {
 		Compiler.prepareGlobalScope();
 		try (Scanner scanner = new Scanner(System.in);) {
-			System.out.println("Welcome to the PiccodeScript REPL. Enter your code. End with an empty line or a line containing only \\n.");
+			System.out.println(String.format("Welcome to the PiccodeScript v%s", VERSION));
 
 			while (true) {
 				StringBuilder inputBlock = new StringBuilder();
 				while (true) {
-					System.out.print(">> ");
+					System.out.print("λ ");
 					String line = scanner.nextLine();
 
 					if (line.trim().isEmpty()) {
@@ -185,16 +191,19 @@ public class Piccode {
 
 				String code = inputBlock.toString();
 				if (code.trim().isEmpty()) {
-					System.out.println("No input entered. Exiting REPL.");
-					break;
+					continue;
 				}
 
-				var result = Compiler.compile(code);
-				System.out.println("" + result);
+				var result = Compiler.compile(code, user_args);
+				System.out.println(result);
 				// Optionally continue loop for next input block
 			}
-
-			scanner.close();
 		}
+	}
+
+	private static List<PiccodeValue> makeUserArgs(List<Object> list) {
+		var args = new ArrayList<PiccodeValue>();
+		list.forEach(item -> args.add(new PiccodeString(item.toString())));
+		return args;
 	}
 }
