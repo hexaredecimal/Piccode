@@ -6,10 +6,15 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.piccode.antlr4.PiccodeScriptLexer;
 import org.piccode.antlr4.PiccodeScriptParser;
 import org.piccode.ast.Ast;
+import org.piccode.ast.CallAst;
+import org.piccode.ast.FunctionAst;
+import org.piccode.ast.IdentifierAst;
 import org.piccode.ast.PiccodeVisitor;
 import org.piccode.ast.StatementList;
 import org.piccode.rt.Context;
+import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeBoolean;
+import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 import org.piccode.rt.modules.PiccodeArrayModule;
@@ -26,17 +31,29 @@ public class Compiler {
 
 
 	public static PiccodeValue compile(String code) {
+		return compile(code, List.of());
+	}
+	public static PiccodeValue compile(String code, List<PiccodeValue> args) {
 		var result = program(code);
 		
 		Context.top.pushStack();
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false"));
+		Context.top.putLocal("_pic_nat_user_args", new PiccodeArray(args));
 		addGlobalFunctions();
 		
 		PiccodeValue res = new PiccodeUnit();
+		var has_main = false; 
 		try {
 			for (var stmt : result.nodes) {
+				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
+					has_main = true;
+				}
 				res = stmt.execute();
+			}
+
+			if (has_main) {
+				return new CallAst(new IdentifierAst("main"), List.of()).execute();
 			}
 			return res;
 		} catch (Exception rte) {
