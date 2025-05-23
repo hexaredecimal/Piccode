@@ -37,8 +37,25 @@ function fact(x=1) =
 
 ## Embedding API
 
-To use the language in your project simply add it your `pom.xml` file as a dependency and add
-the following code to your solution:
+To use the language in your project simply add it your `pom.xml` file as a dependency:
+
+
+```xml
+<repositories>
+	<repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+
+<dependency>
+	<groupId>com.github.Glimmr-Lang</groupId>
+	<artifactId>PiccodeScript</artifactId>
+	<version>Tag</version>
+</dependency>
+```
+
+ and then add the following code to your solution:
 
 ```java
 Compiler.compile("function zero() = 0")
