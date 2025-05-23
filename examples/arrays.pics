@@ -1,0 +1,17 @@
+
+import pkg:array
+
+let numbers = [1,2,3]
+let strings = ["A", "B", "C"]
+
+let concat = Array.concat(numbers, strings)
+
+IO.println(concat)
+IO.println(concat.len)
+
+let collon_sep = Array.join(strings, ":")
+
+IO.println(collon_sep)
+
+let new = collon_sep:concat
+IO.println(new)

@@ -1,0 +1,15 @@
+
+import pkg:io
+
+function filter(xs=[], pred) =
+  when xs {
+    is [] -> []
+    is x:rest -> 
+      if pred(x) { x:filter(rest, pred) }
+      else { filter(rest, pred) }
+  }
+
+let nums = [1,2,3,4]
+
+let greater = filter(nums, |num| -> num > 2)
+IO.println(greater)

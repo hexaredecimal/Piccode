@@ -1,0 +1,20 @@
+
+import pkg:io
+
+function map(xs=[], f) =
+  when xs{
+    is [] -> []
+    is x:rest -> f(x) : map(rest, f)
+  }
+
+let add = |a, b| -> a + b
+
+let inc = add(1)
+
+let numbers = [1,2,3]
+let mapped = map(numbers, inc)
+IO.println(mapped)
+
+let mapped = map(numbers, |num| -> num:numbers)
+IO.println(mapped)
+

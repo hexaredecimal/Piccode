@@ -1,0 +1,12 @@
+
+import pkg:io
+
+function fib(n=0) =
+  when n is {
+    is 0 -> 0
+    is 1 -> 1
+    else -> fib(n - 1) + fib(n - 2)
+  }
+
+let result = fib(10)
+IO.println(result)

@@ -1,0 +1,43 @@
+
+// Syntax showcase
+
+import pkg:io
+
+// TODO: import pkg:io { println }
+
+// Variable declaration
+let n = 5 * 2
+let song = "Feel good Inc"
+
+// The language supports the normal set of operators as in c.
+
+// Arrays
+let numbers = [1,2,3]
+let first = numbers.0
+let joined = first:numbers
+
+// Tuples
+let numbers = (1,2,3)
+let first = numbers.0
+
+
+// If-Else
+if 1 > 1 { numbers } else { joined }
+
+// When
+when numbers {
+  is (a, b, c) -> a + " " + b + " " + c
+  else -> "Not a match""
+}
+
+// Functions
+function add(x=1, y=1) = x + y
+
+let result = add(y=2)
+IO.println(result)
+
+let answer = 10 |> add(10) |> add(10)
+
+IO.println(answer)
+
+

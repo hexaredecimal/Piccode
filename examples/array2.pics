@@ -1,0 +1,23 @@
+
+
+import pkg:io
+import pkg:array
+
+let numbers = [1,2,3]
+
+let mapped = Array.map(numbers, |x| -> x * 2) 
+
+IO.println(mapped)
+IO.println(Array.join(numbers, "::"))
+
+function reduce(xs=[], f, acc) =
+    when xs {
+      is [] -> acc
+      is x:rest -> reduce(rest, f, f(acc, x))
+    }
+
+let result = reduce(mapped, |acc, x| -> acc + x, 0) 
+
+IO.println(Array.contains(mapped, 2))
+IO.println(Array.indexOf(mapped, 4))
+
