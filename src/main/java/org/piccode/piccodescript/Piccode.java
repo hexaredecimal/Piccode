@@ -174,7 +174,7 @@ public class Piccode {
 	private static void repl(List<PiccodeValue> user_args) {
 		Compiler.prepareGlobalScope();
 		try (Scanner scanner = new Scanner(System.in);) {
-			System.out.println(String.format("Welcome to the PiccodeScript v%s", VERSION));
+			System.out.println(String.format("Welcome to the REPL for PiccodeScript v%s", VERSION));
 
 			while (true) {
 				StringBuilder inputBlock = new StringBuilder();
