@@ -28,7 +28,7 @@ main()
 import pkg:io
 
 function fact(x=1) = 
-	when x {
+  when x {
     is 0 -> 1
     is 1 -> 1
     else -> x * fact(x - 1)
