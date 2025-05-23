@@ -1,0 +1,5 @@
+
+module Args {
+  function get() = _pic_nat_user_args
+}
+
