@@ -50,7 +50,7 @@ module Array {
 
   function reverse(xs=[]) = Array.reduce(xs, |acc, x| -> x : acc, [])
 
-  function flatMap(xs=[], f) = Array.reduce(xs, |acc, x| -> concat(acc, f(x)), [])
+  function flatMap(xs=[], f) = Array.reduce(xs, |acc, x| -> Array.concat(acc, f(x)), [])
 
   function take(xs=[], n=0) =
       if n <= 0 {
