@@ -4,75 +4,75 @@ import pkg:option // TODO: Fix circular dependency
 
 module Result {
 
-	function ok(value) = {tag: "ok", value: value}
-	function err(msg) = {tag: "err", message: msg}
+  function ok(value) = {tag: "ok", value: value}
+  function err(msg) = {tag: "err", message: msg}
 
-	function unwrap(result) = 
+  function unwrap(result) = 
     when result {
       is {tag: "ok", value: value} -> value
       is {tag: "err", message: msg} -> System.panic(msg)
       else -> System.panic("Failed to match case")
     }
 
-	function unwrapOr(result, or) = 
+  function unwrapOr(result, or) = 
     when result {
       is {tag: "ok", value: value} -> value
       else -> or
     }
 
-	function unwrapOrElse(result, fx) = 
+  function unwrapOrElse(result, fx) = 
     when result {
       is {tag: "ok", value: value} -> value
       else -> fx(result)
     }
 
-	function isOk(result) = 
+  function isOk(result) = 
     when result {
       is {tag: "ok", value: _} -> true
       else -> false
     }
 
-	function isErr(result) = 
+  function isErr(result) = 
     when result {
       is {tag: "ok", value: _} -> false
       else -> true
     }
 
 
-	function map(result, fx) = 
-		when result {
-			is {tag: "ok", value: v} -> Result.ok(fx(v))
-			else -> result
-		}
+  function map(result, fx) = 
+    when result {
+      is {tag: "ok", value: v} -> Result.ok(fx(v))
+      else -> result
+    }
 
-	function mapErr(result, fx) = 
-		when result {
-			is {tag: "err", message: msg} -> Result.err(fx(msg))
-			else -> result
-		}
+  function mapErr(result, fx) = 
+    when result {
+      is {tag: "err", message: msg} -> Result.err(fx(msg))
+      else -> result
+    }
 
-	function flatMap(result, fx) = 
-		when result {
-			is {tag: "ok", value: v} -> fx(v)
-			else -> result
-		}
+  function flatMap(result, fx) = 
+    when result {
+      is {tag: "ok", value: v} -> fx(v)
+      else -> result
+    }
 
-	function match(result, okFx, errFx) =
-		when result {
-			is {tag: "ok", value: v} -> okFx(v)
-			is {tag: "err", message: msg} -> errFx(msg)
-		}
+  function match(result, okFx, errFx) =
+    when result {
+      is {tag: "ok", value: v} -> okFx(v)
+      is {tag: "err", message: msg} -> errFx(msg)
+    }
 
-	function toOption(result) =
+  function toOption(result) =
     when result {
       is {tag: "ok", value: v} -> Option.some(v)
       else -> Option.none()
     }
 
-	function toString(result) =
-		when result {
-			is {tag: "ok", value: v} -> "Result.ok(" + v + ")"
-			is {tag: "err", message: msg} -> "Result.err(" + msg + ")"
-		}
+  function toString(result) =
+    when result {
+      is {tag: "ok", value: v} -> "Result.ok(" + v + ")"
+      is {tag: "err", message: msg} -> "Result.err(" + msg + ")"
+    }
 
 }

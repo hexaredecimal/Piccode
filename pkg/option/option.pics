@@ -2,36 +2,36 @@
 
 module Option {
 
-	function some(value) = {tag: "some", value: value}
-	function none() = {tag: "none"}
+  function some(value) = {tag: "some", value: value}
+  function none() = {tag: "none"}
   let NONE = Option.none()
 
-	function unwrap(result) = 
+  function unwrap(result) = 
     when result {
       is {tag: "some", value: value} -> value
       is {tag: "none"} -> System.panic("Unwrapped none value")
       else -> System.panic("Failed to match case")
     }
 
-	function unwrapOr(result, or) = 
+  function unwrapOr(result, or) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> or
     }
 
-	function unwrapOrElse(result, fx) = 
+  function unwrapOrElse(result, fx) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> fx(result)
     }
 
-	function isSome(result) = 
+  function isSome(result) = 
     when result {
       is {tag: "some", value: _} -> true
       else -> false
     }
 
-	function isNone(result) = 
+  function isNone(result) = 
     when result {
       is {tag: "some", value: _} -> false
       else -> true

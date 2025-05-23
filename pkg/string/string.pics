@@ -1,29 +1,29 @@
 
 
 module String {
-	function format(fmt="", args=[]) = pic_nat_stringformat(fmt, args)
-	function trim(value="") = pic_nat_stringtrim(value)
-	function uppercase(value="") = pic_nat_stringuppercase(value)
-	function lowercase(value="") = pic_nat_stringlowercase(value)
-	function length(xs="")= xs.len
-	function split(value="", delim="") = pic_nat_stringsplit(value, delim)
 
-	function repeat(str="", n=0) =
-	  if n <= 0 { "" }
-	  else { str + repeat(str, n - 1) }
+  function format(fmt="", args=[]) = pic_nat_stringformat(fmt, args)
+  function trim(value="") = pic_nat_stringtrim(value)
+  function uppercase(value="") = pic_nat_stringuppercase(value)
+  function lowercase(value="") = pic_nat_stringlowercase(value)
+  function length(xs="")= xs.len
+  function split(value="", delim="") = pic_nat_stringsplit(value, delim)
 
-	function padLeft(str="", total=0, char=" ") = do {
-	  let padCount = total - String.length(str)
-	  if padCount <= 0 { str }
-	  else { repeat(char, padCount) + str }
-	}
-	
-	function padRight(str="", total=0, char=" ") = do {
-	  let padCount = total - String.length(str)
-	  if padCount <= 0 { str }
-	  else { str + repeat(char, padCount) }
-	}
+  function repeat(str="", n=0) =
+    if n <= 0 { "" }
+    else { str + repeat(str, n - 1) }
 
+  function padLeft(str="", total=0, char=" ") = do {
+    let padCount = total - String.length(str)
+    if padCount <= 0 { str }
+    else { repeat(char, padCount) + str }
+  }
+  
+  function padRight(str="", total=0, char=" ") = do {
+    let padCount = total - String.length(str)
+    if padCount <= 0 { str }
+    else { str + repeat(char, padCount) }
+  }
 
 }
 

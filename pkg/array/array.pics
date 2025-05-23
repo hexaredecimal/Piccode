@@ -1,87 +1,87 @@
 
 module Array {
 
-	function concat(a=[], b=[]) =
-	  when a {
-	    is [] -> b
-	    is x:rest -> x : concat(rest, b)
-	  }
-	 
-	function toString(arr=[]) = pic_nat_array_tostring(arr)
-	
-	function join(xs=[], sep=",") =
-	  when xs {
-	    is [] -> ""
-	    is [x] -> x
-	    is x:rest -> x + sep + join(rest, sep)
-	  }
+  function concat(a=[], b=[]) =
+    when a {
+      is [] -> b
+      is x:rest -> x : concat(rest, b)
+    }
+   
+  function toString(arr=[]) = pic_nat_array_tostring(arr)
+  
+  function join(xs=[], sep=",") =
+    when xs {
+      is [] -> ""
+      is [x] -> x
+      is x:rest -> x + sep + join(rest, sep)
+    }
 
-	function zip(xs=[], ys=[]) =
-	  when [xs, ys] {
-	    is [[], _] -> []
-	    is [_, []] -> []
-	    is [x:xs1, y:ys1] -> [ [x, y] ] : zip(xs1, ys1)
-	  }
+  function zip(xs=[], ys=[]) =
+    when [xs, ys] {
+      is [[], _] -> []
+      is [_, []] -> []
+      is [x:xs1, y:ys1] -> [ [x, y] ] : zip(xs1, ys1)
+    }
 
-	function map(xs=[], f) =
-	  when xs{
-	    is [] -> []
-	    is x:rest -> f(x) : map(rest, f)
-	  }
+  function map(xs=[], f) =
+    when xs{
+      is [] -> []
+      is x:rest -> f(x) : map(rest, f)
+    }
 
-	function filter(xs=[], pred) =
-	    when xs {
-	      is [] -> []
-	      is x:rest ->
-	        if pred(x) {
-	          x : filter(rest, pred)
-	        } else {
-	          filter(rest, pred)
-	        }
-	    }
+  function filter(xs=[], pred) =
+      when xs {
+        is [] -> []
+        is x:rest ->
+          if pred(x) {
+            x : filter(rest, pred)
+          } else {
+            filter(rest, pred)
+          }
+      }
 
-	function reduce(xs=[], f, acc) =
-	    when xs {
-	      is [] -> acc
-	      is x:rest -> reduce(rest, f, f(acc, x))
-	    }
-	    
-	function length(xs=[]) = xs.len
+  function reduce(xs=[], f, acc) =
+      when xs {
+        is [] -> acc
+        is x:rest -> reduce(rest, f, f(acc, x))
+      }
+      
+  function length(xs=[]) = xs.len
 
-	function reverse(xs=[]) = Array.reduce(xs, |acc, x| -> x : acc, [])
+  function reverse(xs=[]) = Array.reduce(xs, |acc, x| -> x : acc, [])
 
-	function flatMap(xs=[], f) = Array.reduce(xs, |acc, x| -> concat(acc, f(x)), [])
+  function flatMap(xs=[], f) = Array.reduce(xs, |acc, x| -> concat(acc, f(x)), [])
 
-	function take(xs=[], n=0) =
-	    if n <= 0 {
-	      []
-	    } else {
-		    when xs {
-		      is [] -> []
-		      is x:rest -> x : take(rest, n - 1)
-		    }
-	    }
+  function take(xs=[], n=0) =
+      if n <= 0 {
+        []
+      } else {
+        when xs {
+          is [] -> []
+          is x:rest -> x : take(rest, n - 1)
+        }
+      }
 
-	function drop(xs=[], n=0) =
-	    if n <= 0 {
-	      xs
-	    } else {
-		    	when xs {
-		      is [] -> []
-		      is _:rest -> drop(rest, n - 1)
-		     }
-	    }
-	    
-	 function contains(xs=[], value) =
-	    when xs {
-	      is [] -> false
-	      is x:rest -> if x == value { true } else { contains(rest, value) }
-	    }
+  function drop(xs=[], n=0) =
+      if n <= 0 {
+        xs
+      } else {
+          when xs {
+          is [] -> []
+          is _:rest -> drop(rest, n - 1)
+         }
+      }
+      
+   function contains(xs=[], value) =
+      when xs {
+        is [] -> false
+        is x:rest -> if x == value { true } else { contains(rest, value) }
+      }
 
-	function indexOf(xs=[], value, i=0) =
-	    when xs {
-	      is [] -> -1
-	      is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
-	    }
+  function indexOf(xs=[], value, i=0) =
+      when xs {
+        is [] -> -1
+        is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
+      }
 
 }

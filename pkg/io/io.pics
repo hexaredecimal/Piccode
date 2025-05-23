@@ -1,7 +1,7 @@
 
 module IO {
-	function print(msg="") = pic_nat_print(msg)
-	function println(msg="") = pic_nat_print(msg + "\n")
-	function read(msg="Enter text") = pic_nat_read(msg)
+  function print(msg="") = pic_nat_print(msg)
+  function println(msg="") = pic_nat_print(msg + "\n")
+  function read(msg="Enter text") = pic_nat_read(msg)
 }
 
