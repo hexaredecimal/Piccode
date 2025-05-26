@@ -84,4 +84,13 @@ module Array {
         is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
       }
 
+  function fromRange(start, end) = 
+    if start == end { [end] } 
+    else { 
+      if start < end {
+        start:fromRange(start + 1, end)
+      } else {
+        start:fromRange(start - 1, end)
+      }
+    }
 }
