@@ -44,7 +44,7 @@ public class ListConstAst extends Ast {
 		if (left instanceof PiccodeArray larr) {
 			var nodes = new ArrayList<PiccodeValue>();
 			nodes.addAll(larr.getList());
-			nodes.addFirst(right);
+			nodes.addLast(right);
 			return new PiccodeArray(nodes);
 		}
 		if (right instanceof PiccodeArray rarr) {
@@ -54,8 +54,8 @@ public class ListConstAst extends Ast {
 			return new PiccodeArray(nodes);
 		}
 		var nodes = new ArrayList<PiccodeValue>();
-		nodes.addFirst(left);
-		nodes.addFirst(right);
+		nodes.add(left);
+		nodes.add(right);
 		return new PiccodeArray(nodes);
 	}
 

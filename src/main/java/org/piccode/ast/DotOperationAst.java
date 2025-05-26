@@ -92,7 +92,17 @@ public class DotOperationAst extends Ast {
 				}
 				if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
 					node.execute();
-					return Context.top.getValue(_id.text);
+					var result = Context.top.getValue(_id.text);
+					if (result == null) {
+						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + _id.text + "` is not defined");
+						var nm = Context.top.getSimilarName(_id.text);
+						if (nm != null && !nm.isEmpty()) {
+							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + nm + "`");
+							err.addNote(note);
+						}
+						throw err;
+					}
+					return result;
 				}
 				if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
 					node.execute();
