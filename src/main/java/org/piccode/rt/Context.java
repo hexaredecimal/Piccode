@@ -52,4 +52,38 @@ public class Context {
 		}
 		return value;
 	}
+
+
+	public String getSimilarName(String id) {
+		HashMap<String, Integer> calculations = new HashMap<>();
+		var top = scope_stack.peek();
+		top.putAll(global_scope);
+		for (var entry : top.entrySet()) {
+			int count = 0;
+			String base = entry.getKey();
+			try {
+				for (int i = 0; i < id.length(); i++) {
+					if (id.charAt(i) == base.charAt(i)) {
+						count++;
+					} else {
+						break;
+					}
+				}
+			} catch (Exception ex) {
+				// skip
+			}
+			calculations.put(base, count);
+		}
+
+		String result = "";
+		int oldCount = 0;
+		for (var entry : calculations.entrySet()) {
+			String fword = entry.getKey();
+			int count = entry.getValue();
+			if (count > oldCount) {
+				result = fword;
+			}
+		}
+		return result;
+	}
 }

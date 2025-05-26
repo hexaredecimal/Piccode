@@ -10,12 +10,12 @@ import java.util.Scanner;
  *
  * @author hexaredecimal
  */
-public class PiccodeException extends RuntimeException{
+public class PiccodeException extends RuntimeException implements PiccodeInfo { 
 	public String file;
 	public int line, col;
 	public String message;
 
-	private List<PiccodeException> notes = new ArrayList<>();
+	private List<PiccodeInfo> notes = new ArrayList<>();
 	
 	public PiccodeException(String file, int line, int col, String message) {
 		super(message);
@@ -25,7 +25,7 @@ public class PiccodeException extends RuntimeException{
 		this.message = message;
 	}
 
-	public void addNote(PiccodeException note) {
+	public void addNote(PiccodeInfo note) {
 		this.notes.add(note);
 	}
 	
@@ -33,6 +33,7 @@ public class PiccodeException extends RuntimeException{
 		reportError(true, null);
 	}	
 
+	@Override
 	public void reportError(boolean die, String kind) {
 		var fp = new File("");
 
@@ -75,7 +76,6 @@ public class PiccodeException extends RuntimeException{
 
 		if (!notes.isEmpty()) {
 			System.out.println((".\n").repeat(2));
-			System.out.println("[NOTE]");
 			for (var note: notes) {
 				note.reportError(false, "INFO");
 			}
