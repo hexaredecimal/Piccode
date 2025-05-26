@@ -12,7 +12,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ClosureAst implements Ast {
+public class ClosureAst extends Ast {
 	public List<Arg> args;
 	public Ast body;
 
@@ -39,7 +39,11 @@ public class ClosureAst implements Ast {
 	@Override
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
-		return new PiccodeClosure(args, newArgs, 0, body);
+		var result = new PiccodeClosure(args, newArgs, 0, body);
+		result.file = file;
+		result.line = line;
+		result.column = column;
+		return result;
 	}
 
 }

@@ -6,7 +6,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class NamedCallArg implements Ast {
+public class NamedCallArg extends Ast {
 	public String name;
 	public Ast value;
 

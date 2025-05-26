@@ -9,7 +9,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ModuleAst implements Ast {
+public class ModuleAst extends Ast {
 	public String name;
 	public List<Ast> nodes;
 

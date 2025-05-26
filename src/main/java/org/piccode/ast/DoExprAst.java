@@ -9,7 +9,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class DoExprAst implements Ast {
+public class DoExprAst extends Ast {
 	public List<Ast> nodes; 
 
 	public DoExprAst(List<Ast> nodes) {

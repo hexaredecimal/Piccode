@@ -7,7 +7,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class NumberAst implements  Ast {
+public class NumberAst extends  Ast {
 	public String text; 
 
 	public NumberAst(String text) {

@@ -9,7 +9,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class TupleAst implements Ast {
+public class TupleAst extends Ast {
 	public List<Ast> nodes; 
 
 	public TupleAst(List<Ast> nodes) {

@@ -13,12 +13,21 @@ import org.piccode.antlr4.PiccodeScriptParser.*;
  */
 public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
+	public String fileName;
+
+	public PiccodeVisitor(String file) {
+		fileName = file;
+	}
+
 	@Override
 	public Ast visitVar_decl(Var_declContext var_decl) {
 		var tok = var_decl.ID().getSymbol();
 		var name = tok.getText();
 		var expr = visitExpr(var_decl.expr());
 		var result = new VarDecl(name, expr);
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+		result.file = fileName;
 		return result;
 	}
 
@@ -28,20 +37,25 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		for (var stmt : ctx.stmt()) {
 			stmts.add(visitStmt(stmt));
 		}
-		return new StatementList(stmts);
+		var result = new StatementList(stmts);
+		result.file = fileName;
+		return result;
 	}
 
 	@Override
 	public Ast visitClosure_decl(Closure_declContext ctx) {
-		
 		var args = visitArgs(ctx.arg_list());
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
-			return new ClosureAst(null, body);
+			var result = new ClosureAst(null, body);
+			result.file = fileName;
+			return result;
 		}
 
-		return new ClosureAst(args, body);
+		var result = new ClosureAst(args, body);
+		result.file = fileName;
+		return result;
 	}
 
 	@Override
@@ -52,11 +66,18 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
-			return new FunctionAst(name, null, body);
+			var result = new FunctionAst(name, null, body);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
-		int i = args.size();
-		return new FunctionAst(name, args, body);
+		var result = new FunctionAst(name, args, body);
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+		result.file = fileName;
+		return result;
 	}
 
 	public List<Arg> visitFuncArgs(Func_argsContext ctx) {
@@ -77,16 +98,24 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		return args;
 	}
 
-
 	@Override
 	public Ast visitArg(ArgContext ctx) {
+		var tok = ctx.ID().getSymbol();
 		var name = ctx.ID().getText();
 		if (ctx.ASSIGN() != null) {
 			var value = visitLiteral_expr(ctx.literal_expr());
-			return new Arg(name, value);
+			var result = new Arg(name, value);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
-		return new Arg(name);
+		var result = new Arg(name);
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+		return result;
 	}
 
 	@Override
@@ -204,7 +233,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		if (expr.closure_decl() != null) {
 			return visitClosure_decl(expr.closure_decl());
 		}
-		
+
 		if (expr.when_expr() != null) {
 			return visitWhen_expr(expr.when_expr());
 		}
@@ -218,71 +247,155 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		if (expr.ADD() != null) {
-			return visitBinOp("+", expr);
+			var tok = expr.ADD().getSymbol();
+			var result = visitBinOp("+", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.SUB() != null) {
-			return visitBinOp("-", expr);
+			var tok = expr.SUB().getSymbol();
+			var result = visitBinOp("-", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.MUL() != null) {
-			return visitBinOp("*", expr);
+			var tok = expr.MUL().getSymbol();
+			var result = visitBinOp("*", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.DIV() != null) {
-			return visitBinOp("/", expr);
+			var tok = expr.DIV().getSymbol();
+			var result = visitBinOp("/", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.MOD() != null) {
-			return visitBinOp("%", expr);
+			var tok = expr.MOD().getSymbol();
+			var result = visitBinOp("%", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.GT() != null) {
-			return visitBinOp(">", expr);
+			var tok = expr.GT().getSymbol();
+			var result = visitBinOp(">", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.GE() != null) {
-			return visitBinOp(">=", expr);
+			var tok = expr.GE().getSymbol();
+			var result = visitBinOp(">=", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.LT() != null) {
-			return visitBinOp("<", expr);
+			var tok = expr.LT().getSymbol();
+			var result = visitBinOp("<", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.LE() != null) {
-			return visitBinOp("<=", expr);
+			var tok = expr.LE().getSymbol();
+			var result = visitBinOp("<=", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.EQ() != null) {
-			return visitBinOp("==", expr);
+			var tok = expr.EQ().getSymbol();
+			var result = visitBinOp("==", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			return result;
 		}
 
 		if (expr.NE() != null) {
-			return visitBinOp("!=", expr);
+			var tok = expr.NE().getSymbol();
+			var result = visitBinOp("!=", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.AND() != null) {
-			return visitBinOp("&&", expr);
+			var tok = expr.AND().getSymbol();
+			var result = visitBinOp("&&", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.OR() != null) {
-			return visitBinOp("||", expr);
+			var tok = expr.OR().getSymbol();
+			var result = visitBinOp("||", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.SHL() != null) {
-			return visitBinOp("<<", expr);
+			var tok = expr.SHL().getSymbol();
+			var result = visitBinOp("<<", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.SHR() != null) {
-			return visitBinOp(">>", expr);
+			var tok = expr.SHR().getSymbol();
+			var result = visitBinOp(">>", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.BAND() != null) {
-			return visitBinOp("&", expr);
+			var tok = expr.BAND().getSymbol();
+			var result = visitBinOp("&", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.BOR() != null) {
-			return visitBinOp("|", expr);
+			var tok = expr.BOR().getSymbol();
+			var result = visitBinOp("|", expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.unary() != null) {
@@ -290,11 +403,21 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		if (expr.DOT() != null) {
-			return visitDotOperation(expr);
+			var tok = expr.DOT().getSymbol();
+			var result = visitDotOperation(expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.COLON() != null) {
-			return visitConsOperation(expr);
+			var tok = expr.COLON().getSymbol();
+			var result = visitConsOperation(expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.if_expr() != null) {
@@ -302,7 +425,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		if (expr.PIPE() != null) {
-			return visitPipeOp(expr);
+			var tok = expr.PIPE().getSymbol();
+			var result = visitPipeOp(expr);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (expr.array() != null) {
@@ -328,7 +456,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		if (expr.LPAREN() != null && expr.RPAREN() != null && expr.expr() == null) {
 			return new UnitAst();
 		}
-		
+
 		if (expr.LPAREN() != null && expr.RPAREN() != null && expr.expr() != null && !expr.expr().isEmpty() && expr.expr().size() == 1 && expr.call_expr_list() == null) {
 			var lp = expr.getChild(0).getText();
 			var rp = expr.getChild(expr.getChildCount() - 1).getText();
@@ -339,7 +467,6 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitCall(expr.expr().getFirst(), null);
 		}
 
-		
 		if (!expr.expr().isEmpty() && expr.call_expr_list() == null) {
 			return visitCall(expr, expr.call_expr_list());
 		}
@@ -362,16 +489,18 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var nodes = new ArrayList<Ast>();
 		var exprs = ctx.expr();
 
-		if (exprs.isEmpty()) return new UnitAst();
-		
-		for (var e: exprs) {
+		if (exprs.isEmpty()) {
+			return new UnitAst();
+		}
+
+		for (var e : exprs) {
 			var expr = visitExpr(e);
 			nodes.add(expr);
 		}
 
 		return new DoExprAst(nodes);
 	}
-	
+
 	@Override
 	public Ast visitIf_expr(If_exprContext ctx) {
 		var cond = visitExpr(ctx.expr(0));
@@ -383,18 +512,39 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	private Ast visitUnaryExpr(UnaryContext ctx) {
 		if (ctx.EXCLAIM() != null) {
-			return new UnaryAst("!", visitExpr(ctx.expr()));
+			var tok = ctx.EXCLAIM().getSymbol();
+			var result = new UnaryAst("!", visitExpr(ctx.expr()));
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (ctx.BAND() != null) {
-			return new UnaryAst("&", visitExpr(ctx.expr()));
+			var tok = ctx.BAND().getSymbol();
+			var result = new UnaryAst("&", visitExpr(ctx.expr()));
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (ctx.SUB() != null) {
-			return new UnaryAst("-", visitExpr(ctx.expr()));
+			var tok = ctx.SUB().getSymbol();
+			var result = new UnaryAst("-", visitExpr(ctx.expr()));
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
-		if (ctx.TILDE()!= null) {
-			return new UnaryAst("~", visitExpr(ctx.expr()));
+
+		if (ctx.TILDE() != null) {
+			var tok = ctx.TILDE().getSymbol();
+			var result = new UnaryAst("~", visitExpr(ctx.expr()));
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		return null;
@@ -420,13 +570,23 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	public Ast visitCallExpr(Call_exprContext ctx) {
 		if (ctx.ASSIGN() != null) {
+			var tok = ctx.ID().getSymbol();
 			var id = ctx.ID().getText();
 			var value = visitExpr(ctx.expr());
-			return new NamedCallArg(id, value);
+			var result = new NamedCallArg(id, value);
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		if (ctx.ASSIGN() == null && ctx.ID() != null) {
-			return new IdentifierAst(ctx.ID().getText());
+			var tok = ctx.ID().getSymbol();
+			var result = new IdentifierAst(ctx.ID().getText());
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
 		return visitExpr(ctx.expr());
@@ -434,8 +594,13 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitObject(ObjectContext ctx) {
+		var tok = ctx.LBRACE().getSymbol();
 		var kvs = visitKeyValuePairs(ctx.key_val_pairs());
-		return new ObjectAst(kvs);
+		var result = new ObjectAst(kvs);
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+		return result;
 	}
 
 	private HashMap<String, Ast> visitKeyValuePairs(Key_val_pairsContext key_val_pairs) {
@@ -448,20 +613,37 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitTuple(TupleContext ctx) {
+		var tok = ctx.LPAREN().getSymbol();
 		var exprs = visitExprlist(ctx.expr_list());
 		if (exprs.size() == 1) {
-			return exprs.getFirst();
+			var result = exprs.getFirst();
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+			return result;
 		}
 
-		return new TupleAst(exprs);
+		var result = new TupleAst(exprs);
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+		return result;
 	}
 
 	@Override
 	public Ast visitArray(ArrayContext ctx) {
+		var tok = ctx.LBRACKET().getSymbol();
 		if (ctx.expr_list() != null) {
-			return new ArrayAst(visitExprlist(ctx.expr_list()));
+			var result = new ArrayAst(visitExprlist(ctx.expr_list()));
+			result.line = tok.getLine();
+			result.column = tok.getCharPositionInLine();
+			result.file = fileName;
 		}
-		return new ArrayAst(List.of());
+		var result = new ArrayAst(List.of());
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+			result.file = fileName;
+		return result;
 	}
 
 	private List<Ast> visitExprlist(Expr_listContext ctx) {
@@ -476,6 +658,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var number = new NumberAst(NUMBER.getText());
 		var line = NUMBER.getSymbol().getLine();
 		var col = NUMBER.getSymbol().getStartIndex();
+		number.line = line;
+		number.column = col;
+			number.file = fileName;
 		return number;
 	}
 
@@ -483,6 +668,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var string = new StringAst(STRING.getText());
 		var line = STRING.getSymbol().getLine();
 		var col = STRING.getSymbol().getStartIndex();
+		string.line = line;
+		string.column = col;
+			string.file = fileName;
 		return string;
 	}
 
@@ -499,8 +687,13 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	private Ast visitId(TerminalNode ID) {
-		String id = ID.getText();
-		return new IdentifierAst(id);
+		var tok = ID.getSymbol();
+		String _id = ID.getText();
+		var id = new IdentifierAst(_id);
+		id.line = tok.getLine();
+		id.column = tok.getCharPositionInLine();
+		id.file = fileName;
+		return id;
 	}
 
 	private Ast visitPipeOp(ExprContext expr) {

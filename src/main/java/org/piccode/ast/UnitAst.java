@@ -7,7 +7,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class UnitAst implements Ast {
+public class UnitAst extends Ast {
 	@Override
 	public String toString() {
 		return "()";

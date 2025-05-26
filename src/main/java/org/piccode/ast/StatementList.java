@@ -8,7 +8,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class StatementList implements Ast {
+public class StatementList extends Ast {
 	public List<Ast> nodes; 
 
 	public StatementList(List<Ast> nodes) {

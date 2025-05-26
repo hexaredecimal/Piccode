@@ -11,7 +11,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class CallAst implements Ast {
+public class CallAst extends Ast {
 
 	public Ast expr;
 	public List<Ast> nodes;
@@ -41,7 +41,7 @@ public class CallAst implements Ast {
 	public PiccodeValue execute() {
 		var expr_val = expr.execute();
 		if (!(expr_val instanceof PiccodeClosure) && !(expr_val instanceof NativeFunction)) {
-			throw new PiccodeException("Attempt to call a non-callable expression");
+			throw new PiccodeException(file, line, column, "Attempt to call a non-callable expression");
 		}
 
 		if (expr_val instanceof NativeFunction nat) {

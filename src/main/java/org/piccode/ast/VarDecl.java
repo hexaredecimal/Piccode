@@ -7,7 +7,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class VarDecl implements Ast {
+public class VarDecl extends Ast {
 	public String name; 
 	public Ast value;
 

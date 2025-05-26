@@ -8,7 +8,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class IdentifierAst implements Ast {
+public class IdentifierAst extends Ast {
 	public String text; 
 
 	public IdentifierAst(String text) {
@@ -24,7 +24,7 @@ public class IdentifierAst implements Ast {
 	public PiccodeValue execute() {
 		var value = Context.top.getValue(text);
 		if (value == null) {
-			throw new PiccodeException("Unknown variable `" + text + "`");
+			throw new PiccodeException(file, line, column,"Unknown variable `" + text + "`");
 		}
 
 		return value;

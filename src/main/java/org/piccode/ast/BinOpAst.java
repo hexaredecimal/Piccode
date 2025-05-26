@@ -11,7 +11,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class BinOpAst implements Ast {
+public class BinOpAst extends Ast {
 
 	public Ast lhs;
 	public String op;
@@ -105,6 +105,6 @@ public class BinOpAst implements Ast {
 			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
 		}
 
-		throw new PiccodeException("Invalid operator:  " + op + " " + left.getClass() + " vs " + right.getClass());
+		throw new PiccodeException(file, line, column,"Invalid operator:  " + op + " " + left.getClass() + " vs " + right.getClass());
 	}
 }

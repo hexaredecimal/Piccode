@@ -14,7 +14,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ListConstAst implements Ast {
+public class ListConstAst extends Ast {
 
 	public Ast lhs;
 	public Ast rhs;

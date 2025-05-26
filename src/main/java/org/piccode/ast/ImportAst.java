@@ -20,7 +20,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ImportAst implements Ast {
+public class ImportAst extends Ast {
 
 	public String pkg;
 	public String module;
@@ -45,27 +45,27 @@ public class ImportAst implements Ast {
 	}
 
 	private void loadModuleFromStdLib(String module) {
-		var file = new File("pkg/" + module);
-		if (file.isFile()) {
-			throw new PiccodeException("Invalid module " + module + " in pkg");
+		var _file = new File("pkg/" + module);
+		if (_file.isFile()) {
+			throw new PiccodeException(file, line, column,"Invalid module " + module + " in pkg");
 		}
-		for (var fp : file.listFiles()) {
+		for (var fp : _file.listFiles()) {
 			if (fp.getName().endsWith(".pics")) {
 				var code = readFile(fp);
 				if (code == null) {
-					throw new PiccodeException("Invalid module " + module + " in pkg");
+					throw new PiccodeException(file, line, column,"Invalid module " + module + " in pkg");
 				}
-				_import(code);
+				_import(fp.getAbsolutePath(), code);
 			}
 		}
 	}
 
-	private void _import(String code) {
+	private void _import(String file, String code) {
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false")); 
 
 		// In case of an error we leak the current scope on sym table. 
-		Compiler.program(code).execute();
+		Compiler.program(file, code).execute();
 	}
 
 	private String readFile(File fp) {

@@ -7,7 +7,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class WhenCase implements Ast{
+public class WhenCase extends Ast{
 	public List<Ast> match; 
 	public Ast value; 
 

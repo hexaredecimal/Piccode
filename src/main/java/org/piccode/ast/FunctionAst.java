@@ -11,7 +11,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class FunctionAst implements Ast {
+public class FunctionAst extends Ast {
 
 	public String name;
 	public List<Arg> arg;
@@ -43,6 +43,9 @@ public class FunctionAst implements Ast {
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
+		cl.file = file;
+		cl.column = column;
+		cl.line = line;
 		Context.addGlobal(name, cl);
 		return cl;
 	}

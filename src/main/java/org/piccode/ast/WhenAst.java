@@ -9,7 +9,7 @@ import java.util.*;
  *
  * @author hexaredecimal
  */
-public class WhenAst implements Ast {
+public class WhenAst extends Ast {
 
 	public Ast cond;
 	public List<WhenCase> cases;
@@ -57,7 +57,7 @@ public class WhenAst implements Ast {
 		}
 
 		if (else_case == null) {
-			throw new PiccodeException("Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+			throw new PiccodeException(file, line, column,"Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
 		}
 
 		return else_case.execute();

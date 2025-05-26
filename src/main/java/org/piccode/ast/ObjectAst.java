@@ -9,7 +9,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ObjectAst implements Ast {
+public class ObjectAst extends Ast {
 	public HashMap<String, Ast> objs;
 
 	public ObjectAst(HashMap<String, Ast> objs) {

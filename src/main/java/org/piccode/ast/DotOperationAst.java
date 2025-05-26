@@ -14,7 +14,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class DotOperationAst implements Ast {
+public class DotOperationAst extends Ast {
 
 	public Ast lhs;
 	public Ast rhs;
@@ -36,7 +36,7 @@ public class DotOperationAst implements Ast {
 			var mod = Context.modules.get(id.text);
 
 			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-				throw new PiccodeException("No node " + rhs + " found in module " + id.text);
+				throw new PiccodeException(file, line, column,"No node " + rhs + " found in module " + id.text);
 			}
 
 			return process(id, mod);
@@ -64,7 +64,7 @@ public class DotOperationAst implements Ast {
 		}
 
 		if (!(left instanceof PiccodeObject)) {
-			throw new PiccodeException("Invalid expression on the left side of `.` : " + lhs);
+			throw new PiccodeException(file, line, column,"Invalid expression on the left side of `.` : " + lhs);
 		}
 
 		var obj = (PiccodeObject) left;
@@ -78,7 +78,7 @@ public class DotOperationAst implements Ast {
 
 		var value = obj.getValue(key);
 		if (value == null) {
-			throw new PiccodeException("Field `" + key + "` is not part of " + obj.raw());
+			throw new PiccodeException(file, line, column,"Field `" + key + "` is not part of " + obj.raw());
 		}
 
 		return value;
@@ -100,13 +100,13 @@ public class DotOperationAst implements Ast {
 				}
 			}
 
-			throw new PiccodeException("No function or identifier " + _id.text + " found in module " + id.text);
+			throw new PiccodeException(file, line, column,"No function or identifier " + _id.text + " found in module " + id.text);
 		}
 
 		var call = (CallAst) rhs;
 
 		if (!(call.expr instanceof IdentifierAst)) {
-			throw new PiccodeException("Invalid function reference in module access module " + id.text + ": " + call.expr);
+			throw new PiccodeException(file, line, column,"Invalid function reference in module access module " + id.text + ": " + call.expr);
 		}
 
 		var _id = (IdentifierAst) call.expr;
@@ -125,29 +125,29 @@ public class DotOperationAst implements Ast {
 			}
 		}
 
-		throw new PiccodeException("No function or identifier " + _id.text + " found in module " + id.text);
+		throw new PiccodeException(file, line, column,"No function or identifier " + _id.text + " found in module " + id.text);
 	}
 
 	private PiccodeValue processArrayIndexing(PiccodeValue[] arr, PiccodeValue execute) {
 		if (!(execute instanceof PiccodeNumber)) {
-			throw new PiccodeException("Attempt to index array value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
+			throw new PiccodeException(file, line, column,"Attempt to index array value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
 		}
 
 		int index = (int) ((double) execute.raw());
 		if (index < 0 || index >= arr.length) {
-			throw new PiccodeException("Array index out of bounds: "+  lhs + " evaluates to an array with size" + arr.length + " which is indexed with " + execute);
+			throw new PiccodeException(file, line, column,"Array index out of bounds: "+  lhs + " evaluates to an array with size" + arr.length + " which is indexed with " + execute);
 		}
 
 		return arr[index];
 	}
 	private PiccodeValue processTupleIndexing(PiccodeValue[] arr, PiccodeValue execute) {
 		if (!(execute instanceof PiccodeNumber)) {
-			throw new PiccodeException("Attempt to index a tuple value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
+			throw new PiccodeException(file, line, column,"Attempt to index a tuple value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
 		}
 
 		int index = (int) ((double) execute.raw());
 		if (index < 0 || index >= arr.length) {
-			throw new PiccodeException("Array index out of bounds: "+  lhs + " evaluates to a tuple with size" + arr.length + " which is indexed with " + execute);
+			throw new PiccodeException(file, line, column,"Array index out of bounds: "+  lhs + " evaluates to a tuple with size" + arr.length + " which is indexed with " + execute);
 		}
 
 		return arr[index];

@@ -7,7 +7,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class IfExpression implements Ast{
+public class IfExpression extends Ast{
 	public Ast cond, then, elze;
 
 	public IfExpression(Ast cond, Ast then, Ast elze) {
