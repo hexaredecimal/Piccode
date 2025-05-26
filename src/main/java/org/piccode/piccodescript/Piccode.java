@@ -135,7 +135,7 @@ public class Piccode {
 						return;
 					}
 					var code = readFile(input);
-					Compiler.compile(code, user_args);
+					Compiler.compile(input, code, user_args);
 				}
 			} else if ("help".equals(command)) {
 				String topic = res.getString("topic");
@@ -194,7 +194,7 @@ public class Piccode {
 					continue;
 				}
 
-				var result = Compiler.compile(code, user_args);
+				var result = Compiler.compile("repl", code, user_args);
 				System.out.println(result);
 				// Optionally continue loop for next input block
 			}
