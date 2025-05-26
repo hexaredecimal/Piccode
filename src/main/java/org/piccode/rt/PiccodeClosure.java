@@ -17,6 +17,8 @@ public class PiccodeClosure implements PiccodeValue {
 	int positionalIndex; // How many positional args have been applied so far
 	Ast body;
 
+	public String file;
+	public int line, column;
 	public PiccodeClosure(List<Arg> params, Map<String, PiccodeValue> appliedArgs, int positionalIndex, Ast body) {
 		this.params = params == null ? List.of() : params;
 		this.appliedArgs = appliedArgs;
@@ -26,7 +28,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 	public PiccodeValue call(PiccodeValue arg) {
 		if (positionalIndex >= params.size()) {
-			throw new PiccodeException("Too many arguments");
+			throw new PiccodeException(file, line, column, "Too many arguments. Expected " + params.size() + " but got " + positionalIndex);
 		}
 
 		String paramName = params.get(positionalIndex).name;
@@ -39,15 +41,15 @@ public class PiccodeClosure implements PiccodeValue {
 	public PiccodeValue callNamed(String name, PiccodeValue arg) {
 		boolean paramExists = params.stream().anyMatch(p -> p.name.equals(name));
 		if (!paramExists) {
-			throw new PiccodeException("Function does not have a parameter named '" + name + "'");
+			throw new PiccodeException(file, line, column, "Function does not have a parameter named '" + name + "'");
 		}
 
 		if (positionalIndex >= params.size()) {
-			throw new PiccodeException("Too many arguments");
+			throw new PiccodeException(file, line, column, "Too many arguments. Expected " + params.size() + " but got " + positionalIndex);
 		}
 
 		if (appliedArgs.containsKey(name)) {
-			throw new PiccodeException("Duplicate argument: " + name);
+			throw new PiccodeException(file, line, column, "Duplicate argument: " + name);
 		}
 
 		Map<String, PiccodeValue> newArgs = new HashMap<>(appliedArgs);

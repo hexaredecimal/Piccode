@@ -34,7 +34,7 @@ public abstract class NativeFunction implements PiccodeValue {
 	// Curry-style apply
 	public PiccodeValue call(PiccodeValue value) {
 		if (boundArgs.size() >= params.size()) {
-			throw new PiccodeException("Too many arguments applied");
+			throw new PiccodeException("native", 0, 0,"Too many arguments applied");
 		}
 
 		String nextParam = params.get(boundArgs.size());
@@ -45,7 +45,7 @@ public abstract class NativeFunction implements PiccodeValue {
 
 	public PiccodeValue callNamed(String name, PiccodeValue value) {
 		if (!params.contains(name)) {
-			throw new PiccodeException("Unknown argument: " + name);
+			throw new PiccodeException("native", 0, 0,"Unknown argument: " + name);
 		}
 
 		Map<String, PiccodeValue> newBound = new HashMap<>(boundArgs);
@@ -64,7 +64,7 @@ public abstract class NativeFunction implements PiccodeValue {
 			} else if (defaultArgs.containsKey(param)) {
 				orderedArgs.add(defaultArgs.get(param));
 			} else {
-				throw new PiccodeException("Missing argument: " + param);
+				throw new PiccodeException("native", 0, 0,"Missing argument: " + param);
 			}
 		}
 
