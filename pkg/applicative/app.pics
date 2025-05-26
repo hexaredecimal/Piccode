@@ -1,0 +1,49 @@
+
+import pkg:result
+
+module Applicative {
+
+  function apply(mf, ma) = 
+    when mf {
+      is {tag: "ok", value: f} -> 
+        when ma {
+          is {tag: "ok", value: a} -> Result.ok(f(a))
+          else -> ma
+        }
+      else -> mf
+    }
+
+  function map2(ma, mb, fx) = 
+    Applicative.apply(Result.ok(|a| -> |b| -> fx(a, b)), ma) |> Applicative.apply(mb)
+
+  // *> operator: keeps result from second, ignores first
+  function thenIgnoreLeft(fa, fb) =
+    Applicative.map2(fa, fb, |_, b| -> b)
+
+  // <* operator: keeps result from first, ignores second
+  function thenIgnoreRight(fa, fb) =
+    Applicative.map2(fa, fb, |a, _| -> a)
+
+  // pure: wraps value into Result.ok
+  function pure(v) = Result.ok(v)
+
+  // lift2: lifts a binary function into applicative context
+  function lift2(fx, a, b) = Applicative.map2(a, b, fx)
+
+  // sequence: converts [Result] to Result<[values]>
+  function sequence(results=[]) =
+    when results {
+      is [] -> Result.ok([])
+      is r:rs -> 
+        Applicative.map2(r, Applicative.sequence(rs), |x, xs| -> [x] : xs)
+    }
+
+  // traverse: maps a -> Result<b> and sequences
+  function traverse(xs=[], fx) =
+    when xs {
+      is [] -> Result.ok([])
+      is h:t -> 
+        Applicative.map2(fx(h), Applicative.traverse(t, fx), |x, xs| -> [x] : xs)
+    }
+
+}

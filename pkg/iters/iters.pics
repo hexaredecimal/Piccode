@@ -1,0 +1,21 @@
+
+import pkg:unit
+
+module Iterators {
+
+  function forEach(array=[], fx) = 
+    when array {
+      is [] -> Unit.UNIT
+      is [x] -> do {
+        fx(x)
+				Unit.UNIT
+      }
+      is h:t -> do {
+        fx(h)
+				forEach(t, fx)
+				Unit.UNIT
+			}
+    }
+
+}
+
