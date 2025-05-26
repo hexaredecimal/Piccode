@@ -11,7 +11,7 @@ public abstract class Ast {
 	public String file;
 	public abstract PiccodeValue execute();
 
-	private static class Location {
+	public static class Location {
 		public int line;
 	  public int col;
 

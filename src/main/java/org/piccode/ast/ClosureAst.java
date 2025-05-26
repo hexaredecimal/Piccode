@@ -19,6 +19,15 @@ public class ClosureAst extends Ast {
 	public ClosureAst(List<Arg> args, Ast body) {
 		this.args = args;
 		this.body = body;
+		if (args == null || args.isEmpty()) {
+			var loc = Ast.getLocation(body);
+			this.line = loc.line;
+			this.column = loc.col;
+		} else {
+			var arg = args.getFirst();
+			this.line = arg.line;
+			this.column = arg.column;
+		}
 	}
 
 
@@ -40,6 +49,8 @@ public class ClosureAst extends Ast {
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var result = new PiccodeClosure(args, newArgs, 0, body);
+		result.callSite = new Ast.Location(line, column);
+		result.callSiteFile = file;
 		result.file = file;
 		result.line = line;
 		result.column = column;

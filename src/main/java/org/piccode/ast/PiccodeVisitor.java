@@ -114,7 +114,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var result = new Arg(name);
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+		result.file = fileName;
 		return result;
 	}
 
@@ -553,11 +553,15 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitCall(ExprContext expr, Call_expr_listContext exprList) {
 		var value = visitExpr(expr);
 		if (exprList == null) {
-			return new CallAst(value, List.of());
+			var result = new CallAst(value, List.of());
+			result.file = fileName;
+			return result;
 		}
 
 		var args = visitCallExprList(exprList);
-		return new CallAst(value, args);
+		var result = new CallAst(value, args);
+		result.file = fileName;
+		return result;
 	}
 
 	private List<Ast> visitCallExprList(Call_expr_listContext ctx) {
@@ -599,7 +603,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var result = new ObjectAst(kvs);
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+		result.file = fileName;
 		return result;
 	}
 
@@ -626,7 +630,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var result = new TupleAst(exprs);
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+		result.file = fileName;
 		return result;
 	}
 
@@ -638,11 +642,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			result.line = tok.getLine();
 			result.column = tok.getCharPositionInLine();
 			result.file = fileName;
+			return result;
 		}
 		var result = new ArrayAst(List.of());
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+		result.file = fileName;
 		return result;
 	}
 
@@ -660,7 +665,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var col = NUMBER.getSymbol().getStartIndex();
 		number.line = line;
 		number.column = col;
-			number.file = fileName;
+		number.file = fileName;
 		return number;
 	}
 
@@ -670,7 +675,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var col = STRING.getSymbol().getStartIndex();
 		string.line = line;
 		string.column = col;
-			string.file = fileName;
+		string.file = fileName;
 		return string;
 	}
 

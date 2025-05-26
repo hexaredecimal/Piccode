@@ -19,6 +19,9 @@ public class CallAst extends Ast {
 	public CallAst(Ast expr, List<Ast> nodes) {
 		this.expr = expr;
 		this.nodes = nodes;
+		var loc = Ast.getLocation(expr);
+		this.line = loc.line;
+		this.column = loc.col;
 	}
 
 	@Override
@@ -58,11 +61,18 @@ public class CallAst extends Ast {
 		}
 
 		var closure = (PiccodeClosure) expr_val;
+		closure.callSite = new Ast.Location(line, column);
+		closure.callSiteFile = file;
+		
 		for (var node : nodes) {
 			if (node instanceof NamedCallArg named) {
 				closure = (PiccodeClosure) closure.callNamed(named.name, named.value.execute());
+				closure.callSite = new Ast.Location(line, column);
+				closure.callSiteFile = file;
 			} else {
 				closure = (PiccodeClosure) closure.call(node.execute());
+				closure.callSite = new Ast.Location(line, column);
+				closure.callSiteFile = file;
 			}
 		}
 

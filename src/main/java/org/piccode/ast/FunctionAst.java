@@ -43,6 +43,8 @@ public class FunctionAst extends Ast {
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
+		cl.callSite = new Ast.Location(line, column);
+		cl.callSiteFile = file;
 		cl.file = file;
 		cl.column = column;
 		cl.line = line;
