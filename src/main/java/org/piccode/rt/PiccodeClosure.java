@@ -17,6 +17,9 @@ public class PiccodeClosure implements PiccodeValue {
 	int positionalIndex; // How many positional args have been applied so far
 	Ast body;
 
+	public Ast.Location callSite = null;
+	public String callSiteFile = null;
+
 	public String file;
 	public int line, column;
 	public PiccodeClosure(List<Arg> params, Map<String, PiccodeValue> appliedArgs, int positionalIndex, Ast body) {
@@ -28,34 +31,58 @@ public class PiccodeClosure implements PiccodeValue {
 
 	public PiccodeValue call(PiccodeValue arg) {
 		if (positionalIndex >= params.size()) {
-			throw new PiccodeException(file, line, column, "Too many arguments. Expected " + params.size() + " but got " + positionalIndex);
+			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Too many arguments. Expected " + params.size() + " but got " + (positionalIndex +  1));
+			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
+			err.addNote(note);
+			throw err;
 		}
 
 		String paramName = params.get(positionalIndex).name;
 		Map<String, PiccodeValue> newArgs = new HashMap<>(appliedArgs);
 		newArgs.put(paramName, arg);
 
-		return new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.callSite = callSite;
+		result.callSiteFile = callSiteFile;
+		result.file = file;
+		result.line = line;
+		result.column = column;
+		return result;
 	}
 
 	public PiccodeValue callNamed(String name, PiccodeValue arg) {
 		boolean paramExists = params.stream().anyMatch(p -> p.name.equals(name));
 		if (!paramExists) {
-			throw new PiccodeException(file, line, column, "Function does not have a parameter named '" + name + "'");
+			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Function does not have a parameter named '" + name + "'");
+			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
+			err.addNote(note);
+			throw err;
 		}
 
 		if (positionalIndex >= params.size()) {
-			throw new PiccodeException(file, line, column, "Too many arguments. Expected " + params.size() + " but got " + positionalIndex);
+			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Too many arguments. Expected " + params.size() + " but got " + (positionalIndex + 1));
+			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
+			err.addNote(note);
+			throw err;
 		}
 
 		if (appliedArgs.containsKey(name)) {
-			throw new PiccodeException(file, line, column, "Duplicate argument: " + name);
+			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Duplicate argument: " + name);
+			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
+			err.addNote(note);
+			throw err;
 		}
 
 		Map<String, PiccodeValue> newArgs = new HashMap<>(appliedArgs);
 		newArgs.put(name, arg);
 
-		return new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.callSite = callSite;
+		result.callSiteFile = callSiteFile;
+		result.file = file;
+		result.line = line;
+		result.column = column;
+		return result;
 	}
 
 	public PiccodeValue evaluateIfReady() {
