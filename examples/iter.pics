@@ -1,0 +1,11 @@
+
+import pkg:io
+import pkg:array
+import pkg:iters
+
+let arr = Array.fromRange(1, 5)
+
+Iterators.forEach(arr, |item| -> do {
+  IO.println(item)
+})
+
