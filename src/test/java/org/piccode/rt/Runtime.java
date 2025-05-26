@@ -14,7 +14,7 @@ public class Runtime {
 	@Test
 	public void function() {
 		var code = "function add(x, y) = x + y";
-		var ast = Compiler.program(code);
+		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
 		var func = ast.nodes.getFirst();
@@ -27,7 +27,7 @@ public class Runtime {
 	@Test
 	public void variable() {
 		var code = "let foo = 1";
-		var ast = Compiler.program(code);
+		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
 		var let = ast.nodes.getFirst();
@@ -43,7 +43,7 @@ public class Runtime {
 	@Test
 	public void importModule() {
 		var code = "import pkg:io";
-		var ast = Compiler.program(code);
+		var ast = Compiler.program("test", code);
 		assertEquals(ast.nodes.size(), 1);
 		var import_ = ast.nodes.getFirst();
 		assertFalse(!(import_ instanceof ImportAst));
