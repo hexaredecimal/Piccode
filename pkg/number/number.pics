@@ -1,28 +1,99 @@
+
+// Module: Number
+// Functions specific to the *Number* type
 module Number {
 
+  // Function: isZero
+  // Checks if the given number is zero
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   A boolean value telling whether `n` is zero or not
   function isZero(n=0) = n == 0
+
+
+  // Function: isPositive
+  // Checks if the given number is a positive number
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   A boolean value telling whether `n` is positive or not
   function isPositive(n=0) = n > 0
+
+
+  // Function: isNegative
+  // Checks if the given number is a negative number
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   A boolean value telling whether `n` is negative or not
   function isNegative(n=0) = n < 0
+
+
+  // Function: isEven
+  // Checks if the given number is an even number
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   A boolean value telling whether `n` is even or not
   function isEven(n=0) = (n % 2) == 0
+
+
+  // Function: isOdd
+  // Checks if the given number is an odd number
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   A boolean value telling whether `n` is odd or not
   function isOdd(n=0) = (n % 2) != 0
-  
-  function toString(n=0) = n + ""
 
-  function add(a=0, b=0) = a + b
-  function sub(a=0, b=0) = a - b
-  function mul(a=0, b=0) = a * b
-  function div(a=0, b=1) = a / b
-  function mod(a=0, b=1) = a % b
-  function pow(a=0, b=0) = pic_nat_pow(a, b)
 
-  function inc(n=0) = n + 1
-  function dec(n=0) = n - 1
+  // Function: toString
+  // Converts the given number to a string representation
+  //
+  // Parameters:
+  //   n - The number to convert
+  //
+  // Returns:
+  //   A string representation of the number `n`
+  function toString(n=0) = String.from(n)
 
-  function and(a=0, b=0) = a & b
-  function or(a=0, b=0) = a | b
 
-  function shl(a=0, b=0) = a << b
-  function shr(a=0, b=0) = a >> b
-  function negate(x=1) = -x
-  
+  // Function: abs
+  // Returns the absolute value of a number
+  //
+  // Parameters:
+  //   n - The number to get absolute value of
+  //
+  // Returns:
+  //   The absolute value of the number `n`
+  function abs(n=0) = if n < 0 then -n else n
+
+
+  // Function: sign
+  // Returns the sign of a number
+  //
+  // Parameters:
+  //   n - The number to check
+  //
+  // Returns:
+  //   1 if the number is positive,
+  //   -1 if the number is negative,
+  //   0 if the number is zero
+  function sign(n=0) = 
+    if n > 0 then 1
+    else if n < 0 then -1
+    else 0
+
 }
+

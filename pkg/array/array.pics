@@ -1,14 +1,42 @@
 
+// Module: Array
+// Common array operations including transformation, combination, and querying
 module Array {
 
+  // Function: concat
+  // Combines two arrays into a single array
+  //
+  // Parameters:
+  //   a - The first array
+  //   b - The second array
+  //
+  // Returns:
+  //   A new array consisting of all elements of `a` followed by all elements of `b`
   function concat(a=[], b=[]) =
     when a {
       is [] -> b
       is x:rest -> x : concat(rest, b)
     }
-   
+
+  // Function: toString
+  // Converts an array into its string representation
+  //
+  // Parameters:
+  //   arr - The array to convert
+  //
+  // Returns:
+  //   A string representation of the array
   function toString(arr=[]) = pic_nat_array_tostring(arr)
-  
+
+  // Function: join
+  // Concatenates elements into a string, separated by a given separator
+  //
+  // Parameters:
+  //   xs - The array of strings
+  //   sep - The separator string (default: ",")
+  //
+  // Returns:
+  //   A string of array elements joined by the separator
   function join(xs=[], sep=",") =
     when xs {
       is [] -> ""
@@ -16,6 +44,15 @@ module Array {
       is x:rest -> x + sep + join(rest, sep)
     }
 
+  // Function: zip
+  // Combines two arrays into a single array of pairs
+  //
+  // Parameters:
+  //   xs - The first array
+  //   ys - The second array
+  //
+  // Returns:
+  //   An array of [x, y] pairs from corresponding elements of `xs` and `ys`
   function zip(xs=[], ys=[]) =
     when [xs, ys] {
       is [[], _] -> []
@@ -23,74 +60,177 @@ module Array {
       is [x:xs1, y:ys1] -> [ [x, y] ] : zip(xs1, ys1)
     }
 
+  // Function: map
+  // Applies a function to every element in the array
+  //
+  // Parameters:
+  //   xs - The array to transform
+  //   f - The function to apply to each element
+  //
+  // Returns:
+  //   A new array with transformed values
   function map(xs=[], f) =
-    when xs{
+    when xs {
       is [] -> []
       is x:rest -> f(x) : map(rest, f)
     }
 
+  // Function: filter
+  // Selects elements based on a predicate
+  //
+  // Parameters:
+  //   xs - The array to filter
+  //   pred - A predicate function returning true or false
+  //
+  // Returns:
+  //   A new array containing elements for which `pred` returns true
   function filter(xs=[], pred) =
-      when xs {
-        is [] -> []
-        is x:rest ->
-          if pred(x) {
-            x : filter(rest, pred)
-          } else {
-            filter(rest, pred)
-          }
-      }
+    when xs {
+      is [] -> []
+      is x:rest ->
+        if pred(x) {
+          x : filter(rest, pred)
+        } else {
+          filter(rest, pred)
+        }
+    }
 
+  // Function: reduce
+  // Reduces the array to a single value using an accumulator function
+  //
+  // Parameters:
+  //   xs - The array to reduce
+  //   f - The reducer function (accumulator, element) => result
+  //   acc - The initial accumulator value
+  //
+  // Returns:
+  //   The final reduced value
   function reduce(xs=[], f, acc) =
-      when xs {
-        is [] -> acc
-        is x:rest -> reduce(rest, f, f(acc, x))
-      }
-      
+    when xs {
+      is [] -> acc
+      is x:rest -> reduce(rest, f, f(acc, x))
+    }
+
+  // Function: length
+  // Gets the number of elements in the array
+  //
+  // Parameters:
+  //   xs - The array
+  //
+  // Returns:
+  //   The length of the array
   function length(xs=[]) = xs.len
 
-  function reverse(xs=[]) = Array.reduce(xs, |acc, x| -> x : acc, [])
+  // Function: reverse
+  // Reverses the array
+  //
+  // Parameters:
+  //   xs - The array to reverse
+  //
+  // Returns:
+  //   A new array with elements in reverse order
+  function reverse(xs=[]) =
+    Array.reduce(xs, |acc, x| -> x : acc, [])
 
-  function flatMap(xs=[], f) = Array.reduce(xs, |acc, x| -> Array.concat(acc, f(x)), [])
+  // Function: flatMap
+  // Maps a function over an array and flattens the result
+  //
+  // Parameters:
+  //   xs - The array to map over
+  //   f - A function returning an array for each element
+  //
+  // Returns:
+  //   A flat array of concatenated results
+  function flatMap(xs=[], f) =
+    Array.reduce(xs, |acc, x| -> Array.concat(acc, f(x)), [])
 
+  // Function: take
+  // Takes the first N elements from the array
+  //
+  // Parameters:
+  //   xs - The source array
+  //   n - The number of elements to take
+  //
+  // Returns:
+  //   A new array with at most N elements
   function take(xs=[], n=0) =
-      if n <= 0 {
-        []
-      } else {
-        when xs {
-          is [] -> []
-          is x:rest -> x : take(rest, n - 1)
-        }
+    if n <= 0 {
+      []
+    } else {
+      when xs {
+        is [] -> []
+        is x:rest -> x : take(rest, n - 1)
       }
+    }
 
+  // Function: drop
+  // Drops the first N elements from the array
+  //
+  // Parameters:
+  //   xs - The source array
+  //   n - The number of elements to drop
+  //
+  // Returns:
+  //   A new array without the first N elements
   function drop(xs=[], n=0) =
-      if n <= 0 {
-        xs
-      } else {
-          when xs {
-          is [] -> []
-          is _:rest -> drop(rest, n - 1)
-         }
-      }
-      
-   function contains(xs=[], value) =
+    if n <= 0 {
+      xs
+    } else {
       when xs {
-        is [] -> false
-        is x:rest -> if x == value { true } else { contains(rest, value) }
+        is [] -> []
+        is _:rest -> drop(rest, n - 1)
       }
+    }
 
+  // Function: contains
+  // Checks whether the array contains a specific value
+  //
+  // Parameters:
+  //   xs - The array to search
+  //   value - The value to find
+  //
+  // Returns:
+  //   True if the value exists in the array, otherwise false
+  function contains(xs=[], value) =
+    when xs {
+      is [] -> false
+      is x:rest -> if x == value { true } else { contains(rest, value) }
+    }
+
+  // Function: indexOf
+  // Returns the index of a value in the array
+  //
+  // Parameters:
+  //   xs - The array to search
+  //   value - The value to look for
+  //   i - (Internal) the current index, used recursively
+  //
+  // Returns:
+  //   The index of the value or -1 if not found
   function indexOf(xs=[], value, i=0) =
-      when xs {
-        is [] -> -1
-        is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
-      }
+    when xs {
+      is [] -> -1
+      is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
+    }
 
+  // Function: fromRange
+  // Generates an array of numbers from `start` to `end` inclusive
+  //
+  // Parameters:
+  //   start - The starting number
+  //   end - The ending number
+  //
+  // Returns:
+  //   An array representing the range [start, ..., end]
   function fromRange(start, end) = 
-    if start == end { [end] } 
-    else { 
+    if start == end {
+      [end]
+    } else {
       if start < end {
-        start:fromRange(start + 1, end)
+        start : fromRange(start + 1, end)
       } else {
-        start:fromRange(start - 1, end)
+        start : fromRange(start - 1, end)
       }
     }
 }
+

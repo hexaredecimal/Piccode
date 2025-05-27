@@ -1,6 +1,54 @@
 
+// Module: System
+// Provides low-level system control functions for debugging,
+// signaling unimplemented features, or marking unreachable code paths.
+//
+// These functions immediately halt execution with native behavior,
+// often useful for development, assertion, and exhaustiveness checking.
+
 module System {
+
+  // Function: panic
+  // Halts execution and reports a fatal error with the given message.
+  //
+  // Parameters:
+  //   message - The error message to display
+  //
+  // Behavior:
+  //   Immediately stops the program and raises an unrecoverable error.
+  //
+  // Usage:
+  //   System.panic("Something went horribly wrong")
   function panic(message="") = pic_nat_panic(message) 
+
+
+  // Function: todo
+  // Marks a piece of code as "to be implemented".
+  //
+  // Parameters:
+  //   message - An optional message describing what’s missing
+  //
+  // Behavior:
+  //   Panics at runtime to indicate that this code hasn’t been written yet.
+  //
+  // Usage:
+  //   System.todo("Finish the file upload logic here")
   function todo(message="") = pic_nat_todo(message) 
+
+
+  // Function: unreachable
+  // Marks a branch of code as logically unreachable.
+  //
+  // Parameters:
+  //   message - A message to display if somehow this code is reached
+  //
+  // Behavior:
+  //   Panics at runtime to indicate an internal logic error or failed exhaustiveness.
+  //
+  // Usage:
+  //   System.unreachable("Should never hit this case")
   function unreachable(message="") = pic_nat_unreachable(message) 
+
 }
+
+

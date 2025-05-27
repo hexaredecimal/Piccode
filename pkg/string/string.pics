@@ -1,24 +1,119 @@
 
-
+// Module: String
+// Provides utility functions for working with string values.
+// Wraps native operations for performance where available, and
+// supplements with custom implementations (e.g. repeat, pad).
 module String {
 
+  // Function: format
+  // Formats a string using the given format pattern and argument list.
+  //
+  // Parameters:
+  //   fmt - The format string (e.g. "Hello {0}")
+  //   args - A list of values to insert into the format string
+  //
+  // Returns:
+  //   A formatted string with placeholders replaced by args
   function format(fmt="", args=[]) = pic_nat_stringformat(fmt, args)
+
+
+  // Function: trim
+  // Trims leading and trailing whitespace from the input string.
+  //
+  // Parameters:
+  //   value - The string to trim
+  //
+  // Returns:
+  //   The trimmed string
   function trim(value="") = pic_nat_stringtrim(value)
+
+
+  // Function: uppercase
+  // Converts a string to all uppercase characters.
+  //
+  // Parameters:
+  //   value - The string to convert
+  //
+  // Returns:
+  //   A new string with all characters in uppercase
   function uppercase(value="") = pic_nat_stringuppercase(value)
+
+
+  // Function: lowercase
+  // Converts a string to all lowercase characters.
+  //
+  // Parameters:
+  //   value - The string to convert
+  //
+  // Returns:
+  //   A new string with all characters in lowercase
   function lowercase(value="") = pic_nat_stringlowercase(value)
-  function length(xs="")= xs.len
+
+
+  // Function: length
+  // Returns the length (number of characters) in the string.
+  //
+  // Parameters:
+  //   xs - The string whose length is to be measured
+  //
+  // Returns:
+  //   An integer representing the length of the string
+  function length(xs="") = xs.len
+
+
+  // Function: split
+  // Splits a string into an array based on a delimiter.
+  //
+  // Parameters:
+  //   value - The string to split
+  //   delim - The delimiter to use for splitting
+  //
+  // Returns:
+  //   An array of substrings
   function split(value="", delim="") = pic_nat_stringsplit(value, delim)
 
+
+  // Function: repeat
+  // Repeats a string `n` times.
+  //
+  // Parameters:
+  //   str - The string to repeat
+  //   n - The number of times to repeat the string
+  //
+  // Returns:
+  //   A new string consisting of `str` repeated `n` times
   function repeat(str="", n=0) =
     if n <= 0 { "" }
     else { str + repeat(str, n - 1) }
 
+
+  // Function: padLeft
+  // Pads a string from the left to ensure it reaches a total length.
+  //
+  // Parameters:
+  //   str - The string to pad
+  //   total - The target total length of the string
+  //   char - The character to pad with (defaults to space)
+  //
+  // Returns:
+  //   A new string padded on the left to reach `total` length
   function padLeft(str="", total=0, char=" ") = do {
     let padCount = total - String.length(str)
     if padCount <= 0 { str }
     else { repeat(char, padCount) + str }
   }
-  
+
+
+  // Function: padRight
+  // Pads a string from the right to ensure it reaches a total length.
+  //
+  // Parameters:
+  //   str - The string to pad
+  //   total - The target total length of the string
+  //   char - The character to pad with (defaults to space)
+  //
+  // Returns:
+  //   A new string padded on the right to reach `total` length
   function padRight(str="", total=0, char=" ") = do {
     let padCount = total - String.length(str)
     if padCount <= 0 { str }

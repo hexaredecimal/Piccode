@@ -1,20 +1,34 @@
-
 import pkg:unit
 
+// Module: Iterators
+// Provides generic iteration utilities for traversing and executing functions over collections
 module Iterators {
 
+  // Function: forEach
+  // Executes a side-effecting function on each element of the array
+  //
+  // Parameters:
+  //   array - The array to iterate over
+  //   fx - A function to call for each element in the array
+  //
+  // Returns:
+  //   Unit.UNIT - Represents the absence of a meaningful return value
+  //
+  // Notes:
+  //   This function is intended for cases where `fx` performs side effects,
+  //   like printing, logging, or mutating external state.
   function forEach(array=[], fx) = 
     when array {
       is [] -> Unit.UNIT
       is [x] -> do {
         fx(x)
-				Unit.UNIT
+        Unit.UNIT
       }
       is h:t -> do {
         fx(h)
-				forEach(t, fx)
-				Unit.UNIT
-			}
+        forEach(t, fx)
+        Unit.UNIT
+      }
     }
 
 }

@@ -1,5 +1,18 @@
 
+// Module: Args
+// Provides access to user-provided program arguments.
 module Args {
+
+  // Function: get
+  // Returns the list of arguments passed to the program by the user.
+  // This is useful for CLI programs that need to handle input parameters.
+  //
+  // Example:
+  // --- Code
+  //   let args = Args.get()
+  //   IO.println(Array.toString(args))
+  // --- Code
   function get() = _pic_nat_user_args
+
 }
 

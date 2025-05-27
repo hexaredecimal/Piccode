@@ -1,11 +1,44 @@
 import pkg:sys
 
+// Module: Option
+// Provides utilities for working with optional values using the Option type pattern
 module Option {
 
+  // Function: some
+  // Wraps a value in a `some` variant of Option
+  //
+  // Parameters:
+  //   value - The value to wrap
+  //
+  // Returns:
+  //   An Option representing the presence of a value
   function some(value) = {tag: "some", value: value}
+
+
+  // Function: none
+  // Constructs a `none` variant representing the absence of a value
+  //
+  // Returns:
+  //   An Option representing no value
   function none() = {tag: "none"}
+
+
+  // Variable: NONE
+  // Predefined constant for the `none` value
   let NONE = Option.none()
 
+
+  // Function: unwrap
+  // Extracts the value inside a `some`, panics if `none`
+  //
+  // Parameters:
+  //   result - The Option to unwrap
+  //
+  // Returns:
+  //   The inner value if present
+  //
+  // Panics:
+  //   If the Option is `none`, the program will panic with an error message
   function unwrap(result) = 
     when result {
       is {tag: "some", value: value} -> value
@@ -13,24 +46,62 @@ module Option {
       else -> System.panic("Failed to match case")
     }
 
+
+  // Function: unwrapOr
+  // Returns the value if present, or a fallback if not
+  //
+  // Parameters:
+  //   result - The Option to check
+  //   or - The fallback value to return if the result is `none`
+  //
+  // Returns:
+  //   The inner value if present, otherwise `or`
   function unwrapOr(result, or) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> or
     }
 
+
+  // Function: unwrapOrElse
+  // Returns the value if present, or calls a function to generate a fallback
+  //
+  // Parameters:
+  //   result - The Option to check
+  //   fx - A function that returns a fallback value
+  //
+  // Returns:
+  //   The inner value if present, otherwise the result of `fx(result)`
   function unwrapOrElse(result, fx) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> fx(result)
     }
 
+
+  // Function: isSome
+  // Checks if the Option contains a value
+  //
+  // Parameters:
+  //   result - The Option to check
+  //
+  // Returns:
+  //   true if the Option is `some`, false otherwise
   function isSome(result) = 
     when result {
       is {tag: "some", value: _} -> true
       else -> false
     }
 
+
+  // Function: isNone
+  // Checks if the Option is empty
+  //
+  // Parameters:
+  //   result - The Option to check
+  //
+  // Returns:
+  //   true if the Option is `none`, false otherwise
   function isNone(result) = 
     when result {
       is {tag: "some", value: _} -> false

@@ -1,8 +1,22 @@
 
 import pkg:result
 
+// Module: Applicative
+// Provides functions for working with applicative-style computations using Result values.
+// Allows for combining multiple Result-wrapped computations while handling errors gracefully.
 module Applicative {
 
+  // Function: apply
+  // Applies a Result-wrapped function to a Result-wrapped value.
+  //
+  // If both mf and ma are Result.ok, it returns Result.ok(f(a)).
+  // If mf is an error, it returns mf.
+  // If mf is ok but ma is an error, it returns ma.
+  //
+  // Example:
+  // --- Code
+  //   apply(Result.ok(|x| -> x + 1), Result.ok(2)) == Result.ok(3)
+  // ---
   function apply(mf, ma) = 
     when mf {
       is {tag: "ok", value: f} -> 
@@ -13,24 +27,64 @@ module Applicative {
       else -> mf
     }
 
+  // Function: map2
+  // Applies a binary function to two Result values.
+  // This is sugar over chaining apply twice.
+  //
+  // Example:
+  // --- Code
+  //   map2(Result.ok(2), Result.ok(3), |a, b| -> a + b) == Result.ok(5)
+  // ---
   function map2(ma, mb, fx) = 
     Applicative.apply(Result.ok(|a| -> |b| -> fx(a, b)), ma) |> Applicative.apply(mb)
 
-  // *> operator: keeps result from second, ignores first
+  // Function: thenIgnoreLeft
+  // Sequences two Result computations, discards the result of the first.
+  // This functions is mostly known as then `*>` operator
+  //
+  // Example:
+  // --- Code
+  //   thenIgnoreLeft(Result.ok(1), Result.ok(2)) == Result.ok(2)
+  // ---
   function thenIgnoreLeft(fa, fb) =
     Applicative.map2(fa, fb, |_, b| -> b)
 
-  // <* operator: keeps result from first, ignores second
+  // Function: thenIgnoreRight 
+  // Sequences two Result computations, discards the result of the second.
+  // This functions is mostly known as then `<*` operator
+  // Example:
+  // --- Code
+  //   thenIgnoreRight(Result.ok(1), Result.ok(2)) == Result.ok(1)
+  // ---
   function thenIgnoreRight(fa, fb) =
     Applicative.map2(fa, fb, |a, _| -> a)
 
-  // pure: wraps value into Result.ok
+  // Function: pure
+  // Wraps a raw value into the applicative context.
+  //
+  // Equivalent to 
+  // --- Code
+  // Result.ok(v)
+  // ---
   function pure(v) = Result.ok(v)
 
-  // lift2: lifts a binary function into applicative context
+  // Function: lift2
+  // Lifts a binary function to operate over two Result values.
+  //
+  // Example:
+  // --- Code
+  //   lift2(|a, b| -> a + b, Result.ok(1), Result.ok(2)) == Result.ok(3)
+  // ---
   function lift2(fx, a, b) = Applicative.map2(a, b, fx)
 
-  // sequence: converts [Result] to Result<[values]>
+  // Function: sequence
+  // Transforms a list of Result values into a Result of a list.
+  // If any element is an error, the first error is returned.
+  //
+  // Example:
+  // --- Code
+  //   sequence([Result.ok(1), Result.ok(2)]) == Result.ok([1, 2])
+  // ---
   function sequence(results=[]) =
     when results {
       is [] -> Result.ok([])
@@ -38,7 +92,14 @@ module Applicative {
         Applicative.map2(r, Applicative.sequence(rs), |x, xs| -> [x] : xs)
     }
 
-  // traverse: maps a -> Result<b> and sequences
+  // Function: traverse
+  // Maps a function over a list and sequences the results.
+  // Useful for transforming a list of values into a Result of a list, where the function returns Result.
+  //
+  // Example:
+  // --- Code
+  //   traverse([1, 2, 3], |x| -> Result.ok(x * 2)) == Result.ok([2, 4, 6])
+  // ---
   function traverse(xs=[], fx) =
     when xs {
       is [] -> Result.ok([])
@@ -47,3 +108,4 @@ module Applicative {
     }
 
 }
+

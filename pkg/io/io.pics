@@ -1,7 +1,41 @@
 
+// Module: IO
+// Provides basic input and output operations for interacting with the console.
+
 module IO {
+
+  // Function: print
+  // Outputs a message to stdout without a newline.
+  //
+  // Parameters:
+  //   msg - (String) The message to print. Defaults to empty string.
+  //
+  // Returns:
+  //   Unit - Represents no meaningful value (i.e. just a side effect).
   function print(msg="") = pic_nat_print(msg)
+  
+  // Function: println
+  // Outputs a message to stdout followed by a newline.
+  //
+  // Parameters:
+  //   msg - (String) The message to print. Defaults to empty string.
+  //
+  // Returns:
+  //   Unit - Represents no meaningful value (i.e. just a side effect).
+  //
+  // Note:
+  //   This may be identical to `print` if the runtime automatically adds a newline.
   function println(msg="") = pic_nat_print(msg + "\n")
+  
+  // Function: read
+  // Prompts the user with a message and reads a line from stdin.
+  //
+  // Parameters:
+  //   msg - (String) The prompt message shown before input. Defaults to "Enter text".
+  //
+  // Returns:
+  //   String - The user input as a string.
   function read(msg="Enter text") = pic_nat_read(msg)
 }
+
 

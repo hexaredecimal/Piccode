@@ -1,24 +1,162 @@
 
+// Module: Math
+// Mathematical functions 
 module Math {
 
-  function sin(a=0) = pic_nat_sin(a) 
-  function cos(a=0) = pic_nat_cos(a) 
+  // Function: sin
+  // Computes the sine wave of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the sine wave from
+  //
+  // Returns:
+  //   The numeric representation of the sine 
+  function sin(a=0) = pic_nat_sin(a)
+
+
+  // Function: cos
+  // Computes the cosine wave of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the cosine wave from
+  //
+  // Returns:
+  //   The numeric representation of the cosine
+  function cos(a=0) = pic_nat_cos(a)
+
+
+  // Function: tan
+  // Computes the tangent wave of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the tangent wave from
+  //
+  // Returns:
+  //   The numeric representation of the tangent
   function tan(a=0) = pic_nat_tan(a) 
-  
+
+
+  // Function: sinh
+  // Computes the hyperbolic sine of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the hyperbolic sine from
+  //
+  // Returns:
+  //   The numeric representation of the hyperbolic sine
   function sinh(a=0) = pic_nat_sinh(a) 
+
+
+  // Function: cosh
+  // Computes the hyperbolic cosine of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the hyperbolic cosine from
+  //
+  // Returns:
+  //   The numeric representation of the hyperbolic cosine
   function cosh(a=0) = pic_nat_cosh(a) 
+
+
+  // Function: tanh
+  // Computes the hyperbolic tangent of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the hyperbolic tangent from
+  //
+  // Returns:
+  //   The numeric representation of the hyperbolic tangent
   function tanh(a=0) = pic_nat_tanh(a) 
 
+
+  // Function: asin
+  // Computes the arc sine of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the arc sine from
+  //
+  // Returns:
+  //   The numeric representation of the arc sine
   function asin(a=0) = pic_nat_asin(a) 
+
+
+  // Function: acos
+  // Computes the arc cosine of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the arc cosine from
+  //
+  // Returns:
+  //   The numeric representation of the arc cosine
   function acos(a=0) = pic_nat_acos(a) 
+
+
+  // Function: atan
+  // Computes the arc tangent of the given value
+  //
+  // Parameters:
+  //   a - The number to compute the arc tangent from
+  //
+  // Returns:
+  //   The numeric representation of the arc tangent
   function atan(a=0) = pic_nat_atan(a) 
 
+
+  // Function: abs
+  // Computes the absolute value of the provided number
+  //
+  // Parameters:
+  //   a - The number to compute the absolute value from
+  //
+  // Returns:
+  //   The absolute value of `a`
   function abs(a=0) = pic_nat_abs(a) 
+
+
+  // Function: floor
+  // Rounds the number down to the nearest whole number
+  //
+  // Parameters:
+  //   a - The number to round down
+  //
+  // Returns:
+  //   The largest integer less than or equal to `a`
   function floor(a=0) = pic_nat_floor(a) 
+
+
+  // Function: ceil
+  // Rounds the number up to the nearest whole number
+  //
+  // Parameters:
+  //   a - The number to round up
+  //
+  // Returns:
+  //   The smallest integer greater than or equal to `a`
   function ceil(a=0) = pic_nat_ceil(a) 
 
+
+  // Function: pow
+  // Raises a number to the power of another
+  //
+  // Parameters:
+  //   a - The base number
+  //   b - The exponent number
+  //
+  // Returns:
+  //   The value of `a` raised to the power of `b`
   function pow(a=0, b=0) = pic_nat_pow(a, b) 
 
+
+  // Function: clamp
+  // Restricts the input to the range specified by `low` and `high`
+  //
+  // Parameters:
+  //   a - A number
+  //   low - The low end of the range
+  //   high - The high end of the range
+  //
+  // Returns:
+  //   The clamped value, either `a`, `low`, or `high`
   function clamp(a=0, low=-1, high=1) = 
      if a < low { low }
      else { 
@@ -26,21 +164,65 @@ module Math {
        else { a }
      }
 
+
+  // Function: max
+  // Computes the maximum number between the two provided ones
+  //
+  // Parameters:
+  //   a - The base number
+  //   b - The number to compare with
+  //
+  // Returns:
+  //   The maximum between `a` and `b`
   function max(a=0, b=0) = if a > b { a } else { b }
+
+
+  // Function: min
+  // Computes the minimum number between the two provided ones
+  //
+  // Parameters:
+  //   a - The base number
+  //   b - The number to compare with
+  //
+  // Returns:
+  //   The minimum between `a` and `b`
   function min(a=0, b=0) = if a < b { a } else { b }
 
+
+  // Function: degToRad
+  // Converts degrees to radians
+  //
+  // Parameters:
+  //   deg - The degree value to convert
+  //
+  // Returns:
+  //   The value in radians
   function degToRad(deg=0) = deg * (3.141592653589793 / 180)
+
+
+  // Function: radToDeg
+  // Converts radians to degrees
+  //
+  // Parameters:
+  //   rad - The radian value to convert
+  //
+  // Returns:
+  //   The value in degrees
   function radToDeg(rad=0) = rad * (180 / 3.141592653589793)
 
-  function isEven(n=0) = (n % 2) == 0
-  function isOdd(n=0) = (n % 2) != 0
 
+  // Function: factorial
+  // Computes the factorial of a number
+  //
+  // Parameters:
+  //   n - The number to compute factorial from
+  //
+  // Returns:
+  //   The factorial of `n`
   function factorial(n=0) =
     if n <= 1 { 1 }
     else { n * factorial(n - 1) } 
     
 }
-
-
 
 
