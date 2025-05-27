@@ -74,6 +74,14 @@ public class WhenAst extends Ast {
 
 	private boolean matchPattern(Ast pattern, PiccodeValue value, Map<String, PiccodeValue> temp) {
 		if (pattern instanceof IdentifierAst id) {
+			if (id.text.equals("true")){
+        var result = value instanceof PiccodeBoolean bool && ((boolean)bool.raw()) == true;
+      	return result;
+			} 
+      if (id.text.equals("false")) {
+        var result = value instanceof PiccodeBoolean bool && ((boolean)bool.raw()) == false;
+      	return result;
+      }
 			if (!id.text.equals("_")) {
 				temp.put(id.text, value);
 			}

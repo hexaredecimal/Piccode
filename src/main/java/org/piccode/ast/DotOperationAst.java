@@ -6,6 +6,7 @@ import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeModule;
 import org.piccode.rt.PiccodeNumber;
 import org.piccode.rt.PiccodeObject;
+import org.piccode.rt.PiccodeSimpleNote;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeValue;
@@ -64,7 +65,9 @@ public class DotOperationAst extends Ast {
 		}
 
 		if (!(left instanceof PiccodeObject)) {
-			throw new PiccodeException(file, line, column,"Invalid expression on the left side of `.` : " + lhs);
+			var err = new PiccodeException(file, line, column,"Invalid expression on the side of `.` : " + lhs + " has value " + left + " which is not an object");
+			err.addNote(new PiccodeSimpleNote("Pehaphs consider adding a check to verify if " + lhs + " is indeed an object."));
+			throw err;
 		}
 
 		var obj = (PiccodeObject) left;
