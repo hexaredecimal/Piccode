@@ -98,6 +98,24 @@
 			<type>jar</type>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>3.30.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.tomas-langer</groupId>
+			<artifactId>chalk</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.tomas-langer.cli</groupId>
+			<artifactId>cli-choice</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
