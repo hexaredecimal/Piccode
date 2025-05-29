@@ -1,5 +1,6 @@
 package org.piccode.rt;
 
+import com.github.tomaslanger.chalk.Chalk;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	}
 	
 	public void reportError() {
-		reportError(true, null);
+		reportError(true, "ERROR");
 	}	
 
 	@Override
@@ -51,8 +52,10 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 				"repl" 
 				: fp.getName(), 
 				line, col, 
-			kind == null ? 
-				"Error": kind, message
+			kind == null || kind.equals("ERROR") ? 
+				Chalk.on("ERROR").red() // I hard code ERROR just in case it is null;
+				: Chalk.on(kind.toUpperCase()).yellow(), 
+			  message
 		);
 
 		if (file == null) {
@@ -75,7 +78,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 
 
 		if (!notes.isEmpty()) {
-			System.out.println((".\n").repeat(2));
+			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note: notes) {
 				note.reportError(false, "INFO");
 			}

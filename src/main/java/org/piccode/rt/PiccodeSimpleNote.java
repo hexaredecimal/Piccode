@@ -1,5 +1,7 @@
 package org.piccode.rt;
 
+import com.github.tomaslanger.chalk.Chalk;
+
 /**
  *
  * @author hexaredecimal
@@ -13,6 +15,6 @@ public class PiccodeSimpleNote implements PiccodeInfo {
 	
 	@Override
 	public void reportError(boolean die, String kind) {
-		System.out.println("[NOTE]: " + message);
+		System.out.println(Chalk.on("[NOTE]: ").bold().yellow() + message);
 	}
 }
