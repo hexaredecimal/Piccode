@@ -36,17 +36,17 @@ public class Compiler {
 	}
 
 	public static PiccodeValue compile(String file, String code, List<PiccodeValue> args) {
-		var result = program(file, code);
-
-		Context.top.pushStack();
-		Context.top.putLocal("true", new PiccodeBoolean("true"));
-		Context.top.putLocal("false", new PiccodeBoolean("false"));
-		Context.top.putLocal("_pic_nat_user_args", new PiccodeArray(args));
-		addGlobalFunctions();
-
-		PiccodeValue res = new PiccodeUnit();
-		var has_main = false;
 		try {
+			var result = program(file, code);
+
+			Context.top.pushStack();
+			Context.top.putLocal("true", new PiccodeBoolean("true"));
+			Context.top.putLocal("false", new PiccodeBoolean("false"));
+			Context.top.putLocal("_pic_nat_user_args", new PiccodeArray(args));
+			addGlobalFunctions();
+
+			PiccodeValue res = new PiccodeUnit();
+			var has_main = false;
 			for (var stmt : result.nodes) {
 				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
 					has_main = true;
@@ -63,7 +63,7 @@ public class Compiler {
 			//e.printStackTrace();
 			return new PiccodeUnit();
 		} catch (Exception rte) {
-			Context.top.dropStackFrame();
+			//Context.top.dropStackFrame();
 			rte.printStackTrace();
 			return new PiccodeUnit();
 		}
