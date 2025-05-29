@@ -41,7 +41,7 @@ public class DotOperationAst extends Ast {
 			}
 
 			return process(id, mod);
-		}
+		} 
 
 		var left = lhs.execute();
 

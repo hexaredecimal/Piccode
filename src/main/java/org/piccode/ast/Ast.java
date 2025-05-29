@@ -66,6 +66,14 @@ public abstract class Ast {
 			return getLocation(c.match.getFirst());
 		}
 
+		if (node instanceof DoExprAst dot) {
+			return new Location(dot.line, dot.column);
+		}
+		
+		if (node instanceof DotOperationAst dot) {
+			return new Location(dot.line, dot.column);
+		}
+
 		return null;
 	}
 }
