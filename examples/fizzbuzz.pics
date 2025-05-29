@@ -3,16 +3,16 @@ import pkg:io
 import pkg:array
 import pkg:iters
 
-let range = Array.fromRange(1, 30)
+let range = Array.fromRange(1, 50)
 
 Iterators.forEach(range, |i| -> do {
 
-	when ((i % 3) == 0, (i % 5) == 0) {
-		is (true, false) -> IO.println("Fizz")
-		is (false, true) -> IO.println("Buzz")
-		is (true, true) -> IO.println("FizzBuzz")
-		else -> IO.println(i)
-	}
+  when ((i % 3) == 0, (i % 5) == 0) {
+    is (true, false) -> IO.println("Fizz")
+    is (false, true) -> IO.println("Buzz")
+    is (true, true) -> IO.println("FizzBuzz")
+    else -> IO.println(i)
+  }
 
 })
 
