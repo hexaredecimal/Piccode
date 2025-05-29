@@ -1,5 +1,7 @@
 package org.piccode.piccodescript;
 
+import com.github.tomaslanger.chalk.Chalk;
+import com.github.tomaslanger.cli.choice.SingleChoice;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.sound.midi.SysexMessage;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -18,13 +22,21 @@ import org.piccode.backend.Compiler;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeValue;
 
+import org.jline.reader.*;
+import org.jline.reader.impl.*;
+import org.jline.terminal.*;
+import org.jline.terminal.impl.*;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStringBuilder;
+import org.jline.utils.AttributedStyle;
+
 /**
  *
  * @author hexaredecimal
  */
 public class Piccode {
 
-  private static double VERSION = 0.2;
+	private static double VERSION = 0.2;
 
 	public static void main(String[] args) {
 		run(args);
@@ -42,6 +54,14 @@ public class Piccode {
 						.title("subcommands")
 						.metavar("COMMAND")
 						.dest("command");
+		
+		var new_proj = subparsers.addParser("new")
+						.defaultHelp(true)
+						.help("Create a new project");
+		
+		new_proj.addArgument("name")
+						.nargs("?") // Optional
+						.help("The name of the project");
 
 		// glmr build
 		var build = subparsers.addParser("build")
@@ -55,7 +75,7 @@ public class Piccode {
 		build.addArgument("--target")
 						.setDefault(TargetEnvironment.JS)
 						.type(TargetEnvironment.class)
-						.choices(TargetEnvironment.JS)
+						.choices(TargetEnvironment.JS, TargetEnvironment.Eval, TargetEnvironment.Ast)
 						.help("Specify the target environment to build for");
 
 		build.addArgument("--outfile")
@@ -109,13 +129,38 @@ public class Piccode {
 			Namespace res = parser.parseArgs(args);
 			String command = res.getString("command");
 
+			if ("new".equals(command)) {
+				var name = res.getString("name");
+				if (name == null) {
+					createNewProject();
+					return;
+				}
+			}
+
 			if ("build".equals(command)) {
 				/*System.out.println("==> build:");
 				System.out.println("Emit: " + res.getBoolean("emit"));
 				System.out.println("Target: " + res.getString("target"));
 				System.out.println("Outfile: " + res.getString("outfile"));
 				 */
-				System.out.println("TODO: Implement build command");
+
+				if (res.getBoolean("emit")) {
+					var env = TargetEnvironment.valueOf(res.getString("target"));
+					if (env == TargetEnvironment.Ast) {
+						String input = res.getString("file");
+						if (input == null && isProject()) {
+							System.out.println("Project run");
+							return;
+						} else if (input == null) {
+							System.out.println("No input file to run");
+							return;
+						}
+						var code = readFile(input);
+						Compiler
+										.parse(input, code)
+										.forEach(System.out::println);
+					}
+				}
 				return;
 			} else if ("dump".equals(command)) {
 				System.out.println("==> dump:");
@@ -172,32 +217,84 @@ public class Piccode {
 	}
 
 	private static void repl(List<PiccodeValue> user_args) {
+		System.out.println(String.format("Welcome to the REPL for PiccodeScript v%s", VERSION));
 		Compiler.prepareGlobalScope();
-		try (Scanner scanner = new Scanner(System.in);) {
-			System.out.println(String.format("Welcome to the REPL for PiccodeScript v%s", VERSION));
+		// Create a terminal
+		try (Terminal terminal = TerminalBuilder.builder()
+						.system(true)
+						.build();) {
 
+
+			var piccodeScriptHighlighter = new Highlighter() {
+				// Pattern to match SQL keywords (case insensitive)
+				private final Pattern PICCODE_KEYWORDS = Pattern.compile(
+								"\\b(function|module|let|when|is|if|else|import)\\b");
+
+				@Override
+				public AttributedString highlight(LineReader reader, String buffer) {
+					AttributedStringBuilder builder = new AttributedStringBuilder();
+
+					Matcher matcher = PICCODE_KEYWORDS.matcher(buffer);
+					int lastEnd = 0;
+
+					while (matcher.find()) {
+						// Add text before the keyword with default style
+						builder.append(buffer.substring(lastEnd, matcher.start()));
+
+						// Add the keyword with bold blue style
+						builder.styled(
+										AttributedStyle.BOLD.foreground(AttributedStyle.BLUE),
+										buffer.substring(matcher.start(), matcher.end()));
+
+						lastEnd = matcher.end();
+					}
+
+					// Add any remaining text
+					if (lastEnd < buffer.length()) {
+						builder.append(buffer.substring(lastEnd));
+					}
+
+					return builder.toAttributedString();
+				}
+			};
+
+
+			
+			LineReader reader = LineReaderBuilder.builder()
+							.terminal(terminal)
+							.appName("PiccodeScript REPL")
+							.highlighter(piccodeScriptHighlighter)
+							.build();
+
+			var prompt = new AttributedString("λ ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
+
+			outer:
 			while (true) {
 				StringBuilder inputBlock = new StringBuilder();
 				while (true) {
-					System.out.print("λ ");
-					String line = scanner.nextLine();
-
+					String line = reader.readLine(prompt.toAnsi());
 					if (line.trim().isEmpty()) {
 						break; // empty or just whitespace — end of block
 					}
-
 					inputBlock.append(line).append("\n");
 				}
-
 				String code = inputBlock.toString();
+
+				if ("exit".equalsIgnoreCase(code.trim())) {
+					break outer;
+				}
 				if (code.trim().isEmpty()) {
 					continue;
 				}
 
 				var result = Compiler.compile("repl", code, user_args);
-				System.out.println(result);
-				// Optionally continue loop for next input block
+				terminal.writer().println(result);
+				terminal.flush();
 			}
+
+			terminal.writer().println("Exiting REPL");
+		} catch (IOException | EndOfFileException | UserInterruptException e) {
+			System.out.println("Exiting REPL");
 		}
 	}
 
@@ -205,5 +302,35 @@ public class Piccode {
 		var args = new ArrayList<PiccodeValue>();
 		list.forEach(item -> args.add(new PiccodeString(item.toString())));
 		return args;
+	}
+
+	private static void createNewProject() {
+		try (Terminal terminal = TerminalBuilder.builder()
+						.system(true)
+						.build();) {
+			LineReader reader = LineReaderBuilder.builder()
+							.terminal(terminal)
+							.appName("PiccodeScript Project Manager")
+							.build();
+
+					var name = reader.readLine(Chalk.on("Project Name: ").green().toString());
+					System.out.println("Which target are you building for? ");
+					var choice = SingleChoice.Builder.singleChoice();
+					var target = choice.select(
+						TargetEnvironment.Eval.toString(),
+						TargetEnvironment.Ast.toString(),
+						TargetEnvironment.Eval.toString(),
+						TargetEnvironment.Ir.toString(),
+						TargetEnvironment.JS.toString()
+					);
+					var author = reader.readLine(Chalk.on("Project Author: ").green().toString());
+					var license = choice.select("MIT", "MIT", "GPL", "None");
+
+					System.out.println("Creating project: " + Chalk.on(name).green());
+
+		} catch (IOException ex) {
+			System.out.println("Cancelled by user");
+			return;
+		}
 	}
 }

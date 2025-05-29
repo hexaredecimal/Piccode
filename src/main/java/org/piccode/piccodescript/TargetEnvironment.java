@@ -6,5 +6,7 @@ package org.piccode.piccodescript;
  */
 public enum TargetEnvironment {
 	Eval,
-	JS
+	JS,
+	Ir,
+	Ast
 }
