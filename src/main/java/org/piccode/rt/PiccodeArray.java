@@ -64,4 +64,9 @@ public class PiccodeArray implements PiccodeValue {
 		final PiccodeArray other = (PiccodeArray) obj;
 		return Objects.equals(this.nodes, other.nodes);
 	}
+
+	@Override
+	public String type() {
+		return "Array.[" + this.nodes.size() + "]";
+	}
 }

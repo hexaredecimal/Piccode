@@ -66,4 +66,9 @@ public class PiccodeObject implements PiccodeValue {
 		final PiccodeObject other = (PiccodeObject) obj;
 		return Objects.equals(this.obj, other.obj);
 	}
+
+	@Override
+	public String type() {
+		return "Object";
+	}
 }

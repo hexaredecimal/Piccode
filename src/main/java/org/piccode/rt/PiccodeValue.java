@@ -6,4 +6,5 @@ package org.piccode.rt;
  */
 public interface PiccodeValue {
 	public Object raw();
+	public String type();
 }

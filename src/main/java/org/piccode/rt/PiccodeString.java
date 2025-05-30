@@ -45,4 +45,9 @@ public class PiccodeString implements PiccodeValue {
 		final PiccodeString other = (PiccodeString) obj;
 		return Objects.equals(this.string, other.string);
 	}
+
+	@Override
+	public String type() {
+		return "String";
+	}
 }

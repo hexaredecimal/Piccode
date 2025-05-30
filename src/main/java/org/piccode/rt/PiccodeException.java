@@ -11,13 +11,14 @@ import java.util.Scanner;
  *
  * @author hexaredecimal
  */
-public class PiccodeException extends RuntimeException implements PiccodeInfo { 
+public class PiccodeException extends RuntimeException implements PiccodeInfo {
+
 	public String file;
 	public int line, col;
 	public String message;
 
 	private List<PiccodeInfo> notes = new ArrayList<>();
-	
+
 	public PiccodeException(String file, int line, int col, String message) {
 		super(message);
 		this.file = file;
@@ -29,10 +30,10 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	public void addNote(PiccodeInfo note) {
 		this.notes.add(note);
 	}
-	
+
 	public void reportError() {
-		reportError(true, "ERROR");
-	}	
+		reportError(!ReplState.ACTIVE, "ERROR");
+	}
 
 	@Override
 	public void reportError(boolean die, String kind) {
@@ -40,35 +41,43 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 
 		String[] lines = new String[]{};
 		if (file != null) {
-			fp = new File(file);
-			lines = toLines(fp);
+			if (file.equals("repl")) {
+				lines = ReplState.CODE.lines().toList().toArray(String[]::new);
+			} else {
+				fp = new File(file);
+				lines = toLines(fp);
+			}
 		}
+
 		var line_fmt = String.format(" %d │", line);
 		var gap = " ".repeat(line_fmt.length());
 		var gap2 = " ".repeat(line_fmt.length() - 1);
 		var fmt = String.format(
-			"╭──[%s:%d:%d]: %s: %s", 
-			file == null ? 
-				"repl" 
-				: fp.getName(), 
-				line, col, 
-			kind == null || kind.equals("ERROR") ? 
-				Chalk.on("ERROR").red() // I hard code ERROR just in case it is null;
-				: Chalk.on(kind.toUpperCase()).yellow(), 
-			  message
+						"╭──[%s:%d:%d]: %s: %s",
+						file == null || file.equals("repl")
+										? "repl"
+										: fp.getName(),
+						line, col + 1,
+						kind == null || kind.equals("ERROR")
+						? Chalk.on("ERROR").red() // I hard code ERROR just in case it is null;
+						: Chalk.on(kind.toUpperCase()).yellow(),
+						message
 		);
 
 		if (file == null) {
 			System.out.println("" + fmt);
 			return;
 		}
-		
-		var index = line - 1 < lines.length ? line - 1 : lines.length -1;
+
+		var index = line - 1 < lines.length ? line - 1 : lines.length - 1;
+		if (index < 0) {
+			index = 0;
+		}
 		var code_line = lines[index].replaceAll("\t", " ".repeat(1));
 		System.out.println(gap2 + fmt);
 		System.out.println(line_fmt + " " + code_line);
-		var tick = "─".repeat(col + 1) +  "╯";
-		var tick2 = " ".repeat(col + 1) + "^"; 
+		var tick = "─".repeat(col + 1) + "╯";
+		var tick2 = " ".repeat(col + 1) + "^";
 		System.out.println(gap2 + "│" + tick2);
 		System.out.println(gap2 + "╰" + tick);
 		if (line + 1 < lines.length) {
@@ -76,22 +85,21 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			System.out.println(line_fmt);
 		}
 
-
 		if (!notes.isEmpty()) {
 			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
-			for (var note: notes) {
+			for (var note : notes) {
 				note.reportError(false, "INFO");
 			}
 		}
-		
+
 		if (die) {
 			System.exit(1);
 		}
 	}
-	
+
 	private static String[] toLines(File fp) {
 		List<String> lines = new ArrayList<>();
-		
+
 		try (Scanner sc = new Scanner(fp)) {
 			while (sc.hasNextLine()) {
 				lines.add(sc.nextLine());

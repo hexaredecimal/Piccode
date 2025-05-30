@@ -60,5 +60,10 @@ public class PiccodeTuple implements PiccodeValue {
 		final PiccodeTuple other = (PiccodeTuple) obj;
 		return Objects.equals(this.nodes, other.nodes);
 	}
+
+	@Override
+	public String type() {
+		return "Tuple.(" + this.nodes.size() + ")";
+	}
 	
 }

@@ -41,6 +41,11 @@ public class PiccodeNumber implements PiccodeValue {
 		var rhs = ((Double) num.raw()).doubleValue();
 		return lhs == rhs;
 	}
+
+	@Override
+	public String type() {
+		return "Number";
+	}
 	
 	
 }

@@ -53,5 +53,10 @@ public class PiccodeModule implements PiccodeValue{
 		}
 		return Objects.equals(this.nodes, other.nodes);
 	}
+
+	@Override
+	public String type() {
+		return "Module";
+	}
 	
 }

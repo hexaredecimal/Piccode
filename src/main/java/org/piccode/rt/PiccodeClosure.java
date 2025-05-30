@@ -127,4 +127,9 @@ public class PiccodeClosure implements PiccodeValue {
 		return "Rt.Fn/" + positionalIndex;
 	}
 
+	@Override
+	public String type() {
+		return "Function";
+	}
+
 }

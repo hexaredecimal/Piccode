@@ -15,6 +15,11 @@ public class PiccodeUnit implements PiccodeValue {
 	public String toString() {
 		return "()";
 	}
+
+	@Override
+	public String type() {
+		return "Unit";
+	}
 	
 	
 }

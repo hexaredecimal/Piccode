@@ -45,6 +45,11 @@ public class PiccodeBoolean implements PiccodeValue {
 		final PiccodeBoolean other = (PiccodeBoolean) obj;
 		return Objects.equals(this.value, other.value);
 	}
+
+	@Override
+	public String type() {
+		return "Boolean";
+	}
 	
 	
 }
