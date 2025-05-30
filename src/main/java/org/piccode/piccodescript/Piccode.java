@@ -4,6 +4,8 @@ import com.github.tomaslanger.chalk.Chalk;
 import com.github.tomaslanger.cli.choice.SingleChoice;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ import org.jline.terminal.impl.*;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.piccode.platf.Platforms;
+import org.piccode.rt.ReplState;
 
 /**
  *
@@ -39,6 +43,9 @@ public class Piccode {
 	private static double VERSION = 0.2;
 
 	public static void main(String[] args) {
+		if (Platforms.isWindows()) {
+			Platforms.setWindowsCodePage();
+		}
 		run(args);
 	}
 
@@ -217,7 +224,18 @@ public class Piccode {
 	}
 
 	private static void repl(List<PiccodeValue> user_args) {
-		System.out.println(String.format("Welcome to the REPL for PiccodeScript v%s", VERSION));
+		var fmt = String.format(
+				"Welcome to the REPL for PiccodeScript" 
+				+ Chalk.on(" v%s.").green() 
+				+ " Running on " 
+				+ Chalk.on("%s").blue()
+				+ " "
+				+ Chalk.on("%s").gray(), 
+				VERSION, 
+				Platforms.getName(),
+				Platforms.getArch());
+
+		System.out.println(fmt);
 		Compiler.prepareGlobalScope();
 		// Create a terminal
 		try (Terminal terminal = TerminalBuilder.builder()
@@ -267,19 +285,33 @@ public class Piccode {
 							.build();
 
 			var prompt = new AttributedString("λ ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
+			var inner_prompt = new AttributedString(">>> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
 
+			var is_inner = false;
+			ReplState.ACTIVE = true;
 			outer:
 			while (true) {
 				StringBuilder inputBlock = new StringBuilder();
 				while (true) {
-					String line = reader.readLine(prompt.toAnsi());
+					String line = reader.readLine(is_inner ? inner_prompt.toAnsi() : prompt.toAnsi());
 					if (line.trim().isEmpty()) {
+						is_inner = false;
 						break; // empty or just whitespace — end of block
 					}
+
+					var last = line.charAt(line.length() - 1);
 					inputBlock.append(line).append("\n");
+					if (last != '{'){
+						if (is_inner && last != '}') {
+							continue;
+						}
+						is_inner = false;
+						break;
+					} 
+					is_inner = true;
 				}
 				String code = inputBlock.toString();
-
+				ReplState.CODE = code;
 				if ("exit".equalsIgnoreCase(code.trim())) {
 					break outer;
 				}
@@ -288,12 +320,14 @@ public class Piccode {
 				}
 
 				var result = Compiler.compile("repl", code, user_args);
-				terminal.writer().println(result);
+				terminal.writer().println(result + " : " + result.type());
 				terminal.flush();
 			}
 
+			ReplState.ACTIVE = false;
 			terminal.writer().println("Exiting REPL");
 		} catch (IOException | EndOfFileException | UserInterruptException e) {
+			ReplState.ACTIVE = false;
 			System.out.println("Exiting REPL");
 		}
 	}
@@ -314,7 +348,8 @@ public class Piccode {
 							.build();
 
 					var name = reader.readLine(Chalk.on("Project Name: ").green().toString());
-					System.out.println("Which target are you building for? ");
+					System.out.print(Chalk.on("Which target are you building for? ").green());
+					System.out.println(Chalk.on("(Default: Eval)").gray());
 					var choice = SingleChoice.Builder.singleChoice();
 					var target = choice.select(
 						TargetEnvironment.Eval.toString(),
@@ -324,11 +359,17 @@ public class Piccode {
 						TargetEnvironment.JS.toString()
 					);
 					var author = reader.readLine(Chalk.on("Project Author: ").green().toString());
+					System.out.print(Chalk.on("Which license to add to your project? ").green());
+					System.out.println(Chalk.on("(Default: MIT)").gray());
 					var license = choice.select("MIT", "MIT", "GPL", "None");
 
 					System.out.println("Creating project: " + Chalk.on(name).green());
-
-		} catch (IOException ex) {
+          // TODO: Create project structure and build script
+          //
+					System.out.println("Project " + Chalk.on(name).green() + " has been created successfully");
+          System.out.println(Chalk.on("[NOTE]: ").yellow() + " run " + Chalk.on("piccodescript build").green() + " to build the project for the selected target");
+          System.out.println(Chalk.on("[NOTE]: ").yellow() + " run " + Chalk.on("piccodescript run").green() + " to run the project");
+    } catch (Exception ex) {
 			System.out.println("Cancelled by user");
 			return;
 		}
