@@ -54,6 +54,7 @@ expr
 	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
+	| expr DOT expr
 	| expr MUL expr         
 	| expr DIV expr         
 	| expr MOD expr         
@@ -73,7 +74,6 @@ expr
 	| expr SHR expr          
 	| expr BOR expr          
 	| expr BAND expr         
-	| expr DOT expr
 	| expr COLON expr
 	| LPAREN expr? RPAREN
 	| unary
