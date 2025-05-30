@@ -54,6 +54,11 @@ expr
 	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
+	| expr MUL expr         
+	| expr DIV expr         
+	| expr MOD expr         
+	| expr ADD expr          
+	| expr SUB expr         
 	| expr DOT expr
 	| expr PIPE expr         
   | expr OR expr           
@@ -68,11 +73,6 @@ expr
 	| expr SHR expr          
 	| expr BOR expr          
 	| expr BAND expr         
-	| expr MUL expr         
-	| expr DIV expr         
-	| expr MOD expr         
-	| expr ADD expr          
-	| expr SUB expr         
 	| expr DOT expr
 	| expr COLON expr
 	| LPAREN expr? RPAREN
