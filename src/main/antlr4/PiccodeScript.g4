@@ -18,8 +18,18 @@ stmt:
 	| expr_stmt;
 
 import_module:
-	IMPORT ID COLON ID;
+	IMPORT module_path; 
 
+module_path
+	: ID (DOT ID)* symbol_lift?;
+
+symbol_lift
+: LBRACE symbol_entry (COMMA symbol_entry)* RBRACE ;
+	
+symbol_entry
+: ID (symbol_lift)? ;
+
+	
 module: 
 	MODULE ID LBRACE module_stmts RBRACE;
 
