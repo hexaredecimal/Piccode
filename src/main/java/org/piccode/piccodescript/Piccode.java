@@ -50,11 +50,10 @@ public class Piccode {
 	}
 
 	private static void run(String[] args) {
-		var parser = ArgumentParsers.newFor("piccode").build()
+		var parser = ArgumentParsers.newFor("piccodescript").build()
 						.defaultHelp(true)
-						.version(String.format("PicodeScript %s", VERSION))
+						.version(String.format("${prog} %s", VERSION))
 						.epilog(about())
-						.version("${prog} 0.1")
 						.description("The compiler for the PiccodeScript programming language");
 
 		var subparsers = parser.addSubparsers()
@@ -153,19 +152,27 @@ public class Piccode {
 
 				if (res.getBoolean("emit")) {
 					var env = TargetEnvironment.valueOf(res.getString("target"));
+					String input = res.getString("file");
+					if (input == null && isProject()) {
+						System.out.println("Project run");
+						return;
+					} else if (input == null) {
+						System.out.println("No input file to run");
+						return;
+					}
+					
 					if (env == TargetEnvironment.Ast) {
-						String input = res.getString("file");
-						if (input == null && isProject()) {
-							System.out.println("Project run");
-							return;
-						} else if (input == null) {
-							System.out.println("No input file to run");
-							return;
-						}
 						var code = readFile(input);
 						Compiler
 										.parse(input, code)
 										.forEach(System.out::println);
+					}
+
+					if (env == TargetEnvironment.JS) {
+						var code = readFile(input);
+						var out = Compiler
+										.program(code, code).codeGen(env);
+						System.out.println(out);
 					}
 				}
 				return;
@@ -235,7 +242,8 @@ public class Piccode {
 				Platforms.getName(),
 				Platforms.getArch());
 
-		System.out.println(fmt);
+		var bands = Chalk.on("| ").yellow();
+		System.out.println(bands + fmt);
 		Compiler.prepareGlobalScope();
 		// Create a terminal
 		try (Terminal terminal = TerminalBuilder.builder()
@@ -298,6 +306,7 @@ public class Piccode {
 						is_inner = false;
 						break; // empty or just whitespace — end of block
 					}
+
 
 					var last = line.charAt(line.length() - 1);
 					inputBlock.append(line).append("\n");
