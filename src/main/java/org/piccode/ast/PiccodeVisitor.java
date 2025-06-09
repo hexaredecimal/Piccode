@@ -169,23 +169,25 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	@Override
 	public Ast visitImport_module(Import_moduleContext ctx) {
 		var module_path = ctx.module_path();
+		var tok = ctx.getStart();
 		if (module_path != null) {
 			var arr = new ArrayList<String>();
 			for (var path: module_path.ID()) {
+				tok = path.getSymbol();
 				arr.add(path.getText());
 			}
 
 			var path = String.join("/", arr);
 
 			if (module_path.symbol_lift() != null) {
+				tok = module_path.symbol_lift().start;
 				var nodes = visitSymbollift(module_path.symbol_lift());
-				return new ImportAst(path, nodes);
+				return finalizeAstNode(new ImportAst(path, nodes), tok);
 			}
 			
-			return new ImportAst(path);
+			return finalizeAstNode(new ImportAst(path), tok);
 		}
 
-		var tok = ctx.getStart();
 		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid token in import");
 	}
 

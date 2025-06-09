@@ -117,17 +117,19 @@ public class ImportAst extends Ast {
 	
 
 	private List<Ast> loadModuleFromStdLib(String module) {
+		var storage = getAppStorage();
+		var paths = List.of(storage, "./");
 		var nodes = new ArrayList<Ast>();
-		var _file = new File(module);
-		if (_file.isFile()) {
-			throw new PiccodeException(file, line, column,"Invalid module " + module + " in pkg");
+		var _file = findModule(module, paths);
+		if (_file == null) {
+			throw new PiccodeException(file, line, column,"Invalid module " + module.replaceAll("/", "."));
 		}
 		
 		for (var fp : _file.listFiles()) {
 			if (fp.getName().endsWith(".pics")) {
 				var code = readFile(fp);
 				if (code == null) {
-					throw new PiccodeException(file, line, column,"Invalid module " + module + " in pkg");
+					throw new PiccodeException(file, line, column,"Invalid module " + module.replaceAll("/", "."));
 				}
 				nodes.add(_import(fp.getAbsolutePath(), code));
 			}
@@ -165,5 +167,24 @@ public class ImportAst extends Ast {
 	@Override
 	public String codeGen(TargetEnvironment target) {
 		return "";
+	}
+
+	private String getAppStorage() {
+		try {
+			String path = ImportAst.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			return new File(path).getParentFile().getPath();
+		} catch (URISyntaxException ex) {
+			return "./";
+		}
+	}
+
+	private File findModule(String module, List<String> of) {
+		for (var dir: of) {
+			var fp = new File(dir + "/" + module);
+			if (fp.isDirectory()) {
+				return fp;
+			}
+		}
+		return null;
 	}
 }
