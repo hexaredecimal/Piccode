@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeValue;
 
@@ -27,5 +28,10 @@ public class VarDecl extends Ast {
 		var _value = value.execute();
 		Context.top.putLocal(name, _value);
 		return _value;
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return String.format("let %s = %s;", name, value.codeGen(target));
 	}
 }

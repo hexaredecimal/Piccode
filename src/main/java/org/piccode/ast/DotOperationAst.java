@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeException;
@@ -164,5 +165,10 @@ public class DotOperationAst extends Ast {
 		}
 
 		return arr[index];
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return String.format("%s.%s", lhs, rhs);
 	}
 }

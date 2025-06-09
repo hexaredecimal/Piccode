@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeNumber;
 import org.piccode.rt.PiccodeValue;
 
@@ -53,6 +54,11 @@ public class NumberAst extends  Ast {
 	@Override
 	public PiccodeValue execute() {
 		return new PiccodeNumber(text);
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return text;
 	}
 
 }

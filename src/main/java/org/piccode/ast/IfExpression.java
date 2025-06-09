@@ -1,5 +1,7 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
+import static org.piccode.piccodescript.TargetEnvironment.JS;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeValue;
 
@@ -38,14 +40,21 @@ public class IfExpression extends Ast{
 
 		return elze.execute();
 	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return switch (target) {
+			case JS ->
+				codeGenJsIfExpr(target);
+			default ->
+				"todo";
+		};
+	}
 	
-	/*
-import pkg:io
-
-function fact(x=1) = 
-  if x <= 1 { 1 }
-  else x * fact(x - 1)
-
-IO.println(1 + 2 * 2)
-	*/
+	private String codeGenJsIfExpr(TargetEnvironment env) {
+		var c = cond.codeGen(env);
+		var t = then.codeGen(env);
+		var e = elze.codeGen(env);
+		return String.format("%s ? %s : %s", c, t, e);
+	}
 }

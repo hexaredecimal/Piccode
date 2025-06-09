@@ -3,6 +3,7 @@ package org.piccode.ast;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeValue;
@@ -23,14 +24,13 @@ public class FunctionAst extends Ast {
 		this.body = body;
 	}
 
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb
-			.append("function ")
-			.append(name)
-		  .append("(");
+						.append("function ")
+						.append(name)
+						.append("(");
 		if (arg != null) {
 			sb.append(arg);
 		}
@@ -50,6 +50,59 @@ public class FunctionAst extends Ast {
 		cl.line = line;
 		Context.addGlobal(name, cl);
 		return cl;
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return switch (target) {
+			case JS ->
+				codeGenJSFunction(target);
+			default ->
+				"todo";
+		};
+	}
+
+	private String codeGenJSFunction(TargetEnvironment env) {
+		var sb = new StringBuilder()
+						.append("function ");
+
+		if (arg.isEmpty()) {
+			sb
+							.append(name)
+							.append("() { \n")
+							.append("return ")
+							.append(body.codeGen(env))
+							.append(";\n}");
+			return sb.toString();
+		}
+
+		sb
+						.append(name);
+
+		for (int i = 0; i < arg.size(); i++) {
+			var ar = arg.get(i);
+			if (i == 0) {
+				sb
+								.append("(")
+								.append(ar.name)
+								.append(") { \n return ");
+				continue;
+			}
+			var fn = String.format("inner_%sl%dc%d", name, ar.line, ar.column);
+			sb
+							.append("function ")
+							.append(fn)
+							.append("(")
+							.append(ar.name)
+							.append(") { \n return ");
+		}
+
+		var done = "}".repeat(arg.size());
+		sb
+						.append(body.codeGen(env).indent(4))
+						.append(done)
+						.append("\n");
+		return sb.toString();
 	}
 
 }

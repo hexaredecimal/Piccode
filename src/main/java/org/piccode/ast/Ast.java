@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeValue;
 
 /**
@@ -10,6 +11,7 @@ public abstract class Ast {
 	public int line = 1, column = 1;
 	public String file;
 	public abstract PiccodeValue execute();
+	public abstract String codeGen(TargetEnvironment target);
 
 	public static class Location {
 		public int line;

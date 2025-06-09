@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeValue;
@@ -57,4 +58,35 @@ public class ClosureAst extends Ast {
 		return result;
 	}
 
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return switch (target) {
+			case JS -> codeGenJsClosure(target);
+			default -> "todo";
+		};
+	}
+
+	private String codeGenJsClosure(TargetEnvironment env) {
+		var sb = new StringBuilder();
+		if (args.isEmpty()) {
+			sb
+				.append("(")
+				.append(") => {\n")
+				.append(body.codeGen(env).indent(4))
+				.append("};\n");
+			return sb.toString();
+		}
+
+		args.forEach(arg -> {
+			sb
+				.append("(")
+				.append(arg.name)
+				.append(") => ");
+		});
+
+		sb.append("{\n")
+			.append(body.codeGen(env).indent(4))
+			.append("};\n");
+		return sb.toString();
+	}
 }

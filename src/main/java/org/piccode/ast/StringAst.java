@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeValue;
 
@@ -73,5 +74,10 @@ public class StringAst extends Ast {
 		}
 
 		return sb.toString();
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return String.format("\"%s\"", text);
 	}
 }

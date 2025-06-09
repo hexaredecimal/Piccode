@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.piccode.antlr4.PiccodeScriptLexer;
 import org.piccode.antlr4.PiccodeScriptParser;
 import org.piccode.backend.Compiler;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
@@ -80,5 +81,10 @@ public class ImportAst extends Ast {
 		} catch (FileNotFoundException ex) {
 			return null;
 		}
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return "";
 	}
 }

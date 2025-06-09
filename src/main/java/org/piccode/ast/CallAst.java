@@ -2,6 +2,7 @@ package org.piccode.ast;
 
 import java.util.List;
 import org.piccode.piccodescript.Piccode;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.NativeFunction;
 import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeException;
@@ -79,6 +80,30 @@ public class CallAst extends Ast {
 		// Evaluate only if fully applied
 		var result = closure.evaluateIfReady();
 		return result;
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return switch (target) {
+			case JS -> codegenJSCall(target);
+			default -> "todo";
+		};
+	}
+
+	private String codegenJSCall(TargetEnvironment env) {
+		var sb = new StringBuilder()
+			.append("(")
+			.append(expr.codeGen(env))
+			.append(")");
+
+		nodes.forEach(node -> {
+			sb
+				.append("(")
+				.append(node.codeGen(env))
+				.append(")");
+		});
+		
+		return sb.toString();
 	}
 
 }

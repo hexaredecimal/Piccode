@@ -1,6 +1,7 @@
 package org.piccode.ast;
 
 import org.piccode.piccodescript.Piccode;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;
@@ -106,5 +107,10 @@ public class BinOpAst extends Ast {
 		}
 
 		throw new PiccodeException(file, line, column,"Invalid operator:  " + op + " " + left.getClass() + " vs " + right.getClass());
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return String.format("%s %s %s", lhs, op, rhs);
 	}
 }

@@ -1,6 +1,8 @@
 package org.piccode.ast;
 
 import java.util.ArrayList;
+import org.piccode.piccodescript.TargetEnvironment;
+import static org.piccode.piccodescript.TargetEnvironment.JS;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeException;
@@ -59,4 +61,17 @@ public class ListConstAst extends Ast {
 		return new PiccodeArray(nodes);
 	}
 
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return switch (target) {
+			case JS ->
+				codeGenJsListCons(target);
+			default ->
+				"todo";
+		};
+	}
+
+	private String codeGenJsListCons(TargetEnvironment target) {
+		return String.format("ConsList(%s, %s)", lhs, rhs);
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.piccode.rt.*;
 import java.util.*;
+import org.piccode.piccodescript.TargetEnvironment;
 
 /**
  *
@@ -151,5 +152,10 @@ public class WhenAst extends Ast {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 	}
 }

@@ -3,9 +3,11 @@ package org.piccode.ast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.piccode.antlr4.PiccodeScriptBaseVisitor;
 import org.piccode.antlr4.PiccodeScriptParser.*;
+import org.piccode.rt.PiccodeException;
 
 /**
  *
@@ -248,153 +250,104 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 		if (expr.ADD() != null) {
 			var tok = expr.ADD().getSymbol();
-			var result = visitBinOp("+", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("+", expr), tok);
+			
 			return result;
 		}
 
 		if (expr.SUB() != null) {
 			var tok = expr.SUB().getSymbol();
-			var result = visitBinOp("-", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("-", expr), tok);
 			return result;
 		}
 
 		if (expr.MUL() != null) {
 			var tok = expr.MUL().getSymbol();
-			var result = visitBinOp("*", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("*", expr), tok);
 			return result;
 		}
 
 		if (expr.DIV() != null) {
 			var tok = expr.DIV().getSymbol();
-			var result = visitBinOp("/", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("/", expr), tok);
 			return result;
 		}
 
 		if (expr.MOD() != null) {
 			var tok = expr.MOD().getSymbol();
-			var result = visitBinOp("%", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("%", expr), tok);
 			return result;
 		}
 
 		if (expr.GT() != null) {
 			var tok = expr.GT().getSymbol();
-			var result = visitBinOp(">", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp(">", expr), tok);
 			return result;
 		}
 
 		if (expr.GE() != null) {
 			var tok = expr.GE().getSymbol();
-			var result = visitBinOp(">=", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp(">=", expr), tok);
 			return result;
 		}
 
 		if (expr.LT() != null) {
 			var tok = expr.LT().getSymbol();
-			var result = visitBinOp("<", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("<", expr), tok);
 			return result;
 		}
 
 		if (expr.LE() != null) {
 			var tok = expr.LE().getSymbol();
-			var result = visitBinOp("<=", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("<=", expr), tok);
 			return result;
 		}
 
 		if (expr.EQ() != null) {
 			var tok = expr.EQ().getSymbol();
-			var result = visitBinOp("==", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
+			var result = finalizeAstNode(visitBinOp("==", expr), tok);
 			return result;
 		}
 
 		if (expr.NE() != null) {
 			var tok = expr.NE().getSymbol();
-			var result = visitBinOp("!=", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("!=", expr), tok);
 			return result;
 		}
 
 		if (expr.AND() != null) {
 			var tok = expr.AND().getSymbol();
-			var result = visitBinOp("&&", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("&&", expr), tok);
 			return result;
 		}
 
 		if (expr.OR() != null) {
 			var tok = expr.OR().getSymbol();
-			var result = visitBinOp("||", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("||", expr), tok);
 			return result;
 		}
 
 		if (expr.SHL() != null) {
 			var tok = expr.SHL().getSymbol();
-			var result = visitBinOp("<<", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("<<", expr), tok);
 			return result;
 		}
 
 		if (expr.SHR() != null) {
 			var tok = expr.SHR().getSymbol();
-			var result = visitBinOp(">>", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp(">>", expr), tok);
 			return result;
 		}
 
 		if (expr.BAND() != null) {
 			var tok = expr.BAND().getSymbol();
-			var result = visitBinOp("&", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("&", expr), tok);
 			return result;
 		}
 
 		if (expr.BOR() != null) {
 			var tok = expr.BOR().getSymbol();
-			var result = visitBinOp("|", expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitBinOp("|", expr), tok);
 			return result;
 		}
 
@@ -404,19 +357,13 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 		if (expr.DOT() != null) {
 			var tok = expr.DOT().getSymbol();
-			var result = visitDotOperation(expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitDotOperation(expr), tok);
 			return result;
 		}
 
 		if (expr.COLON() != null) {
 			var tok = expr.COLON().getSymbol();
-			var result = visitConsOperation(expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitConsOperation(expr), tok);
 			return result;
 		}
 
@@ -426,10 +373,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 		if (expr.PIPE() != null) {
 			var tok = expr.PIPE().getSymbol();
-			var result = visitPipeOp(expr);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(visitPipeOp(expr), tok);
 			return result;
 		}
 
@@ -480,8 +424,8 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return new UnitAst();
 		}
 
-		System.out.println("Failing at: " + expr.getText());
-		return null;
+		var start = expr.getStart();
+		throw new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid token encountered");
 	}
 
 	@Override
@@ -513,41 +457,38 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	private Ast visitUnaryExpr(UnaryContext ctx) {
 		if (ctx.EXCLAIM() != null) {
 			var tok = ctx.EXCLAIM().getSymbol();
-			var result = new UnaryAst("!", visitExpr(ctx.expr()));
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new UnaryAst("!", visitExpr(ctx.expr())),
+				tok);
 			return result;
 		}
 
 		if (ctx.BAND() != null) {
 			var tok = ctx.BAND().getSymbol();
-			var result = new UnaryAst("&", visitExpr(ctx.expr()));
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new UnaryAst("&", visitExpr(ctx.expr())),
+				tok);
 			return result;
 		}
 
 		if (ctx.SUB() != null) {
 			var tok = ctx.SUB().getSymbol();
-			var result = new UnaryAst("-", visitExpr(ctx.expr()));
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new UnaryAst("-", visitExpr(ctx.expr())),
+				tok);
 			return result;
 		}
 
 		if (ctx.TILDE() != null) {
 			var tok = ctx.TILDE().getSymbol();
-			var result = new UnaryAst("~", visitExpr(ctx.expr()));
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new UnaryAst("~", visitExpr(ctx.expr())),
+				tok);
 			return result;
 		}
 
-		return null;
+		var start = ctx.getStart();
+		throw new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid unary expression");
 	}
 
 	public Ast visitCall(ExprContext expr, Call_expr_listContext exprList) {
@@ -577,19 +518,17 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			var tok = ctx.ID().getSymbol();
 			var id = ctx.ID().getText();
 			var value = visitExpr(ctx.expr());
-			var result = new NamedCallArg(id, value);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new NamedCallArg(id, value),
+				tok);
 			return result;
 		}
 
 		if (ctx.ASSIGN() == null && ctx.ID() != null) {
 			var tok = ctx.ID().getSymbol();
-			var result = new IdentifierAst(ctx.ID().getText());
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
+			var result = finalizeAstNode(
+				new IdentifierAst(ctx.ID().getText()),
+				tok);
 			return result;
 		}
 
@@ -713,4 +652,10 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		return new ListConstAst(lhs, rhs);
 	}
 
+	private Ast finalizeAstNode(Ast result, Token tok) {
+		result.line = tok.getLine();
+		result.column = tok.getCharPositionInLine();
+		result.file = fileName;
+		return result;
+	}
 }

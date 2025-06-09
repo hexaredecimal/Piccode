@@ -1,6 +1,7 @@
 package org.piccode.ast;
 
 import com.github.tomaslanger.chalk.Chalk;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeSimpleNote;
@@ -37,6 +38,11 @@ public class IdentifierAst extends Ast {
 		}
 
 		return value;
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return text;
 	}
 
 }

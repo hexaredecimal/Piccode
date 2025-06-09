@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;
@@ -51,6 +52,11 @@ public class UnaryAst extends Ast{
 		}
 		
 		throw new PiccodeException(file, line, column,"Not supported yet: " + op);
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		return String.format("%s %s", op, expr.codeGen(target));
 	}
 
 	

@@ -1,6 +1,7 @@
 package org.piccode.ast;
 
 import java.util.List;
+import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeModule;
 import org.piccode.rt.PiccodeValue;
@@ -41,6 +42,40 @@ public class ModuleAst extends Ast {
 			Context.modules.put(name, module);
 			return module;
 		}
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		var sb = new StringBuilder();
+		sb.append("var ")
+			.append(name)
+			.append(" = {\n");
+
+		int exprs = 0;
+		for (var node: nodes) {
+			if (node instanceof FunctionAst func) {
+				sb
+					.append(func.name)
+					.append(":")
+					.append(func.codeGen(target));
+				continue;
+			}
+			
+			if (node instanceof VarDecl vardel) {
+				sb
+					.append(vardel.name)
+					.append(":")
+					.append(vardel.codeGen(target));
+				continue;
+			}
+			
+			sb
+				.append(String.format("_%s:", exprs++))
+				.append(node.codeGen(target));
+		}
+
+		sb.append("}\n");
+		return sb.toString();
 	}
 	
 }

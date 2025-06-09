@@ -4,6 +4,7 @@ import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeValue;
 import java.util.ArrayList;
+import org.piccode.piccodescript.TargetEnvironment;
 
 /**
  *
@@ -65,5 +66,10 @@ public class PipeAst extends Ast {
 		var call = (CallAst) rhs;
 		call.nodes.addFirst(lhs);
 		return call.execute();
+	}
+
+	@Override
+	public String codeGen(TargetEnvironment target) {
+		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 	}
 }
