@@ -4,7 +4,7 @@
 // Useful for functions that return "nothing meaningful" but still need to return *something*.
 module Unit {
 
-  // Constant: UNIT
+  // Variable: UNIT
   // The single value of the Unit type — similar to `void`, `()`, or `nil` in other languages.
   // Can be used as a placeholder return value when a function has no meaningful result.
   let UNIT = ()

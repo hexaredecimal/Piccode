@@ -120,6 +120,9 @@ module String {
     else { str + repeat(char, padCount) }
   }
 
+  // Variable: EMPTY
+  // An empty string constant
+  let EMPTY = ""
 }
 
 

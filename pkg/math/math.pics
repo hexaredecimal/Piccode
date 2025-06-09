@@ -222,7 +222,20 @@ module Math {
   function factorial(n=0) =
     if n <= 1 { 1 }
     else { n * factorial(n - 1) } 
-    
+
+  // Variable: E
+  // The double value that is closer than any other to e, the base of the natural logarithms.
+  let E = 2.718281828459045
+
+
+  // Variable: PI
+  // The PI constant
+  let PI = 3.141592653589793
+
+  // Variable: TAU
+  // The double value that is closer than any other to tau.
+  let TAU = 6.283185307179586
+  
 }
 
 
