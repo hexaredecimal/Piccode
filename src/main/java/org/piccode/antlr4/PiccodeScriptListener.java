@@ -40,6 +40,36 @@ public interface PiccodeScriptListener extends ParseTreeListener {
 	 */
 	void exitImport_module(PiccodeScriptParser.Import_moduleContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#module_path}.
+	 * @param ctx the parse tree
+	 */
+	void enterModule_path(PiccodeScriptParser.Module_pathContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#module_path}.
+	 * @param ctx the parse tree
+	 */
+	void exitModule_path(PiccodeScriptParser.Module_pathContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#symbol_lift}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol_lift(PiccodeScriptParser.Symbol_liftContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#symbol_lift}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol_lift(PiccodeScriptParser.Symbol_liftContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#symbol_entry}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol_entry(PiccodeScriptParser.Symbol_entryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#symbol_entry}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol_entry(PiccodeScriptParser.Symbol_entryContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PiccodeScriptParser#module}.
 	 * @param ctx the parse tree
 	 */

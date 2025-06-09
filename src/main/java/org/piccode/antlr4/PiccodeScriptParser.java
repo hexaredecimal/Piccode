@@ -26,21 +26,23 @@ public class PiccodeScriptParser extends Parser {
 		IMPORT=35, IS=36, IF=37, ELSE=38, MODULE=39, DO=40, NUMBER=41, STRING=42, 
 		DOT=43, LINE_COMMENT=44, BLOCK_COMMENT=45, ID=46, WS=47;
 	public static final int
-		RULE_stmts = 0, RULE_stmt = 1, RULE_import_module = 2, RULE_module = 3, 
-		RULE_module_stmts = 4, RULE_module_stmt = 5, RULE_func = 6, RULE_func_args = 7, 
-		RULE_arg_list = 8, RULE_arg = 9, RULE_literal_expr = 10, RULE_expr_stmt = 11, 
-		RULE_expr = 12, RULE_closure_decl = 13, RULE_unary = 14, RULE_if_expr = 15, 
-		RULE_when_expr = 16, RULE_when_cases = 17, RULE_when_case = 18, RULE_else_case = 19, 
-		RULE_var_decl = 20, RULE_tuple = 21, RULE_array = 22, RULE_object = 23, 
-		RULE_expr_list = 24, RULE_call_expr_list = 25, RULE_call_expr = 26, RULE_key_val_pair = 27, 
-		RULE_key_val_pairs = 28, RULE_do_expr = 29;
+		RULE_stmts = 0, RULE_stmt = 1, RULE_import_module = 2, RULE_module_path = 3, 
+		RULE_symbol_lift = 4, RULE_symbol_entry = 5, RULE_module = 6, RULE_module_stmts = 7, 
+		RULE_module_stmt = 8, RULE_func = 9, RULE_func_args = 10, RULE_arg_list = 11, 
+		RULE_arg = 12, RULE_literal_expr = 13, RULE_expr_stmt = 14, RULE_expr = 15, 
+		RULE_closure_decl = 16, RULE_unary = 17, RULE_if_expr = 18, RULE_when_expr = 19, 
+		RULE_when_cases = 20, RULE_when_case = 21, RULE_else_case = 22, RULE_var_decl = 23, 
+		RULE_tuple = 24, RULE_array = 25, RULE_object = 26, RULE_expr_list = 27, 
+		RULE_call_expr_list = 28, RULE_call_expr = 29, RULE_key_val_pair = 30, 
+		RULE_key_val_pairs = 31, RULE_do_expr = 32;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"stmts", "stmt", "import_module", "module", "module_stmts", "module_stmt", 
-			"func", "func_args", "arg_list", "arg", "literal_expr", "expr_stmt", 
-			"expr", "closure_decl", "unary", "if_expr", "when_expr", "when_cases", 
-			"when_case", "else_case", "var_decl", "tuple", "array", "object", "expr_list", 
-			"call_expr_list", "call_expr", "key_val_pair", "key_val_pairs", "do_expr"
+			"stmts", "stmt", "import_module", "module_path", "symbol_lift", "symbol_entry", 
+			"module", "module_stmts", "module_stmt", "func", "func_args", "arg_list", 
+			"arg", "literal_expr", "expr_stmt", "expr", "closure_decl", "unary", 
+			"if_expr", "when_expr", "when_cases", "when_case", "else_case", "var_decl", 
+			"tuple", "array", "object", "expr_list", "call_expr_list", "call_expr", 
+			"key_val_pair", "key_val_pairs", "do_expr"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -148,23 +150,23 @@ public class PiccodeScriptParser extends Parser {
 		enterRule(_localctx, 0, RULE_stmts);
 		int _la;
 		try {
-			setState(67);
+			setState(73);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(63);
+				setState(69);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << BAND) | (1L << BOR) | (1L << EXCLAIM) | (1L << LBRACE) | (1L << LPAREN) | (1L << LBRACKET) | (1L << TILDE) | (1L << LET) | (1L << FUNCTION) | (1L << WHEN) | (1L << IMPORT) | (1L << IF) | (1L << MODULE) | (1L << DO) | (1L << NUMBER) | (1L << STRING) | (1L << ID))) != 0)) {
 					{
 					{
-					setState(60);
+					setState(66);
 					stmt();
 					}
 					}
-					setState(65);
+					setState(71);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -173,7 +175,7 @@ public class PiccodeScriptParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(66);
+				setState(72);
 				match(EOF);
 				}
 				break;
@@ -226,27 +228,27 @@ public class PiccodeScriptParser extends Parser {
 		StmtContext _localctx = new StmtContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_stmt);
 		try {
-			setState(73);
+			setState(79);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IMPORT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(69);
+				setState(75);
 				import_module();
 				}
 				break;
 			case FUNCTION:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(70);
+				setState(76);
 				func();
 				}
 				break;
 			case MODULE:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(71);
+				setState(77);
 				module();
 				}
 				break;
@@ -267,7 +269,7 @@ public class PiccodeScriptParser extends Parser {
 			case ID:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(72);
+				setState(78);
 				expr_stmt();
 				}
 				break;
@@ -288,11 +290,9 @@ public class PiccodeScriptParser extends Parser {
 
 	public static class Import_moduleContext extends ParserRuleContext {
 		public TerminalNode IMPORT() { return getToken(PiccodeScriptParser.IMPORT, 0); }
-		public List<TerminalNode> ID() { return getTokens(PiccodeScriptParser.ID); }
-		public TerminalNode ID(int i) {
-			return getToken(PiccodeScriptParser.ID, i);
+		public Module_pathContext module_path() {
+			return getRuleContext(Module_pathContext.class,0);
 		}
-		public TerminalNode COLON() { return getToken(PiccodeScriptParser.COLON, 0); }
 		public Import_moduleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -318,14 +318,219 @@ public class PiccodeScriptParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(75);
+			setState(81);
 			match(IMPORT);
-			setState(76);
+			setState(82);
+			module_path();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Module_pathContext extends ParserRuleContext {
+		public List<TerminalNode> ID() { return getTokens(PiccodeScriptParser.ID); }
+		public TerminalNode ID(int i) {
+			return getToken(PiccodeScriptParser.ID, i);
+		}
+		public List<TerminalNode> DOT() { return getTokens(PiccodeScriptParser.DOT); }
+		public TerminalNode DOT(int i) {
+			return getToken(PiccodeScriptParser.DOT, i);
+		}
+		public Symbol_liftContext symbol_lift() {
+			return getRuleContext(Symbol_liftContext.class,0);
+		}
+		public Module_pathContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_module_path; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).enterModule_path(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).exitModule_path(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PiccodeScriptVisitor ) return ((PiccodeScriptVisitor<? extends T>)visitor).visitModule_path(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Module_pathContext module_path() throws RecognitionException {
+		Module_pathContext _localctx = new Module_pathContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_module_path);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(84);
 			match(ID);
-			setState(77);
-			match(COLON);
-			setState(78);
+			setState(89);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==DOT) {
+				{
+				{
+				setState(85);
+				match(DOT);
+				setState(86);
+				match(ID);
+				}
+				}
+				setState(91);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(93);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+			case 1:
+				{
+				setState(92);
+				symbol_lift();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Symbol_liftContext extends ParserRuleContext {
+		public TerminalNode LBRACE() { return getToken(PiccodeScriptParser.LBRACE, 0); }
+		public List<Symbol_entryContext> symbol_entry() {
+			return getRuleContexts(Symbol_entryContext.class);
+		}
+		public Symbol_entryContext symbol_entry(int i) {
+			return getRuleContext(Symbol_entryContext.class,i);
+		}
+		public TerminalNode RBRACE() { return getToken(PiccodeScriptParser.RBRACE, 0); }
+		public List<TerminalNode> COMMA() { return getTokens(PiccodeScriptParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(PiccodeScriptParser.COMMA, i);
+		}
+		public Symbol_liftContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_symbol_lift; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).enterSymbol_lift(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).exitSymbol_lift(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PiccodeScriptVisitor ) return ((PiccodeScriptVisitor<? extends T>)visitor).visitSymbol_lift(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Symbol_liftContext symbol_lift() throws RecognitionException {
+		Symbol_liftContext _localctx = new Symbol_liftContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_symbol_lift);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(95);
+			match(LBRACE);
+			setState(96);
+			symbol_entry();
+			setState(101);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(97);
+				match(COMMA);
+				setState(98);
+				symbol_entry();
+				}
+				}
+				setState(103);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(104);
+			match(RBRACE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Symbol_entryContext extends ParserRuleContext {
+		public TerminalNode ID() { return getToken(PiccodeScriptParser.ID, 0); }
+		public Symbol_liftContext symbol_lift() {
+			return getRuleContext(Symbol_liftContext.class,0);
+		}
+		public Symbol_entryContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_symbol_entry; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).enterSymbol_entry(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof PiccodeScriptListener ) ((PiccodeScriptListener)listener).exitSymbol_entry(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PiccodeScriptVisitor ) return ((PiccodeScriptVisitor<? extends T>)visitor).visitSymbol_entry(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Symbol_entryContext symbol_entry() throws RecognitionException {
+		Symbol_entryContext _localctx = new Symbol_entryContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_symbol_entry);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(106);
 			match(ID);
+			setState(108);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==LBRACE) {
+				{
+				setState(107);
+				symbol_lift();
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -368,19 +573,19 @@ public class PiccodeScriptParser extends Parser {
 
 	public final ModuleContext module() throws RecognitionException {
 		ModuleContext _localctx = new ModuleContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_module);
+		enterRule(_localctx, 12, RULE_module);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
+			setState(110);
 			match(MODULE);
-			setState(81);
+			setState(111);
 			match(ID);
-			setState(82);
+			setState(112);
 			match(LBRACE);
-			setState(83);
+			setState(113);
 			module_stmts();
-			setState(84);
+			setState(114);
 			match(RBRACE);
 			}
 		}
@@ -423,22 +628,22 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Module_stmtsContext module_stmts() throws RecognitionException {
 		Module_stmtsContext _localctx = new Module_stmtsContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_module_stmts);
+		enterRule(_localctx, 14, RULE_module_stmts);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(89);
+			setState(119);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << FUNCTION) | (1L << MODULE))) != 0)) {
 				{
 				{
-				setState(86);
+				setState(116);
 				module_stmt();
 				}
 				}
-				setState(91);
+				setState(121);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -486,29 +691,29 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Module_stmtContext module_stmt() throws RecognitionException {
 		Module_stmtContext _localctx = new Module_stmtContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_module_stmt);
+		enterRule(_localctx, 16, RULE_module_stmt);
 		try {
-			setState(95);
+			setState(125);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case FUNCTION:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(92);
+				setState(122);
 				func();
 				}
 				break;
 			case LET:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(93);
+				setState(123);
 				var_decl();
 				}
 				break;
 			case MODULE:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(94);
+				setState(124);
 				module();
 				}
 				break;
@@ -558,19 +763,19 @@ public class PiccodeScriptParser extends Parser {
 
 	public final FuncContext func() throws RecognitionException {
 		FuncContext _localctx = new FuncContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_func);
+		enterRule(_localctx, 18, RULE_func);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(97);
+			setState(127);
 			match(FUNCTION);
-			setState(98);
+			setState(128);
 			match(ID);
-			setState(99);
+			setState(129);
 			func_args();
-			setState(100);
+			setState(130);
 			match(ASSIGN);
-			setState(101);
+			setState(131);
 			expr(0);
 			}
 		}
@@ -612,24 +817,24 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Func_argsContext func_args() throws RecognitionException {
 		Func_argsContext _localctx = new Func_argsContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_func_args);
+		enterRule(_localctx, 20, RULE_func_args);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(103);
+			setState(133);
 			match(LPAREN);
-			setState(105);
+			setState(135);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ID) {
 				{
-				setState(104);
+				setState(134);
 				arg_list();
 				}
 			}
 
-			setState(107);
+			setState(137);
 			match(RPAREN);
 			}
 		}
@@ -676,26 +881,26 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Arg_listContext arg_list() throws RecognitionException {
 		Arg_listContext _localctx = new Arg_listContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_arg_list);
+		enterRule(_localctx, 22, RULE_arg_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(109);
+			setState(139);
 			arg();
-			setState(114);
+			setState(144);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(110);
+				setState(140);
 				match(COMMA);
-				setState(111);
+				setState(141);
 				arg();
 				}
 				}
-				setState(116);
+				setState(146);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -739,21 +944,21 @@ public class PiccodeScriptParser extends Parser {
 
 	public final ArgContext arg() throws RecognitionException {
 		ArgContext _localctx = new ArgContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_arg);
+		enterRule(_localctx, 24, RULE_arg);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(117);
+			setState(147);
 			match(ID);
-			setState(120);
+			setState(150);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ASSIGN) {
 				{
-				setState(118);
+				setState(148);
 				match(ASSIGN);
-				setState(119);
+				setState(149);
 				literal_expr();
 				}
 			}
@@ -804,43 +1009,43 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Literal_exprContext literal_expr() throws RecognitionException {
 		Literal_exprContext _localctx = new Literal_exprContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_literal_expr);
+		enterRule(_localctx, 26, RULE_literal_expr);
 		try {
-			setState(127);
+			setState(157);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(122);
+				setState(152);
 				match(NUMBER);
 				}
 				break;
 			case STRING:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(123);
+				setState(153);
 				match(STRING);
 				}
 				break;
 			case LBRACKET:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(124);
+				setState(154);
 				array();
 				}
 				break;
 			case LPAREN:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(125);
+				setState(155);
 				tuple();
 				}
 				break;
 			case LBRACE:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(126);
+				setState(156);
 				object();
 				}
 				break;
@@ -884,11 +1089,11 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Expr_stmtContext expr_stmt() throws RecognitionException {
 		Expr_stmtContext _localctx = new Expr_stmtContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_expr_stmt);
+		enterRule(_localctx, 28, RULE_expr_stmt);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(129);
+			setState(159);
 			expr(0);
 			}
 		}
@@ -993,128 +1198,128 @@ public class PiccodeScriptParser extends Parser {
 		int _parentState = getState();
 		ExprContext _localctx = new ExprContext(_ctx, _parentState);
 		ExprContext _prevctx = _localctx;
-		int _startState = 24;
-		enterRecursionRule(_localctx, 24, RULE_expr, _p);
+		int _startState = 30;
+		enterRecursionRule(_localctx, 30, RULE_expr, _p);
 		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(149);
+			setState(179);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				{
-				setState(132);
+				setState(162);
 				var_decl();
 				}
 				break;
 			case 2:
 				{
-				setState(133);
+				setState(163);
 				closure_decl();
 				}
 				break;
 			case 3:
 				{
-				setState(134);
+				setState(164);
 				match(LPAREN);
-				setState(136);
+				setState(166);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << BAND) | (1L << BOR) | (1L << EXCLAIM) | (1L << LBRACE) | (1L << LPAREN) | (1L << LBRACKET) | (1L << TILDE) | (1L << LET) | (1L << WHEN) | (1L << IF) | (1L << DO) | (1L << NUMBER) | (1L << STRING) | (1L << ID))) != 0)) {
 					{
-					setState(135);
+					setState(165);
 					expr(0);
 					}
 				}
 
-				setState(138);
+				setState(168);
 				match(RPAREN);
 				}
 				break;
 			case 4:
 				{
-				setState(139);
+				setState(169);
 				unary();
 				}
 				break;
 			case 5:
 				{
-				setState(140);
+				setState(170);
 				if_expr();
 				}
 				break;
 			case 6:
 				{
-				setState(141);
+				setState(171);
 				when_expr();
 				}
 				break;
 			case 7:
 				{
-				setState(142);
+				setState(172);
 				do_expr();
 				}
 				break;
 			case 8:
 				{
-				setState(143);
+				setState(173);
 				array();
 				}
 				break;
 			case 9:
 				{
-				setState(144);
+				setState(174);
 				tuple();
 				}
 				break;
 			case 10:
 				{
-				setState(145);
+				setState(175);
 				object();
 				}
 				break;
 			case 11:
 				{
-				setState(146);
+				setState(176);
 				match(ID);
 				}
 				break;
 			case 12:
 				{
-				setState(147);
+				setState(177);
 				match(NUMBER);
 				}
 				break;
 			case 13:
 				{
-				setState(148);
+				setState(178);
 				match(STRING);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(222);
+			setState(252);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,17,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(220);
+					setState(250);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 					case 1:
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(151);
+						setState(181);
 						if (!(precpred(_ctx, 32))) throw new FailedPredicateException(this, "precpred(_ctx, 32)");
-						setState(152);
+						setState(182);
 						match(DOT);
-						setState(153);
+						setState(183);
 						expr(33);
 						}
 						break;
@@ -1122,11 +1327,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(154);
+						setState(184);
 						if (!(precpred(_ctx, 31))) throw new FailedPredicateException(this, "precpred(_ctx, 31)");
-						setState(155);
+						setState(185);
 						match(MUL);
-						setState(156);
+						setState(186);
 						expr(32);
 						}
 						break;
@@ -1134,11 +1339,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(157);
+						setState(187);
 						if (!(precpred(_ctx, 30))) throw new FailedPredicateException(this, "precpred(_ctx, 30)");
-						setState(158);
+						setState(188);
 						match(DIV);
-						setState(159);
+						setState(189);
 						expr(31);
 						}
 						break;
@@ -1146,11 +1351,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(160);
+						setState(190);
 						if (!(precpred(_ctx, 29))) throw new FailedPredicateException(this, "precpred(_ctx, 29)");
-						setState(161);
+						setState(191);
 						match(MOD);
-						setState(162);
+						setState(192);
 						expr(30);
 						}
 						break;
@@ -1158,11 +1363,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(163);
+						setState(193);
 						if (!(precpred(_ctx, 28))) throw new FailedPredicateException(this, "precpred(_ctx, 28)");
-						setState(164);
+						setState(194);
 						match(ADD);
-						setState(165);
+						setState(195);
 						expr(29);
 						}
 						break;
@@ -1170,11 +1375,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(166);
+						setState(196);
 						if (!(precpred(_ctx, 27))) throw new FailedPredicateException(this, "precpred(_ctx, 27)");
-						setState(167);
+						setState(197);
 						match(SUB);
-						setState(168);
+						setState(198);
 						expr(28);
 						}
 						break;
@@ -1182,11 +1387,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(169);
+						setState(199);
 						if (!(precpred(_ctx, 26))) throw new FailedPredicateException(this, "precpred(_ctx, 26)");
-						setState(170);
+						setState(200);
 						match(DOT);
-						setState(171);
+						setState(201);
 						expr(27);
 						}
 						break;
@@ -1194,11 +1399,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(172);
+						setState(202);
 						if (!(precpred(_ctx, 25))) throw new FailedPredicateException(this, "precpred(_ctx, 25)");
-						setState(173);
+						setState(203);
 						match(PIPE);
-						setState(174);
+						setState(204);
 						expr(26);
 						}
 						break;
@@ -1206,11 +1411,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(175);
+						setState(205);
 						if (!(precpred(_ctx, 24))) throw new FailedPredicateException(this, "precpred(_ctx, 24)");
-						setState(176);
+						setState(206);
 						match(OR);
-						setState(177);
+						setState(207);
 						expr(25);
 						}
 						break;
@@ -1218,11 +1423,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(178);
+						setState(208);
 						if (!(precpred(_ctx, 23))) throw new FailedPredicateException(this, "precpred(_ctx, 23)");
-						setState(179);
+						setState(209);
 						match(AND);
-						setState(180);
+						setState(210);
 						expr(24);
 						}
 						break;
@@ -1230,11 +1435,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(181);
+						setState(211);
 						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
-						setState(182);
+						setState(212);
 						match(EQ);
-						setState(183);
+						setState(213);
 						expr(23);
 						}
 						break;
@@ -1242,11 +1447,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(184);
+						setState(214);
 						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
-						setState(185);
+						setState(215);
 						match(NE);
-						setState(186);
+						setState(216);
 						expr(22);
 						}
 						break;
@@ -1254,11 +1459,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(187);
+						setState(217);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
-						setState(188);
+						setState(218);
 						match(LT);
-						setState(189);
+						setState(219);
 						expr(21);
 						}
 						break;
@@ -1266,11 +1471,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(190);
+						setState(220);
 						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
-						setState(191);
+						setState(221);
 						match(LE);
-						setState(192);
+						setState(222);
 						expr(20);
 						}
 						break;
@@ -1278,11 +1483,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(193);
+						setState(223);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
-						setState(194);
+						setState(224);
 						match(GT);
-						setState(195);
+						setState(225);
 						expr(19);
 						}
 						break;
@@ -1290,11 +1495,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(196);
+						setState(226);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
-						setState(197);
+						setState(227);
 						match(GE);
-						setState(198);
+						setState(228);
 						expr(18);
 						}
 						break;
@@ -1302,11 +1507,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(199);
+						setState(229);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
-						setState(200);
+						setState(230);
 						match(SHL);
-						setState(201);
+						setState(231);
 						expr(17);
 						}
 						break;
@@ -1314,11 +1519,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(202);
+						setState(232);
 						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
-						setState(203);
+						setState(233);
 						match(SHR);
-						setState(204);
+						setState(234);
 						expr(16);
 						}
 						break;
@@ -1326,11 +1531,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(205);
+						setState(235);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
-						setState(206);
+						setState(236);
 						match(BOR);
-						setState(207);
+						setState(237);
 						expr(15);
 						}
 						break;
@@ -1338,11 +1543,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(208);
+						setState(238);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
-						setState(209);
+						setState(239);
 						match(BAND);
-						setState(210);
+						setState(240);
 						expr(14);
 						}
 						break;
@@ -1350,11 +1555,11 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(211);
+						setState(241);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
-						setState(212);
+						setState(242);
 						match(COLON);
-						setState(213);
+						setState(243);
 						expr(13);
 						}
 						break;
@@ -1362,30 +1567,30 @@ public class PiccodeScriptParser extends Parser {
 						{
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(214);
+						setState(244);
 						if (!(precpred(_ctx, 35))) throw new FailedPredicateException(this, "precpred(_ctx, 35)");
-						setState(215);
+						setState(245);
 						match(LPAREN);
-						setState(217);
+						setState(247);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << BAND) | (1L << BOR) | (1L << EXCLAIM) | (1L << LBRACE) | (1L << LPAREN) | (1L << LBRACKET) | (1L << TILDE) | (1L << LET) | (1L << WHEN) | (1L << IF) | (1L << DO) | (1L << NUMBER) | (1L << STRING) | (1L << ID))) != 0)) {
 							{
-							setState(216);
+							setState(246);
 							call_expr_list();
 							}
 						}
 
-						setState(219);
+						setState(249);
 						match(RPAREN);
 						}
 						break;
 					}
 					} 
 				}
-				setState(224);
+				setState(254);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,17,_ctx);
 			}
 			}
 		}
@@ -1433,28 +1638,28 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Closure_declContext closure_decl() throws RecognitionException {
 		Closure_declContext _localctx = new Closure_declContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_closure_decl);
+		enterRule(_localctx, 32, RULE_closure_decl);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(225);
+			setState(255);
 			match(BOR);
-			setState(227);
+			setState(257);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ID) {
 				{
-				setState(226);
+				setState(256);
 				arg_list();
 				}
 			}
 
-			setState(229);
+			setState(259);
 			match(BOR);
-			setState(230);
+			setState(260);
 			match(ARROW);
-			setState(231);
+			setState(261);
 			expr(0);
 			}
 		}
@@ -1498,44 +1703,44 @@ public class PiccodeScriptParser extends Parser {
 
 	public final UnaryContext unary() throws RecognitionException {
 		UnaryContext _localctx = new UnaryContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_unary);
+		enterRule(_localctx, 34, RULE_unary);
 		try {
-			setState(241);
+			setState(271);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case EXCLAIM:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(233);
+				setState(263);
 				match(EXCLAIM);
-				setState(234);
+				setState(264);
 				expr(0);
 				}
 				break;
 			case SUB:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(235);
+				setState(265);
 				match(SUB);
-				setState(236);
+				setState(266);
 				expr(0);
 				}
 				break;
 			case TILDE:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(237);
+				setState(267);
 				match(TILDE);
-				setState(238);
+				setState(268);
 				expr(0);
 				}
 				break;
 			case BAND:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(239);
+				setState(269);
 				match(BAND);
-				setState(240);
+				setState(270);
 				expr(0);
 				}
 				break;
@@ -1592,27 +1797,27 @@ public class PiccodeScriptParser extends Parser {
 
 	public final If_exprContext if_expr() throws RecognitionException {
 		If_exprContext _localctx = new If_exprContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_if_expr);
+		enterRule(_localctx, 36, RULE_if_expr);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(243);
+			setState(273);
 			match(IF);
-			setState(244);
+			setState(274);
 			expr(0);
-			setState(245);
+			setState(275);
 			match(LBRACE);
-			setState(246);
+			setState(276);
 			expr(0);
-			setState(247);
+			setState(277);
 			match(RBRACE);
-			setState(248);
+			setState(278);
 			match(ELSE);
-			setState(249);
+			setState(279);
 			match(LBRACE);
-			setState(250);
+			setState(280);
 			expr(0);
-			setState(251);
+			setState(281);
 			match(RBRACE);
 			}
 		}
@@ -1661,30 +1866,30 @@ public class PiccodeScriptParser extends Parser {
 
 	public final When_exprContext when_expr() throws RecognitionException {
 		When_exprContext _localctx = new When_exprContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_when_expr);
+		enterRule(_localctx, 38, RULE_when_expr);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(253);
+			setState(283);
 			match(WHEN);
-			setState(254);
+			setState(284);
 			expr(0);
-			setState(255);
+			setState(285);
 			match(LBRACE);
-			setState(256);
+			setState(286);
 			when_cases();
-			setState(258);
+			setState(288);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ELSE) {
 				{
-				setState(257);
+				setState(287);
 				else_case();
 				}
 			}
 
-			setState(260);
+			setState(290);
 			match(RBRACE);
 			}
 		}
@@ -1727,22 +1932,22 @@ public class PiccodeScriptParser extends Parser {
 
 	public final When_casesContext when_cases() throws RecognitionException {
 		When_casesContext _localctx = new When_casesContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_when_cases);
+		enterRule(_localctx, 40, RULE_when_cases);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(265);
+			setState(295);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==IS) {
 				{
 				{
-				setState(262);
+				setState(292);
 				when_case();
 				}
 				}
-				setState(267);
+				setState(297);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1789,17 +1994,17 @@ public class PiccodeScriptParser extends Parser {
 
 	public final When_caseContext when_case() throws RecognitionException {
 		When_caseContext _localctx = new When_caseContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_when_case);
+		enterRule(_localctx, 42, RULE_when_case);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(268);
+			setState(298);
 			match(IS);
-			setState(269);
+			setState(299);
 			expr_list();
-			setState(270);
+			setState(300);
 			match(ARROW);
-			setState(271);
+			setState(301);
 			expr(0);
 			}
 		}
@@ -1841,15 +2046,15 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Else_caseContext else_case() throws RecognitionException {
 		Else_caseContext _localctx = new Else_caseContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_else_case);
+		enterRule(_localctx, 44, RULE_else_case);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(273);
+			setState(303);
 			match(ELSE);
-			setState(274);
+			setState(304);
 			match(ARROW);
-			setState(275);
+			setState(305);
 			expr(0);
 			}
 		}
@@ -1892,17 +2097,17 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Var_declContext var_decl() throws RecognitionException {
 		Var_declContext _localctx = new Var_declContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_var_decl);
+		enterRule(_localctx, 46, RULE_var_decl);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(277);
+			setState(307);
 			match(LET);
-			setState(278);
+			setState(308);
 			match(ID);
-			setState(279);
+			setState(309);
 			match(ASSIGN);
-			setState(280);
+			setState(310);
 			expr(0);
 			}
 		}
@@ -1944,15 +2149,15 @@ public class PiccodeScriptParser extends Parser {
 
 	public final TupleContext tuple() throws RecognitionException {
 		TupleContext _localctx = new TupleContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_tuple);
+		enterRule(_localctx, 48, RULE_tuple);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(282);
+			setState(312);
 			match(LPAREN);
-			setState(283);
+			setState(313);
 			expr_list();
-			setState(284);
+			setState(314);
 			match(RPAREN);
 			}
 		}
@@ -1994,24 +2199,24 @@ public class PiccodeScriptParser extends Parser {
 
 	public final ArrayContext array() throws RecognitionException {
 		ArrayContext _localctx = new ArrayContext(_ctx, getState());
-		enterRule(_localctx, 44, RULE_array);
+		enterRule(_localctx, 50, RULE_array);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(286);
+			setState(316);
 			match(LBRACKET);
-			setState(288);
+			setState(318);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << BAND) | (1L << BOR) | (1L << EXCLAIM) | (1L << LBRACE) | (1L << LPAREN) | (1L << LBRACKET) | (1L << TILDE) | (1L << LET) | (1L << WHEN) | (1L << IF) | (1L << DO) | (1L << NUMBER) | (1L << STRING) | (1L << ID))) != 0)) {
 				{
-				setState(287);
+				setState(317);
 				expr_list();
 				}
 			}
 
-			setState(290);
+			setState(320);
 			match(RBRACKET);
 			}
 		}
@@ -2053,15 +2258,15 @@ public class PiccodeScriptParser extends Parser {
 
 	public final ObjectContext object() throws RecognitionException {
 		ObjectContext _localctx = new ObjectContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_object);
+		enterRule(_localctx, 52, RULE_object);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(292);
+			setState(322);
 			match(LBRACE);
-			setState(293);
+			setState(323);
 			key_val_pairs();
-			setState(294);
+			setState(324);
 			match(RBRACE);
 			}
 		}
@@ -2108,26 +2313,26 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Expr_listContext expr_list() throws RecognitionException {
 		Expr_listContext _localctx = new Expr_listContext(_ctx, getState());
-		enterRule(_localctx, 48, RULE_expr_list);
+		enterRule(_localctx, 54, RULE_expr_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(296);
+			setState(326);
 			expr(0);
-			setState(301);
+			setState(331);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(297);
+				setState(327);
 				match(COMMA);
-				setState(298);
+				setState(328);
 				expr(0);
 				}
 				}
-				setState(303);
+				setState(333);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2176,26 +2381,26 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Call_expr_listContext call_expr_list() throws RecognitionException {
 		Call_expr_listContext _localctx = new Call_expr_listContext(_ctx, getState());
-		enterRule(_localctx, 50, RULE_call_expr_list);
+		enterRule(_localctx, 56, RULE_call_expr_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(304);
+			setState(334);
 			call_expr();
-			setState(309);
+			setState(339);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(305);
+				setState(335);
 				match(COMMA);
-				setState(306);
+				setState(336);
 				call_expr();
 				}
 				}
-				setState(311);
+				setState(341);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2239,25 +2444,25 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Call_exprContext call_expr() throws RecognitionException {
 		Call_exprContext _localctx = new Call_exprContext(_ctx, getState());
-		enterRule(_localctx, 52, RULE_call_expr);
+		enterRule(_localctx, 58, RULE_call_expr);
 		int _la;
 		try {
-			setState(318);
+			setState(348);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,22,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,26,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(312);
+				setState(342);
 				match(ID);
-				setState(315);
+				setState(345);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ASSIGN) {
 					{
-					setState(313);
+					setState(343);
 					match(ASSIGN);
-					setState(314);
+					setState(344);
 					expr(0);
 					}
 				}
@@ -2267,7 +2472,7 @@ public class PiccodeScriptParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(317);
+				setState(347);
 				expr(0);
 				}
 				break;
@@ -2311,15 +2516,15 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Key_val_pairContext key_val_pair() throws RecognitionException {
 		Key_val_pairContext _localctx = new Key_val_pairContext(_ctx, getState());
-		enterRule(_localctx, 54, RULE_key_val_pair);
+		enterRule(_localctx, 60, RULE_key_val_pair);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(320);
+			setState(350);
 			match(ID);
-			setState(321);
+			setState(351);
 			match(COLON);
-			setState(322);
+			setState(352);
 			expr(0);
 			}
 		}
@@ -2366,26 +2571,26 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Key_val_pairsContext key_val_pairs() throws RecognitionException {
 		Key_val_pairsContext _localctx = new Key_val_pairsContext(_ctx, getState());
-		enterRule(_localctx, 56, RULE_key_val_pairs);
+		enterRule(_localctx, 62, RULE_key_val_pairs);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(324);
+			setState(354);
 			key_val_pair();
-			setState(329);
+			setState(359);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(325);
+				setState(355);
 				match(COMMA);
-				setState(326);
+				setState(356);
 				key_val_pair();
 				}
 				}
-				setState(331);
+				setState(361);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2433,30 +2638,30 @@ public class PiccodeScriptParser extends Parser {
 
 	public final Do_exprContext do_expr() throws RecognitionException {
 		Do_exprContext _localctx = new Do_exprContext(_ctx, getState());
-		enterRule(_localctx, 58, RULE_do_expr);
+		enterRule(_localctx, 64, RULE_do_expr);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(332);
+			setState(362);
 			match(DO);
-			setState(333);
+			setState(363);
 			match(LBRACE);
-			setState(337);
+			setState(367);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SUB) | (1L << BAND) | (1L << BOR) | (1L << EXCLAIM) | (1L << LBRACE) | (1L << LPAREN) | (1L << LBRACKET) | (1L << TILDE) | (1L << LET) | (1L << WHEN) | (1L << IF) | (1L << DO) | (1L << NUMBER) | (1L << STRING) | (1L << ID))) != 0)) {
 				{
 				{
-				setState(334);
+				setState(364);
 				expr(0);
 				}
 				}
-				setState(339);
+				setState(369);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(340);
+			setState(370);
 			match(RBRACE);
 			}
 		}
@@ -2473,7 +2678,7 @@ public class PiccodeScriptParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 12:
+		case 15:
 			return expr_sempred((ExprContext)_localctx, predIndex);
 		}
 		return true;
@@ -2529,131 +2734,141 @@ public class PiccodeScriptParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61\u0159\4\2\t\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61\u0177\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
-		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\3\2\7\2@"+
-		"\n\2\f\2\16\2C\13\2\3\2\5\2F\n\2\3\3\3\3\3\3\3\3\5\3L\n\3\3\4\3\4\3\4"+
-		"\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\6\7\6Z\n\6\f\6\16\6]\13\6\3\7\3\7\3"+
-		"\7\5\7b\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\5\tl\n\t\3\t\3\t\3\n\3\n\3"+
-		"\n\7\ns\n\n\f\n\16\nv\13\n\3\13\3\13\3\13\5\13{\n\13\3\f\3\f\3\f\3\f\3"+
-		"\f\5\f\u0082\n\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16\5\16\u008b\n\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0098\n\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u00dc\n\16\3\16\7\16"+
-		"\u00df\n\16\f\16\16\16\u00e2\13\16\3\17\3\17\5\17\u00e6\n\17\3\17\3\17"+
-		"\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\5\20\u00f4\n\20\3\21"+
-		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\22\3\22\3\22\3\22\3\22"+
-		"\5\22\u0105\n\22\3\22\3\22\3\23\7\23\u010a\n\23\f\23\16\23\u010d\13\23"+
-		"\3\24\3\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26"+
-		"\3\27\3\27\3\27\3\27\3\30\3\30\5\30\u0123\n\30\3\30\3\30\3\31\3\31\3\31"+
-		"\3\31\3\32\3\32\3\32\7\32\u012e\n\32\f\32\16\32\u0131\13\32\3\33\3\33"+
-		"\3\33\7\33\u0136\n\33\f\33\16\33\u0139\13\33\3\34\3\34\3\34\5\34\u013e"+
-		"\n\34\3\34\5\34\u0141\n\34\3\35\3\35\3\35\3\35\3\36\3\36\3\36\7\36\u014a"+
-		"\n\36\f\36\16\36\u014d\13\36\3\37\3\37\3\37\7\37\u0152\n\37\f\37\16\37"+
-		"\u0155\13\37\3\37\3\37\3\37\2\3\32 \2\4\6\b\n\f\16\20\22\24\26\30\32\34"+
-		"\36 \"$&(*,.\60\62\64\668:<\2\2\2\u017a\2E\3\2\2\2\4K\3\2\2\2\6M\3\2\2"+
-		"\2\bR\3\2\2\2\n[\3\2\2\2\fa\3\2\2\2\16c\3\2\2\2\20i\3\2\2\2\22o\3\2\2"+
-		"\2\24w\3\2\2\2\26\u0081\3\2\2\2\30\u0083\3\2\2\2\32\u0097\3\2\2\2\34\u00e3"+
-		"\3\2\2\2\36\u00f3\3\2\2\2 \u00f5\3\2\2\2\"\u00ff\3\2\2\2$\u010b\3\2\2"+
-		"\2&\u010e\3\2\2\2(\u0113\3\2\2\2*\u0117\3\2\2\2,\u011c\3\2\2\2.\u0120"+
-		"\3\2\2\2\60\u0126\3\2\2\2\62\u012a\3\2\2\2\64\u0132\3\2\2\2\66\u0140\3"+
-		"\2\2\28\u0142\3\2\2\2:\u0146\3\2\2\2<\u014e\3\2\2\2>@\5\4\3\2?>\3\2\2"+
-		"\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2BF\3\2\2\2CA\3\2\2\2DF\7\2\2\3EA\3\2\2"+
-		"\2ED\3\2\2\2F\3\3\2\2\2GL\5\6\4\2HL\5\16\b\2IL\5\b\5\2JL\5\30\r\2KG\3"+
-		"\2\2\2KH\3\2\2\2KI\3\2\2\2KJ\3\2\2\2L\5\3\2\2\2MN\7%\2\2NO\7\60\2\2OP"+
-		"\7\34\2\2PQ\7\60\2\2Q\7\3\2\2\2RS\7)\2\2ST\7\60\2\2TU\7\26\2\2UV\5\n\6"+
-		"\2VW\7\27\2\2W\t\3\2\2\2XZ\5\f\7\2YX\3\2\2\2Z]\3\2\2\2[Y\3\2\2\2[\\\3"+
-		"\2\2\2\\\13\3\2\2\2][\3\2\2\2^b\5\16\b\2_b\5*\26\2`b\5\b\5\2a^\3\2\2\2"+
-		"a_\3\2\2\2a`\3\2\2\2b\r\3\2\2\2cd\7#\2\2de\7\60\2\2ef\5\20\t\2fg\7!\2"+
-		"\2gh\5\32\16\2h\17\3\2\2\2ik\7\30\2\2jl\5\22\n\2kj\3\2\2\2kl\3\2\2\2l"+
-		"m\3\2\2\2mn\7\31\2\2n\21\3\2\2\2ot\5\24\13\2pq\7\35\2\2qs\5\24\13\2rp"+
-		"\3\2\2\2sv\3\2\2\2tr\3\2\2\2tu\3\2\2\2u\23\3\2\2\2vt\3\2\2\2wz\7\60\2"+
-		"\2xy\7!\2\2y{\5\26\f\2zx\3\2\2\2z{\3\2\2\2{\25\3\2\2\2|\u0082\7+\2\2}"+
-		"\u0082\7,\2\2~\u0082\5.\30\2\177\u0082\5,\27\2\u0080\u0082\5\60\31\2\u0081"+
-		"|\3\2\2\2\u0081}\3\2\2\2\u0081~\3\2\2\2\u0081\177\3\2\2\2\u0081\u0080"+
-		"\3\2\2\2\u0082\27\3\2\2\2\u0083\u0084\5\32\16\2\u0084\31\3\2\2\2\u0085"+
-		"\u0086\b\16\1\2\u0086\u0098\5*\26\2\u0087\u0098\5\34\17\2\u0088\u008a"+
-		"\7\30\2\2\u0089\u008b\5\32\16\2\u008a\u0089\3\2\2\2\u008a\u008b\3\2\2"+
-		"\2\u008b\u008c\3\2\2\2\u008c\u0098\7\31\2\2\u008d\u0098\5\36\20\2\u008e"+
-		"\u0098\5 \21\2\u008f\u0098\5\"\22\2\u0090\u0098\5<\37\2\u0091\u0098\5"+
-		".\30\2\u0092\u0098\5,\27\2\u0093\u0098\5\60\31\2\u0094\u0098\7\60\2\2"+
-		"\u0095\u0098\7+\2\2\u0096\u0098\7,\2\2\u0097\u0085\3\2\2\2\u0097\u0087"+
-		"\3\2\2\2\u0097\u0088\3\2\2\2\u0097\u008d\3\2\2\2\u0097\u008e\3\2\2\2\u0097"+
-		"\u008f\3\2\2\2\u0097\u0090\3\2\2\2\u0097\u0091\3\2\2\2\u0097\u0092\3\2"+
-		"\2\2\u0097\u0093\3\2\2\2\u0097\u0094\3\2\2\2\u0097\u0095\3\2\2\2\u0097"+
-		"\u0096\3\2\2\2\u0098\u00e0\3\2\2\2\u0099\u009a\f\"\2\2\u009a\u009b\7-"+
-		"\2\2\u009b\u00df\5\32\16#\u009c\u009d\f!\2\2\u009d\u009e\7\5\2\2\u009e"+
-		"\u00df\5\32\16\"\u009f\u00a0\f \2\2\u00a0\u00a1\7\6\2\2\u00a1\u00df\5"+
-		"\32\16!\u00a2\u00a3\f\37\2\2\u00a3\u00a4\7\7\2\2\u00a4\u00df\5\32\16 "+
-		"\u00a5\u00a6\f\36\2\2\u00a6\u00a7\7\3\2\2\u00a7\u00df\5\32\16\37\u00a8"+
-		"\u00a9\f\35\2\2\u00a9\u00aa\7\4\2\2\u00aa\u00df\5\32\16\36\u00ab\u00ac"+
-		"\f\34\2\2\u00ac\u00ad\7-\2\2\u00ad\u00df\5\32\16\35\u00ae\u00af\f\33\2"+
-		"\2\u00af\u00b0\7\25\2\2\u00b0\u00df\5\32\16\34\u00b1\u00b2\f\32\2\2\u00b2"+
-		"\u00b3\7\17\2\2\u00b3\u00df\5\32\16\33\u00b4\u00b5\f\31\2\2\u00b5\u00b6"+
-		"\7\16\2\2\u00b6\u00df\5\32\16\32\u00b7\u00b8\f\30\2\2\u00b8\u00b9\7\f"+
-		"\2\2\u00b9\u00df\5\32\16\31\u00ba\u00bb\f\27\2\2\u00bb\u00bc\7\r\2\2\u00bc"+
-		"\u00df\5\32\16\30\u00bd\u00be\f\26\2\2\u00be\u00bf\7\n\2\2\u00bf\u00df"+
-		"\5\32\16\27\u00c0\u00c1\f\25\2\2\u00c1\u00c2\7\13\2\2\u00c2\u00df\5\32"+
-		"\16\26\u00c3\u00c4\f\24\2\2\u00c4\u00c5\7\b\2\2\u00c5\u00df\5\32\16\25"+
-		"\u00c6\u00c7\f\23\2\2\u00c7\u00c8\7\t\2\2\u00c8\u00df\5\32\16\24\u00c9"+
-		"\u00ca\f\22\2\2\u00ca\u00cb\7\20\2\2\u00cb\u00df\5\32\16\23\u00cc\u00cd"+
-		"\f\21\2\2\u00cd\u00ce\7\21\2\2\u00ce\u00df\5\32\16\22\u00cf\u00d0\f\20"+
-		"\2\2\u00d0\u00d1\7\23\2\2\u00d1\u00df\5\32\16\21\u00d2\u00d3\f\17\2\2"+
-		"\u00d3\u00d4\7\22\2\2\u00d4\u00df\5\32\16\20\u00d5\u00d6\f\16\2\2\u00d6"+
-		"\u00d7\7\34\2\2\u00d7\u00df\5\32\16\17\u00d8\u00d9\f%\2\2\u00d9\u00db"+
-		"\7\30\2\2\u00da\u00dc\5\64\33\2\u00db\u00da\3\2\2\2\u00db\u00dc\3\2\2"+
-		"\2\u00dc\u00dd\3\2\2\2\u00dd\u00df\7\31\2\2\u00de\u0099\3\2\2\2\u00de"+
-		"\u009c\3\2\2\2\u00de\u009f\3\2\2\2\u00de\u00a2\3\2\2\2\u00de\u00a5\3\2"+
-		"\2\2\u00de\u00a8\3\2\2\2\u00de\u00ab\3\2\2\2\u00de\u00ae\3\2\2\2\u00de"+
-		"\u00b1\3\2\2\2\u00de\u00b4\3\2\2\2\u00de\u00b7\3\2\2\2\u00de\u00ba\3\2"+
-		"\2\2\u00de\u00bd\3\2\2\2\u00de\u00c0\3\2\2\2\u00de\u00c3\3\2\2\2\u00de"+
-		"\u00c6\3\2\2\2\u00de\u00c9\3\2\2\2\u00de\u00cc\3\2\2\2\u00de\u00cf\3\2"+
-		"\2\2\u00de\u00d2\3\2\2\2\u00de\u00d5\3\2\2\2\u00de\u00d8\3\2\2\2\u00df"+
-		"\u00e2\3\2\2\2\u00e0\u00de\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1\33\3\2\2"+
-		"\2\u00e2\u00e0\3\2\2\2\u00e3\u00e5\7\23\2\2\u00e4\u00e6\5\22\n\2\u00e5"+
-		"\u00e4\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e7\3\2\2\2\u00e7\u00e8\7\23"+
-		"\2\2\u00e8\u00e9\7\37\2\2\u00e9\u00ea\5\32\16\2\u00ea\35\3\2\2\2\u00eb"+
-		"\u00ec\7\24\2\2\u00ec\u00f4\5\32\16\2\u00ed\u00ee\7\4\2\2\u00ee\u00f4"+
-		"\5\32\16\2\u00ef\u00f0\7 \2\2\u00f0\u00f4\5\32\16\2\u00f1\u00f2\7\22\2"+
-		"\2\u00f2\u00f4\5\32\16\2\u00f3\u00eb\3\2\2\2\u00f3\u00ed\3\2\2\2\u00f3"+
-		"\u00ef\3\2\2\2\u00f3\u00f1\3\2\2\2\u00f4\37\3\2\2\2\u00f5\u00f6\7\'\2"+
-		"\2\u00f6\u00f7\5\32\16\2\u00f7\u00f8\7\26\2\2\u00f8\u00f9\5\32\16\2\u00f9"+
-		"\u00fa\7\27\2\2\u00fa\u00fb\7(\2\2\u00fb\u00fc\7\26\2\2\u00fc\u00fd\5"+
-		"\32\16\2\u00fd\u00fe\7\27\2\2\u00fe!\3\2\2\2\u00ff\u0100\7$\2\2\u0100"+
-		"\u0101\5\32\16\2\u0101\u0102\7\26\2\2\u0102\u0104\5$\23\2\u0103\u0105"+
-		"\5(\25\2\u0104\u0103\3\2\2\2\u0104\u0105\3\2\2\2\u0105\u0106\3\2\2\2\u0106"+
-		"\u0107\7\27\2\2\u0107#\3\2\2\2\u0108\u010a\5&\24\2\u0109\u0108\3\2\2\2"+
-		"\u010a\u010d\3\2\2\2\u010b\u0109\3\2\2\2\u010b\u010c\3\2\2\2\u010c%\3"+
-		"\2\2\2\u010d\u010b\3\2\2\2\u010e\u010f\7&\2\2\u010f\u0110\5\62\32\2\u0110"+
-		"\u0111\7\37\2\2\u0111\u0112\5\32\16\2\u0112\'\3\2\2\2\u0113\u0114\7(\2"+
-		"\2\u0114\u0115\7\37\2\2\u0115\u0116\5\32\16\2\u0116)\3\2\2\2\u0117\u0118"+
-		"\7\"\2\2\u0118\u0119\7\60\2\2\u0119\u011a\7!\2\2\u011a\u011b\5\32\16\2"+
-		"\u011b+\3\2\2\2\u011c\u011d\7\30\2\2\u011d\u011e\5\62\32\2\u011e\u011f"+
-		"\7\31\2\2\u011f-\3\2\2\2\u0120\u0122\7\32\2\2\u0121\u0123\5\62\32\2\u0122"+
-		"\u0121\3\2\2\2\u0122\u0123\3\2\2\2\u0123\u0124\3\2\2\2\u0124\u0125\7\33"+
-		"\2\2\u0125/\3\2\2\2\u0126\u0127\7\26\2\2\u0127\u0128\5:\36\2\u0128\u0129"+
-		"\7\27\2\2\u0129\61\3\2\2\2\u012a\u012f\5\32\16\2\u012b\u012c\7\35\2\2"+
-		"\u012c\u012e\5\32\16\2\u012d\u012b\3\2\2\2\u012e\u0131\3\2\2\2\u012f\u012d"+
-		"\3\2\2\2\u012f\u0130\3\2\2\2\u0130\63\3\2\2\2\u0131\u012f\3\2\2\2\u0132"+
-		"\u0137\5\66\34\2\u0133\u0134\7\35\2\2\u0134\u0136\5\66\34\2\u0135\u0133"+
-		"\3\2\2\2\u0136\u0139\3\2\2\2\u0137\u0135\3\2\2\2\u0137\u0138\3\2\2\2\u0138"+
-		"\65\3\2\2\2\u0139\u0137\3\2\2\2\u013a\u013d\7\60\2\2\u013b\u013c\7!\2"+
-		"\2\u013c\u013e\5\32\16\2\u013d\u013b\3\2\2\2\u013d\u013e\3\2\2\2\u013e"+
-		"\u0141\3\2\2\2\u013f\u0141\5\32\16\2\u0140\u013a\3\2\2\2\u0140\u013f\3"+
-		"\2\2\2\u0141\67\3\2\2\2\u0142\u0143\7\60\2\2\u0143\u0144\7\34\2\2\u0144"+
-		"\u0145\5\32\16\2\u01459\3\2\2\2\u0146\u014b\58\35\2\u0147\u0148\7\35\2"+
-		"\2\u0148\u014a\58\35\2\u0149\u0147\3\2\2\2\u014a\u014d\3\2\2\2\u014b\u0149"+
-		"\3\2\2\2\u014b\u014c\3\2\2\2\u014c;\3\2\2\2\u014d\u014b\3\2\2\2\u014e"+
-		"\u014f\7*\2\2\u014f\u0153\7\26\2\2\u0150\u0152\5\32\16\2\u0151\u0150\3"+
-		"\2\2\2\u0152\u0155\3\2\2\2\u0153\u0151\3\2\2\2\u0153\u0154\3\2\2\2\u0154"+
-		"\u0156\3\2\2\2\u0155\u0153\3\2\2\2\u0156\u0157\7\27\2\2\u0157=\3\2\2\2"+
-		"\33AEK[aktz\u0081\u008a\u0097\u00db\u00de\u00e0\u00e5\u00f3\u0104\u010b"+
-		"\u0122\u012f\u0137\u013d\u0140\u014b\u0153";
+		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
+		"\t!\4\"\t\"\3\2\7\2F\n\2\f\2\16\2I\13\2\3\2\5\2L\n\2\3\3\3\3\3\3\3\3\5"+
+		"\3R\n\3\3\4\3\4\3\4\3\5\3\5\3\5\7\5Z\n\5\f\5\16\5]\13\5\3\5\5\5`\n\5\3"+
+		"\6\3\6\3\6\3\6\7\6f\n\6\f\6\16\6i\13\6\3\6\3\6\3\7\3\7\5\7o\n\7\3\b\3"+
+		"\b\3\b\3\b\3\b\3\b\3\t\7\tx\n\t\f\t\16\t{\13\t\3\n\3\n\3\n\5\n\u0080\n"+
+		"\n\3\13\3\13\3\13\3\13\3\13\3\13\3\f\3\f\5\f\u008a\n\f\3\f\3\f\3\r\3\r"+
+		"\3\r\7\r\u0091\n\r\f\r\16\r\u0094\13\r\3\16\3\16\3\16\5\16\u0099\n\16"+
+		"\3\17\3\17\3\17\3\17\3\17\5\17\u00a0\n\17\3\20\3\20\3\21\3\21\3\21\3\21"+
+		"\3\21\5\21\u00a9\n\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\5\21\u00b6\n\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21"+
+		"\5\21\u00fa\n\21\3\21\7\21\u00fd\n\21\f\21\16\21\u0100\13\21\3\22\3\22"+
+		"\5\22\u0104\n\22\3\22\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23"+
+		"\3\23\5\23\u0112\n\23\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24"+
+		"\3\25\3\25\3\25\3\25\3\25\5\25\u0123\n\25\3\25\3\25\3\26\7\26\u0128\n"+
+		"\26\f\26\16\26\u012b\13\26\3\27\3\27\3\27\3\27\3\27\3\30\3\30\3\30\3\30"+
+		"\3\31\3\31\3\31\3\31\3\31\3\32\3\32\3\32\3\32\3\33\3\33\5\33\u0141\n\33"+
+		"\3\33\3\33\3\34\3\34\3\34\3\34\3\35\3\35\3\35\7\35\u014c\n\35\f\35\16"+
+		"\35\u014f\13\35\3\36\3\36\3\36\7\36\u0154\n\36\f\36\16\36\u0157\13\36"+
+		"\3\37\3\37\3\37\5\37\u015c\n\37\3\37\5\37\u015f\n\37\3 \3 \3 \3 \3!\3"+
+		"!\3!\7!\u0168\n!\f!\16!\u016b\13!\3\"\3\"\3\"\7\"\u0170\n\"\f\"\16\"\u0173"+
+		"\13\"\3\"\3\"\3\"\2\3 #\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*"+
+		",.\60\62\64\668:<>@B\2\2\2\u0199\2K\3\2\2\2\4Q\3\2\2\2\6S\3\2\2\2\bV\3"+
+		"\2\2\2\na\3\2\2\2\fl\3\2\2\2\16p\3\2\2\2\20y\3\2\2\2\22\177\3\2\2\2\24"+
+		"\u0081\3\2\2\2\26\u0087\3\2\2\2\30\u008d\3\2\2\2\32\u0095\3\2\2\2\34\u009f"+
+		"\3\2\2\2\36\u00a1\3\2\2\2 \u00b5\3\2\2\2\"\u0101\3\2\2\2$\u0111\3\2\2"+
+		"\2&\u0113\3\2\2\2(\u011d\3\2\2\2*\u0129\3\2\2\2,\u012c\3\2\2\2.\u0131"+
+		"\3\2\2\2\60\u0135\3\2\2\2\62\u013a\3\2\2\2\64\u013e\3\2\2\2\66\u0144\3"+
+		"\2\2\28\u0148\3\2\2\2:\u0150\3\2\2\2<\u015e\3\2\2\2>\u0160\3\2\2\2@\u0164"+
+		"\3\2\2\2B\u016c\3\2\2\2DF\5\4\3\2ED\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2"+
+		"\2\2HL\3\2\2\2IG\3\2\2\2JL\7\2\2\3KG\3\2\2\2KJ\3\2\2\2L\3\3\2\2\2MR\5"+
+		"\6\4\2NR\5\24\13\2OR\5\16\b\2PR\5\36\20\2QM\3\2\2\2QN\3\2\2\2QO\3\2\2"+
+		"\2QP\3\2\2\2R\5\3\2\2\2ST\7%\2\2TU\5\b\5\2U\7\3\2\2\2V[\7\60\2\2WX\7-"+
+		"\2\2XZ\7\60\2\2YW\3\2\2\2Z]\3\2\2\2[Y\3\2\2\2[\\\3\2\2\2\\_\3\2\2\2]["+
+		"\3\2\2\2^`\5\n\6\2_^\3\2\2\2_`\3\2\2\2`\t\3\2\2\2ab\7\26\2\2bg\5\f\7\2"+
+		"cd\7\35\2\2df\5\f\7\2ec\3\2\2\2fi\3\2\2\2ge\3\2\2\2gh\3\2\2\2hj\3\2\2"+
+		"\2ig\3\2\2\2jk\7\27\2\2k\13\3\2\2\2ln\7\60\2\2mo\5\n\6\2nm\3\2\2\2no\3"+
+		"\2\2\2o\r\3\2\2\2pq\7)\2\2qr\7\60\2\2rs\7\26\2\2st\5\20\t\2tu\7\27\2\2"+
+		"u\17\3\2\2\2vx\5\22\n\2wv\3\2\2\2x{\3\2\2\2yw\3\2\2\2yz\3\2\2\2z\21\3"+
+		"\2\2\2{y\3\2\2\2|\u0080\5\24\13\2}\u0080\5\60\31\2~\u0080\5\16\b\2\177"+
+		"|\3\2\2\2\177}\3\2\2\2\177~\3\2\2\2\u0080\23\3\2\2\2\u0081\u0082\7#\2"+
+		"\2\u0082\u0083\7\60\2\2\u0083\u0084\5\26\f\2\u0084\u0085\7!\2\2\u0085"+
+		"\u0086\5 \21\2\u0086\25\3\2\2\2\u0087\u0089\7\30\2\2\u0088\u008a\5\30"+
+		"\r\2\u0089\u0088\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b\3\2\2\2\u008b"+
+		"\u008c\7\31\2\2\u008c\27\3\2\2\2\u008d\u0092\5\32\16\2\u008e\u008f\7\35"+
+		"\2\2\u008f\u0091\5\32\16\2\u0090\u008e\3\2\2\2\u0091\u0094\3\2\2\2\u0092"+
+		"\u0090\3\2\2\2\u0092\u0093\3\2\2\2\u0093\31\3\2\2\2\u0094\u0092\3\2\2"+
+		"\2\u0095\u0098\7\60\2\2\u0096\u0097\7!\2\2\u0097\u0099\5\34\17\2\u0098"+
+		"\u0096\3\2\2\2\u0098\u0099\3\2\2\2\u0099\33\3\2\2\2\u009a\u00a0\7+\2\2"+
+		"\u009b\u00a0\7,\2\2\u009c\u00a0\5\64\33\2\u009d\u00a0\5\62\32\2\u009e"+
+		"\u00a0\5\66\34\2\u009f\u009a\3\2\2\2\u009f\u009b\3\2\2\2\u009f\u009c\3"+
+		"\2\2\2\u009f\u009d\3\2\2\2\u009f\u009e\3\2\2\2\u00a0\35\3\2\2\2\u00a1"+
+		"\u00a2\5 \21\2\u00a2\37\3\2\2\2\u00a3\u00a4\b\21\1\2\u00a4\u00b6\5\60"+
+		"\31\2\u00a5\u00b6\5\"\22\2\u00a6\u00a8\7\30\2\2\u00a7\u00a9\5 \21\2\u00a8"+
+		"\u00a7\3\2\2\2\u00a8\u00a9\3\2\2\2\u00a9\u00aa\3\2\2\2\u00aa\u00b6\7\31"+
+		"\2\2\u00ab\u00b6\5$\23\2\u00ac\u00b6\5&\24\2\u00ad\u00b6\5(\25\2\u00ae"+
+		"\u00b6\5B\"\2\u00af\u00b6\5\64\33\2\u00b0\u00b6\5\62\32\2\u00b1\u00b6"+
+		"\5\66\34\2\u00b2\u00b6\7\60\2\2\u00b3\u00b6\7+\2\2\u00b4\u00b6\7,\2\2"+
+		"\u00b5\u00a3\3\2\2\2\u00b5\u00a5\3\2\2\2\u00b5\u00a6\3\2\2\2\u00b5\u00ab"+
+		"\3\2\2\2\u00b5\u00ac\3\2\2\2\u00b5\u00ad\3\2\2\2\u00b5\u00ae\3\2\2\2\u00b5"+
+		"\u00af\3\2\2\2\u00b5\u00b0\3\2\2\2\u00b5\u00b1\3\2\2\2\u00b5\u00b2\3\2"+
+		"\2\2\u00b5\u00b3\3\2\2\2\u00b5\u00b4\3\2\2\2\u00b6\u00fe\3\2\2\2\u00b7"+
+		"\u00b8\f\"\2\2\u00b8\u00b9\7-\2\2\u00b9\u00fd\5 \21#\u00ba\u00bb\f!\2"+
+		"\2\u00bb\u00bc\7\5\2\2\u00bc\u00fd\5 \21\"\u00bd\u00be\f \2\2\u00be\u00bf"+
+		"\7\6\2\2\u00bf\u00fd\5 \21!\u00c0\u00c1\f\37\2\2\u00c1\u00c2\7\7\2\2\u00c2"+
+		"\u00fd\5 \21 \u00c3\u00c4\f\36\2\2\u00c4\u00c5\7\3\2\2\u00c5\u00fd\5 "+
+		"\21\37\u00c6\u00c7\f\35\2\2\u00c7\u00c8\7\4\2\2\u00c8\u00fd\5 \21\36\u00c9"+
+		"\u00ca\f\34\2\2\u00ca\u00cb\7-\2\2\u00cb\u00fd\5 \21\35\u00cc\u00cd\f"+
+		"\33\2\2\u00cd\u00ce\7\25\2\2\u00ce\u00fd\5 \21\34\u00cf\u00d0\f\32\2\2"+
+		"\u00d0\u00d1\7\17\2\2\u00d1\u00fd\5 \21\33\u00d2\u00d3\f\31\2\2\u00d3"+
+		"\u00d4\7\16\2\2\u00d4\u00fd\5 \21\32\u00d5\u00d6\f\30\2\2\u00d6\u00d7"+
+		"\7\f\2\2\u00d7\u00fd\5 \21\31\u00d8\u00d9\f\27\2\2\u00d9\u00da\7\r\2\2"+
+		"\u00da\u00fd\5 \21\30\u00db\u00dc\f\26\2\2\u00dc\u00dd\7\n\2\2\u00dd\u00fd"+
+		"\5 \21\27\u00de\u00df\f\25\2\2\u00df\u00e0\7\13\2\2\u00e0\u00fd\5 \21"+
+		"\26\u00e1\u00e2\f\24\2\2\u00e2\u00e3\7\b\2\2\u00e3\u00fd\5 \21\25\u00e4"+
+		"\u00e5\f\23\2\2\u00e5\u00e6\7\t\2\2\u00e6\u00fd\5 \21\24\u00e7\u00e8\f"+
+		"\22\2\2\u00e8\u00e9\7\20\2\2\u00e9\u00fd\5 \21\23\u00ea\u00eb\f\21\2\2"+
+		"\u00eb\u00ec\7\21\2\2\u00ec\u00fd\5 \21\22\u00ed\u00ee\f\20\2\2\u00ee"+
+		"\u00ef\7\23\2\2\u00ef\u00fd\5 \21\21\u00f0\u00f1\f\17\2\2\u00f1\u00f2"+
+		"\7\22\2\2\u00f2\u00fd\5 \21\20\u00f3\u00f4\f\16\2\2\u00f4\u00f5\7\34\2"+
+		"\2\u00f5\u00fd\5 \21\17\u00f6\u00f7\f%\2\2\u00f7\u00f9\7\30\2\2\u00f8"+
+		"\u00fa\5:\36\2\u00f9\u00f8\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa\u00fb\3\2"+
+		"\2\2\u00fb\u00fd\7\31\2\2\u00fc\u00b7\3\2\2\2\u00fc\u00ba\3\2\2\2\u00fc"+
+		"\u00bd\3\2\2\2\u00fc\u00c0\3\2\2\2\u00fc\u00c3\3\2\2\2\u00fc\u00c6\3\2"+
+		"\2\2\u00fc\u00c9\3\2\2\2\u00fc\u00cc\3\2\2\2\u00fc\u00cf\3\2\2\2\u00fc"+
+		"\u00d2\3\2\2\2\u00fc\u00d5\3\2\2\2\u00fc\u00d8\3\2\2\2\u00fc\u00db\3\2"+
+		"\2\2\u00fc\u00de\3\2\2\2\u00fc\u00e1\3\2\2\2\u00fc\u00e4\3\2\2\2\u00fc"+
+		"\u00e7\3\2\2\2\u00fc\u00ea\3\2\2\2\u00fc\u00ed\3\2\2\2\u00fc\u00f0\3\2"+
+		"\2\2\u00fc\u00f3\3\2\2\2\u00fc\u00f6\3\2\2\2\u00fd\u0100\3\2\2\2\u00fe"+
+		"\u00fc\3\2\2\2\u00fe\u00ff\3\2\2\2\u00ff!\3\2\2\2\u0100\u00fe\3\2\2\2"+
+		"\u0101\u0103\7\23\2\2\u0102\u0104\5\30\r\2\u0103\u0102\3\2\2\2\u0103\u0104"+
+		"\3\2\2\2\u0104\u0105\3\2\2\2\u0105\u0106\7\23\2\2\u0106\u0107\7\37\2\2"+
+		"\u0107\u0108\5 \21\2\u0108#\3\2\2\2\u0109\u010a\7\24\2\2\u010a\u0112\5"+
+		" \21\2\u010b\u010c\7\4\2\2\u010c\u0112\5 \21\2\u010d\u010e\7 \2\2\u010e"+
+		"\u0112\5 \21\2\u010f\u0110\7\22\2\2\u0110\u0112\5 \21\2\u0111\u0109\3"+
+		"\2\2\2\u0111\u010b\3\2\2\2\u0111\u010d\3\2\2\2\u0111\u010f\3\2\2\2\u0112"+
+		"%\3\2\2\2\u0113\u0114\7\'\2\2\u0114\u0115\5 \21\2\u0115\u0116\7\26\2\2"+
+		"\u0116\u0117\5 \21\2\u0117\u0118\7\27\2\2\u0118\u0119\7(\2\2\u0119\u011a"+
+		"\7\26\2\2\u011a\u011b\5 \21\2\u011b\u011c\7\27\2\2\u011c\'\3\2\2\2\u011d"+
+		"\u011e\7$\2\2\u011e\u011f\5 \21\2\u011f\u0120\7\26\2\2\u0120\u0122\5*"+
+		"\26\2\u0121\u0123\5.\30\2\u0122\u0121\3\2\2\2\u0122\u0123\3\2\2\2\u0123"+
+		"\u0124\3\2\2\2\u0124\u0125\7\27\2\2\u0125)\3\2\2\2\u0126\u0128\5,\27\2"+
+		"\u0127\u0126\3\2\2\2\u0128\u012b\3\2\2\2\u0129\u0127\3\2\2\2\u0129\u012a"+
+		"\3\2\2\2\u012a+\3\2\2\2\u012b\u0129\3\2\2\2\u012c\u012d\7&\2\2\u012d\u012e"+
+		"\58\35\2\u012e\u012f\7\37\2\2\u012f\u0130\5 \21\2\u0130-\3\2\2\2\u0131"+
+		"\u0132\7(\2\2\u0132\u0133\7\37\2\2\u0133\u0134\5 \21\2\u0134/\3\2\2\2"+
+		"\u0135\u0136\7\"\2\2\u0136\u0137\7\60\2\2\u0137\u0138\7!\2\2\u0138\u0139"+
+		"\5 \21\2\u0139\61\3\2\2\2\u013a\u013b\7\30\2\2\u013b\u013c\58\35\2\u013c"+
+		"\u013d\7\31\2\2\u013d\63\3\2\2\2\u013e\u0140\7\32\2\2\u013f\u0141\58\35"+
+		"\2\u0140\u013f\3\2\2\2\u0140\u0141\3\2\2\2\u0141\u0142\3\2\2\2\u0142\u0143"+
+		"\7\33\2\2\u0143\65\3\2\2\2\u0144\u0145\7\26\2\2\u0145\u0146\5@!\2\u0146"+
+		"\u0147\7\27\2\2\u0147\67\3\2\2\2\u0148\u014d\5 \21\2\u0149\u014a\7\35"+
+		"\2\2\u014a\u014c\5 \21\2\u014b\u0149\3\2\2\2\u014c\u014f\3\2\2\2\u014d"+
+		"\u014b\3\2\2\2\u014d\u014e\3\2\2\2\u014e9\3\2\2\2\u014f\u014d\3\2\2\2"+
+		"\u0150\u0155\5<\37\2\u0151\u0152\7\35\2\2\u0152\u0154\5<\37\2\u0153\u0151"+
+		"\3\2\2\2\u0154\u0157\3\2\2\2\u0155\u0153\3\2\2\2\u0155\u0156\3\2\2\2\u0156"+
+		";\3\2\2\2\u0157\u0155\3\2\2\2\u0158\u015b\7\60\2\2\u0159\u015a\7!\2\2"+
+		"\u015a\u015c\5 \21\2\u015b\u0159\3\2\2\2\u015b\u015c\3\2\2\2\u015c\u015f"+
+		"\3\2\2\2\u015d\u015f\5 \21\2\u015e\u0158\3\2\2\2\u015e\u015d\3\2\2\2\u015f"+
+		"=\3\2\2\2\u0160\u0161\7\60\2\2\u0161\u0162\7\34\2\2\u0162\u0163\5 \21"+
+		"\2\u0163?\3\2\2\2\u0164\u0169\5> \2\u0165\u0166\7\35\2\2\u0166\u0168\5"+
+		"> \2\u0167\u0165\3\2\2\2\u0168\u016b\3\2\2\2\u0169\u0167\3\2\2\2\u0169"+
+		"\u016a\3\2\2\2\u016aA\3\2\2\2\u016b\u0169\3\2\2\2\u016c\u016d\7*\2\2\u016d"+
+		"\u0171\7\26\2\2\u016e\u0170\5 \21\2\u016f\u016e\3\2\2\2\u0170\u0173\3"+
+		"\2\2\2\u0171\u016f\3\2\2\2\u0171\u0172\3\2\2\2\u0172\u0174\3\2\2\2\u0173"+
+		"\u0171\3\2\2\2\u0174\u0175\7\27\2\2\u0175C\3\2\2\2\37GKQ[_gny\177\u0089"+
+		"\u0092\u0098\u009f\u00a8\u00b5\u00f9\u00fc\u00fe\u0103\u0111\u0122\u0129"+
+		"\u0140\u014d\u0155\u015b\u015e\u0169\u0171";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

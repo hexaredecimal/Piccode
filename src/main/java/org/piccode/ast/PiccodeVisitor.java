@@ -1,8 +1,10 @@
 package org.piccode.ast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.tree.ExpandVetoException;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.piccode.antlr4.PiccodeScriptBaseVisitor;
@@ -166,12 +168,44 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitImport_module(Import_moduleContext ctx) {
-		var pkg = ctx.ID().getFirst().getText();
-		var module = ctx.ID().getLast().getText();
+		var module_path = ctx.module_path();
+		if (module_path != null) {
+			var arr = new ArrayList<String>();
+			for (var path: module_path.ID()) {
+				arr.add(path.getText());
+			}
 
-		return new ImportAst(pkg, module);
+			var path = String.join("/", arr);
+
+			if (module_path.symbol_lift() != null) {
+				var nodes = visitSymbollift(module_path.symbol_lift());
+				return new ImportAst(path, nodes);
+			}
+			
+			return new ImportAst(path);
+		}
+
+		var tok = ctx.getStart();
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid token in import");
 	}
 
+	public List<Ast> visitSymbollift(Symbol_liftContext ctx) {
+		var nodes = new ArrayList<Ast>();
+		for (var entry: ctx.symbol_entry()) {
+			if (entry.symbol_lift() != null) {
+				var _nodes = visitSymbollift(entry.symbol_lift());
+				var symbol = entry.ID().getSymbol();
+				var result = new ImportLift(symbol.getText(), _nodes);
+				nodes.add(finalizeAstNode(result, symbol));
+			} else {
+				var symbol = entry.ID().getSymbol();
+				var result = new ImportId(symbol.getText());
+				nodes.add(finalizeAstNode(result, symbol));
+			}
+		}
+		return nodes;
+	}
+	
 	@Override
 	public Ast visitModule(ModuleContext ctx) {
 		var name = ctx.ID().getText();
