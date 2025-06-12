@@ -1,7 +1,7 @@
 
-import pkg:io
-import pkg:array
-import pkg:iters
+import std.io
+import std.array
+import std.iters
 
 let arr = Array.fromRange(1, 5)
 

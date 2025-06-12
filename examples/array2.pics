@@ -1,7 +1,7 @@
 
 
-import pkg:io
-import pkg:array
+import std.io
+import std.array
 
 let numbers = [1,2,3]
 

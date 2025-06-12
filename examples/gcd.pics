@@ -1,5 +1,5 @@
 
-import pkg:io
+import std.io
 
 function gcd(a, b=0) = 
   when (a, b) {

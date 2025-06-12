@@ -1,6 +1,6 @@
 
-import pkg:array
-import pkg:io
+import std.array
+import std.io
 
 let numbers = [1,2,3]
 let strings = ["A", "B", "C"]

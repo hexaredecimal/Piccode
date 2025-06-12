@@ -1,5 +1,5 @@
 
-import pkg:io
+import std.io
 
 function fib(n=0) =
   when n is {

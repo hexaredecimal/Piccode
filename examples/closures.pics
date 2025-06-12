@@ -1,5 +1,5 @@
 
-import pkg:io
+import std.io
 
 function map(xs=[], f) =
   when xs{
