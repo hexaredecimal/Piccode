@@ -1,5 +1,5 @@
 
-import pkg:result
+import std.result
 
 // Module: Applicative
 // Provides functions for working with applicative-style computations using Result values.

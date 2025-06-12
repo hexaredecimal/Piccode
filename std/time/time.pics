@@ -1,103 +1,42 @@
 
-// Module: Tuple
-// Provides utility functions for working with 2-element tuples (pairs).
-// Includes size inspection, mapping, zipping, comparisons, and conversions.
-module Tuple {
+// Module: Time
+// Provides functions for working with dates and time
+module Time {
 
-  // Function: size
-  // Returns the number of elements in a tuple (always 2).
-  //
-  // Parameters:
-  //   tup - A tuple of two values
+  // Function: now
+  // Returns the current time
   //
   // Returns:
-  //   Integer: Always returns 2 for a 2-element tuple.
-  function size(tup=(0, 0)) = pic_nat_tuplesize(tup)
-  
+  //   The current time as an object
+  function now() = pic_nat_now()
 
-  // Function: toArray
-  // Converts a tuple into an array.
-  //
-  // Parameters:
-  //   tup - A tuple (a, b)
+  // Function: min
+  // Returns the minimum supported time
   //
   // Returns:
-  //   [a, b] as an array
-  function toArray(tup=(0, 0)) = pic_nat_tupletoarray(tup)
+  //   The minimum time as an object
+  function min() = pic_nat_min()
 
-
-  // Function: map
-  // Applies a function to both elements of a tuple.
-  //
-  // Parameters:
-  //   tup - A tuple (a, b)
-  //   f   - A function to apply to both a and b
+  // Function: max
+  // Returns the maximum supported time
   //
   // Returns:
-  //   A new tuple (f(a), f(b))
-  function map(tup=(0, 0), f) =
-    when tup {
-      is (a, b) -> (f(a), f(b))
-    }
+  //   The maximum time as an object
+  function max() = pic_nat_max()
 
-
-  // Function: zipWith
-  // Combines two tuples element-wise using a function.
+  // Function: from
+  // Returns the maximum supported time
   //
   // Parameters:
-  //   t1 - Tuple (a1, b1)
-  //   t2 - Tuple (a2, b2)
-  //   f  - A binary function applied to each pair of elements
+  //   year 		- The year 
+  //   month 		- The month (1 - 12) 
+  //   day 			- The year  (1 - 31)
+  //   hour   	- The hour  (0 - 23)
+  //   minute 	- The year	(0 - 59)
   //
   // Returns:
-  //   A new tuple (f(a1, a2), f(b1, b2))
-  function zipWith(t1=(0, 0), t2=(0, 0), f) =
-    when [t1, t2] {
-      is [(a1, b1), (a2, b2)] -> (f(a1, a2), f(b1, b2))
-    }
-
-
-  // Function: swap
-  // Reverses the order of elements in a tuple.
-  //
-  // Parameters:
-  //   tup - Tuple (a, b)
-  //
-  // Returns:
-  //   Tuple (b, a)
-  function swap(tup=(0, 0)) =
-    when tup {
-      is (a, b) -> (b, a)
-    }
-
-
-  // Function: equals
-  // Compares two tuples for equality.
-  //
-  // Parameters:
-  //   t1 - Tuple (a1, b1)
-  //   t2 - Tuple (a2, b2)
-  //
-  // Returns:
-  //   true if both tuples have the same elements in the same order, else false
-  function equals(t1=(0, 0), t2=(0, 0)) =
-    when [t1, t2] {
-      is [(a1, b1), (a2, b2)] -> (a1 == a2 and b1 == b2)
-    }
-
-
-  // Function: toString
-  // Converts a tuple to a string representation.
-  //
-  // Parameters:
-  //   tup - Tuple (a, b)
-  //
-  // Returns:
-  //   String: "(a, b)" where a and b are the string representations of the tuple elements
-  function toString(tup=(0, 0)) =
-    when tup {
-      is (a, b) -> "(" + a + ", " + b + ")"
-    } 
+  //   The time as an object
+  function from(year=1980, month=10, day=11, hour=0, minute=0) = pic_nat_from(year, month, day, hour, minute)
 
 }
 

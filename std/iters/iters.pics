@@ -1,4 +1,4 @@
-import pkg:unit
+import std.unit
 
 // Module: Iterators
 // Provides generic iteration utilities for traversing and executing functions over collections

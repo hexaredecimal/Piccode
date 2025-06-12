@@ -1,6 +1,6 @@
 
-import pkg:sys
-import pkg:option // TODO: Fix circular dependency
+import std.sys
+import std.option // TODO: Fix circular dependency
 
 // Module: Result
 // Provides a standard way to represent success (`ok`) or failure (`err`) outcomes.

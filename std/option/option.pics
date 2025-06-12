@@ -1,4 +1,4 @@
-import pkg:sys
+import std.sys
 
 // Module: Option
 // Provides utilities for working with optional values using the Option type pattern
