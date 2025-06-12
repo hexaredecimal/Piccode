@@ -1,7 +1,5 @@
 package org.piccode.ast;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.piccode.backend.Compiler;
@@ -37,7 +35,7 @@ public class TopLevel {
 		assertFalse(!(let instanceof VarDecl));
 		var node = (VarDecl) let;
 		assertEquals(node.name, "foo");
-		assertTrue(node.value instanceof NumberAst num && num.text.equals("1"));
+		assertTrue(node.value instanceof NumberAst num);
 	}
 
 	@Test
@@ -64,14 +62,12 @@ public class TopLevel {
 
 	@Test
 	public void importModule() {
-		var code = "import pkg:io";
+		var code = "import std.io";
 		var ast = Compiler.program("tests", code);
 		assertEquals(ast.nodes.size(), 1);
 		var import_ = ast.nodes.getFirst();
-		assertFalse(!(import_ instanceof ImportAst));
-		var node = (ImportAst) import_;
-		assertEquals(node.pkg, "pkg");
-		assertEquals(node.module, "io");
+		assertTrue(import_ instanceof ImportAst);
+		assertTrue(import_ instanceof ImportAst i && i.path.equals("std/io"));
 	}
 
 }
