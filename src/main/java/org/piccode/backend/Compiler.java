@@ -23,6 +23,7 @@ import org.piccode.rt.modules.PiccodeIOModule;
 import org.piccode.rt.modules.PiccodeMathModule;
 import org.piccode.rt.modules.PiccodeStringModule;
 import org.piccode.rt.modules.PiccodeSystemModule;
+import org.piccode.rt.modules.PiccodeTimeModule;
 import org.piccode.rt.modules.PiccodeTupleModule;
 
 /**
@@ -99,6 +100,7 @@ public class Compiler {
 		PiccodeTupleModule.addFunctions();
 		PiccodeMathModule.addFunctions();
 		PiccodeSystemModule.addFunctions();
+		PiccodeTimeModule.addFunctions();
 	}
 
 }

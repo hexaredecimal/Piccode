@@ -16,6 +16,7 @@ public class CallAst extends Ast {
 
 	public Ast expr;
 	public List<Ast> nodes;
+	public static Ast lastCall = null;
 
 	public CallAst(Ast expr, List<Ast> nodes) {
 		this.expr = expr;
@@ -47,6 +48,7 @@ public class CallAst extends Ast {
 		if (!(expr_val instanceof PiccodeClosure) && !(expr_val instanceof NativeFunction)) {
 			throw new PiccodeException(file, line, column, "Attempt to call a non-callable expression");
 		}
+		lastCall = expr;
 
 		if (expr_val instanceof NativeFunction nat) {
 			for (var node : nodes) {

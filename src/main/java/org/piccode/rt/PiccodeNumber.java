@@ -14,6 +14,10 @@ public class PiccodeNumber implements PiccodeValue {
 		this.number = number;
 	}
 	
+	public PiccodeNumber(int value) {
+		this.number = String.valueOf(value);
+	}
+	
 	@Override
 	public Object raw() {
 		return Double.parseDouble(number);

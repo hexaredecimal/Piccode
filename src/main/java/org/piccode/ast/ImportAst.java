@@ -49,7 +49,9 @@ public class ImportAst extends Ast {
 	@Override
 	public PiccodeValue execute() {
 		var nodes = loadModuleFromStdLib(path);
+
 		if (lifted.isEmpty()){
+      nodes.forEach(node -> node.execute());
 			return new PiccodeUnit();
 		}
 

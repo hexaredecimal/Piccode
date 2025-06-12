@@ -4,11 +4,13 @@ import com.github.tomaslanger.chalk.Chalk;
 import com.github.tomaslanger.cli.choice.SingleChoice;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -221,8 +223,9 @@ public class Piccode {
 ▙▌▌▛▘▛▘▛▌▛▌█▌▚ ▛▘▛▘▌▛▌▜▘
 ▌ ▌▙▖▙▖▙▌▙▌▙▖▄▌▙▖▌ ▌▙▌▐▖
                     ▌   
-       [v%s]
-""", VERSION).indent(8);
+       [%s]
+""", Chalk.on("v" + VERSION).green()// TODO: Add the git commit and branch
+	).indent(8);
 	}
 
 	private static boolean isProject() {
