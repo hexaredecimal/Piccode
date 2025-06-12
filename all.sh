@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-MODULES=java.base,java.logging,java.net.http
+MODULES=java.base,java.logging
 OUTPUT=jpicoc
 VERSION=0.2
 JARNAME=PiccodeScript-$VERSION-jar-with-dependencies.jar
+JARDIR=target/
 
 INSTALL=$HOME/.local/
 INPUT=picoc
@@ -12,7 +13,7 @@ STDLIB=std
 APP_NAME=picoc
 
 log() {
-  printf "[INFO]: %s\n" "$1"
+  printf "[INFO] %s\n" "$1"
 }
 
 splash() {
@@ -22,6 +23,7 @@ splash() {
   log "▌ ▌▙▖▙▖▙▌▙▌▙▖▄▌▙▖▌ ▌▙▌▐▖"
   log "                    ▌   "
   log "         =====          "
+  log "       BUILD AND        "
   log "   INSTALLATION SCRIPT  "
   log "         =====          "
   log "                        "
@@ -35,6 +37,15 @@ checkAndClean() {
     rm -rf $OUTPUT $APP_NAME
   else
     log "Nothing to clean"
+  fi
+}
+
+checkJarAndBuild() {
+  if [ -d "$JARDIR" ]; then
+    log "Project has been built. run mvn package to force building the jar file"
+  else
+    log "Building from scratch."
+    mvn package
   fi
 }
 
@@ -75,6 +86,7 @@ install() {
 
 main() {
   splash
+  checkJarAndBuild
   checkAndClean
   buildImage
   install
