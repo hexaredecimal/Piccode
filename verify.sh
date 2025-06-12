@@ -1,12 +1,39 @@
+JAR=target/*-jar-with-dependencies.jar
+JAVA=java
 
+log() {
+  printf "[INFO]: %s\n" "$1"
+}
 
-echo "[LOG]: Starting"
-ls ./examples/*.pics | while read line 
-do
-	printf "[LOG]: Running file %s\n" $line
-	java -jar target/PiccodeScript-0.1-jar-with-dependencies.jar run $line > /dev/null &
-done
+checkJar() {
+  if [ -d "picoc/lib/app" ]; then
+    log "Found jar in picoc/lib/app"
+    JAR=picoc/lib/app/*-jar-with-dependencies.jar
+    log "Found java in picoc/bin"
+    JAVA=jpicoc/bin/java
+  else
+    log "Using default tar and java"
+  fi
+}
 
-echo "[LOG]: Done"
+compileExample() {
+  $JAVA -jar $JAR run $1 >/dev/null &
+}
 
+compileExamples() {
+  checkJar
+  log "Compiling sources"
 
+  ls ./examples/*.pics | while read line; do
+    log "Compiling: $line"
+    compileExample $line
+  done
+
+  log "Done"
+}
+
+main() {
+  compileExamples
+}
+
+main
