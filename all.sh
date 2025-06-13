@@ -78,9 +78,9 @@ rootCopyToDest() {
 install() {
   checkDir
   log "Installation stated"
+  copyToDest $STDLIB $INPUT/lib/app
   rootCopyToDest $INPUT/bin $INSTALL
   rootCopyToDest $INPUT/lib $INSTALL
-  copyToDest $STDLIB $OUTPUT/lib/app
   log "Installation is done"
 }
 
