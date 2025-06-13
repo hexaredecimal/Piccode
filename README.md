@@ -15,7 +15,7 @@ embedding in my java programs or for general scripting.
 
 ###### Hello World 
 ```js
-import pkg:io
+import std.io
 
 function main() = IO.println("Hello, world")
 
@@ -25,7 +25,7 @@ main()
 ###### Factorial
 
 ```js
-import pkg:io
+import std.io
 
 function fact(x=1) = 
   when x {
