@@ -1,0 +1,25 @@
+
+import std.io { IO { println } }
+import std.type
+import std.result { Result }
+
+function saferDiv(x, y) = 
+	when (Type.isNumber(x), Type.isNumber(y), x, y) {
+		is (false, false, _, _) -> Result.err("both arguments are not numbers")
+		is (false, _, _, _) -> Result.err("1st argument is not a number")
+		is (_, false, _, _) -> Result.err("2nd argument is not a number")
+		is (_, _, _, 0) -> Result.err("Divide by zeror error")
+		else -> Result.ok(x / y)
+	}
+
+let res = saferDiv(50, 2)
+let err = saferDiv(50, [1])
+println(res)
+println(err)
+
+let res = saferDiv(50, 0)
+let err = saferDiv([], [1])
+println(res)
+println(err)
+
+

@@ -1,0 +1,23 @@
+
+import std.io
+
+module Foo {
+	function bar() = IO.println("Foo.Bar")
+}
+
+module Foo {
+	function baz() = IO.println("Foo.Baz")
+}
+
+Foo.bar()
+Foo.baz()
+
+module Foo {
+	module Foo2 {
+		function bar2() = IO.println("Foo.Foo2.bar2")
+	m
+}
+
+IO.println(Foo.Foo2)
+Foo.Foo2.bar2()
+
