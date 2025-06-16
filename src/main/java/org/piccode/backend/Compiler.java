@@ -1,5 +1,6 @@
 package org.piccode.backend;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -40,10 +41,12 @@ public class Compiler {
 		try {
 			var result = program(file, code);
 
-			Context.top.pushStack();
-			Context.top.putLocal("true", new PiccodeBoolean("true"));
-			Context.top.putLocal("false", new PiccodeBoolean("false"));
-			Context.top.putLocal("_pic_nat_user_args", new PiccodeArray(args));
+			var scope_id = new IdentifierAst("globalScope");
+			scope_id.column = 0;
+			scope_id.line = 1;
+			scope_id.file = file;
+			
+			Compiler.prepareGlobalScope(scope_id);
 			addGlobalFunctions();
 
 			PiccodeValue res = new PiccodeUnit();
@@ -75,6 +78,11 @@ public class Compiler {
 	}
 
 	public static StatementList program(String file, String code) {
+		
+		if (code.startsWith("#!/")) {
+			code = sanitizeSourceFile(code);
+		}
+		
 		var lexer = new PiccodeScriptLexer(CharStreams.fromString(code));
 		var parser = new PiccodeScriptParser(new CommonTokenStream(lexer));
 		lexer.removeErrorListeners();
@@ -86,8 +94,14 @@ public class Compiler {
 		return result;
 	}
 
-	public static void prepareGlobalScope() {
-		Context.top.pushStack();
+	private static String sanitizeSourceFile(String code) {
+		var lines = new ArrayList<>(code.lines().toList());
+		lines.removeFirst();
+		return String.join("\n", lines);
+	}
+
+	public static void prepareGlobalScope(Ast parent) {
+		Context.top.pushStackFrame(parent);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false"));
 		addGlobalFunctions();
