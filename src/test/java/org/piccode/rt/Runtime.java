@@ -34,7 +34,7 @@ public class Runtime {
 	
 		assertFalse(!(let instanceof VarDecl));
 		
-		Context.top.pushStack();
+		Context.top.pushStackFrame(ast);
 		var node = let.execute();
 		Context.top.dropStackFrame();
 		assertTrue(node instanceof PiccodeNumber num && num.toString().equals("1"));
