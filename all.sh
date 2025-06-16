@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+set -Eeuo pipefail
+
 MODULES=java.base,java.logging
 OUTPUT=jpicoc
-VERSION=0.2
+VERSION=0.3
 JARNAME=PiccodeScript-$VERSION-jar-with-dependencies.jar
 JARDIR=target/
 
@@ -47,7 +49,7 @@ checkJarAndBuild() {
     log "Building from scratch."
     mvn package
     log "Verifying the compiler."
-		./verify.sh
+    ./verify.sh
   fi
 }
 
@@ -87,23 +89,30 @@ install() {
 }
 
 verify() {
-	./verify.sh
+  ./verify.sh
 }
 
 finalCleanUp() {
-	log "Final clean up"
-	rm -rf $OUTPUT $APP_NAME $JARDIR
-	log "Final clean up completed"
+  log "Final clean up"
+  rm -rf $OUTPUT $APP_NAME $JARDIR
+  log "Final clean up completed"
 }
 
 finalMessage() {
-	log ""
-	log "Please make sure to add $INSTALL/bin to your PATH"
-	log "Try running picoc --version to test the installation"
-	log "Run picoc --h for help and picoc run --repl for a quick repl session"
-	log ""
-	log "Thank you for installing PiccodeScript."
+  log ""
+  log "Please make sure to add $INSTALL/bin to your PATH"
+  log "Try running picoc --version to test the installation"
+  log "Run picoc --h for help and picoc run --repl for a quick repl session"
+  log ""
+  log "Thank you for installing PiccodeScript."
 }
+
+handle_error() {
+  log "Something went wrong"
+  finalCleanUp
+}
+
+trap handle_error ERR
 
 main() {
   splash
@@ -111,8 +120,8 @@ main() {
   checkAndClean
   buildImage
   install
-	finalCleanUp
-	finalMessage
+  finalCleanUp
+  finalMessage
 }
 
 main
