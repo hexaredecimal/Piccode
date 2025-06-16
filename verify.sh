@@ -1,8 +1,10 @@
+#!/usr/bin/env bash
+
 JAR=target/*-jar-with-dependencies.jar
 JAVA=java
 
 log() {
-  printf "[INFO]: %s\n" "$1"
+  printf "[INFO] %s\n" "$1"
 }
 
 checkJar() {
@@ -17,7 +19,7 @@ checkJar() {
 }
 
 compileExample() {
-  $JAVA -jar $JAR run $1 >/dev/null &
+  $JAVA -jar $JAR run $1 >/dev/null
 }
 
 compileExamples() {

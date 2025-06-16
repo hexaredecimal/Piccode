@@ -46,6 +46,8 @@ checkJarAndBuild() {
   else
     log "Building from scratch."
     mvn package
+    log "Verifying the compiler."
+		./verify.sh
   fi
 }
 
@@ -84,12 +86,33 @@ install() {
   log "Installation is done"
 }
 
+verify() {
+	./verify.sh
+}
+
+finalCleanUp() {
+	log "Final clean up"
+	rm -rf $OUTPUT $APP_NAME $JARDIR
+	log "Final clean up completed"
+}
+
+finalMessage() {
+	log ""
+	log "Please make sure to add $INSTALL/bin to your PATH"
+	log "Try running picoc --version to test the installation"
+	log "Run picoc --h for help and picoc run --repl for a quick repl session"
+	log ""
+	log "Thank you for installing PiccodeScript."
+}
+
 main() {
   splash
   checkJarAndBuild
   checkAndClean
   buildImage
   install
+	finalCleanUp
+	finalMessage
 }
 
 main
