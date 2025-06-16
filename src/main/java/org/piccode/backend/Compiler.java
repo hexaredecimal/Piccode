@@ -46,7 +46,7 @@ public class Compiler {
 			scope_id.line = 1;
 			scope_id.file = file;
 			
-			Compiler.prepareGlobalScope(scope_id);
+			prepareGlobalScope(scope_id);
 			addGlobalFunctions();
 
 			PiccodeValue res = new PiccodeUnit();
@@ -61,6 +61,8 @@ public class Compiler {
 			if (has_main) {
 				return new CallAst(new IdentifierAst("main"), List.of()).execute();
 			}
+			
+			Context.top.dropStackFrame();
 			return res;
 		} catch (PiccodeException e) {
 			e.reportError();
@@ -102,8 +104,8 @@ public class Compiler {
 
 	public static void prepareGlobalScope(Ast parent) {
 		Context.top.pushStackFrame(parent);
-		Context.top.putLocal("true", new PiccodeBoolean("true"));
-		Context.top.putLocal("false", new PiccodeBoolean("false"));
+		Context.top.addGlobal("true", new PiccodeBoolean("true"));
+    Context.top.putLocal("false", new PiccodeBoolean("false"));
 		addGlobalFunctions();
 	}
 

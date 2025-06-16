@@ -248,7 +248,6 @@ public class Piccode {
 
 		var bands = Chalk.on("| ").yellow();
 		System.out.println(bands + fmt);
-		Compiler.prepareGlobalScope(new IdentifierAst("globalScope"));
 		// Create a terminal
 		try (Terminal terminal = TerminalBuilder.builder()
 						.system(true)
