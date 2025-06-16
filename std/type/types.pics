@@ -1,0 +1,70 @@
+
+// Module: Type
+// Provides functions for type checking at runtime
+module Type {
+
+
+	// Function: isNumber
+  // Checks is the value is a Number
+	//
+	// Parameters:
+	//   value - The value to check
+	//
+	// Returns:
+	// 	true when it is a number, false if not
+	function isNumber(value) = pic_nat_isnumber(value)
+
+
+
+
+	// Function: isString
+  // Checks is the value is a String
+	//
+	// Parameters:
+	//   value - The value to check
+	//
+	// Returns:
+	// 	true when it is a string, false if not
+	function isString(value) = pic_nat_isstring(value)
+
+
+
+	// Function: isObject
+  // Checks is the value is a Object
+	//
+	// Parameters:
+	//   value - The value to check
+	//
+	// Returns:
+	// 	true when it is a object, false if not
+	function isObject(value) = pic_nat_isobject(value)
+
+
+
+	// Function: isArray
+  // Checks is the value is a Array
+	//
+	// Parameters:
+	//   value - The value to check
+	//
+	// Returns:
+	// 	true when it is a array, false if not
+	function isArray(value) = pic_nat_isarray(value)
+
+
+
+	// Function: isTuple
+  // Checks is the value is a Tuple
+	//
+	// Parameters:
+	//   value - The value to check
+	//
+	// Returns:
+	// 	true when it is a tuple, false if not
+	function isTuple(value) = pic_nat_istuple(value)
+
+
+
+}
+
+
