@@ -16,6 +16,7 @@ public class PiccodeClosure implements PiccodeValue {
 	Map<String, PiccodeValue> appliedArgs; // Applied named args
 	int positionalIndex; // How many positional args have been applied so far
 	Ast body;
+	public Ast creator;
 
 	public Ast.Location callSite = null;
 	public String callSiteFile = null;
@@ -28,6 +29,7 @@ public class PiccodeClosure implements PiccodeValue {
 		this.positionalIndex = positionalIndex;
 		this.body = body;
 	}
+
 
 	public PiccodeValue call(PiccodeValue arg) {
 		if (positionalIndex >= params.size()) {
@@ -42,6 +44,7 @@ public class PiccodeClosure implements PiccodeValue {
 		newArgs.put(paramName, arg);
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.creator = creator;
 		result.callSite = callSite;
 		result.callSiteFile = callSiteFile;
 		result.file = file;
@@ -77,6 +80,7 @@ public class PiccodeClosure implements PiccodeValue {
 		newArgs.put(name, arg);
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.creator = creator;
 		result.callSite = callSite;
 		result.callSiteFile = callSiteFile;
 		result.file = file;
@@ -95,7 +99,7 @@ public class PiccodeClosure implements PiccodeValue {
 		}
 
 		// All required args satisfied (either by user or by default), run
-		Context.top.pushStack();
+		Context.top.pushStackFrame(creator);
 		for (Arg param : params) {
 			PiccodeValue val = appliedArgs.getOrDefault(
 							param.name,

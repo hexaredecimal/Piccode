@@ -55,8 +55,8 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 		var fmt = String.format(
 						"╭──[%s:%d:%d]: %s: %s",
 						file == null || file.equals("repl")
-										? "repl"
-										: fp.getName(),
+						? "repl"
+						: fp.getName(),
 						line, col + 1,
 						kind == null || kind.equals("ERROR")
 						? Chalk.on("ERROR").red() // I hard code ERROR just in case it is null;
@@ -89,6 +89,26 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note : notes) {
 				note.reportError(false, "INFO");
+			}
+		}
+
+		var stack = Context.top.getCallStack();
+
+		var list = List.of(stack.toArray(StackFrame[]::new)).reversed();
+
+		if (!list.isEmpty()) {
+			System.out.println("\n[STACK TRACE]");
+			for (int i = 0; i < list.size(); i++) {
+				var frame = list.get(i);
+				var callSite = frame.caller;
+				var _str = String.format(
+								"[%s:%d:%d]: %s", callSite.file,
+								callSite.line, callSite.column + 1,
+								i == 0 
+									? Chalk.on(callSite.toString()).red()
+									: callSite.toString());
+
+				System.out.println(_str);
 			}
 		}
 

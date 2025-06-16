@@ -13,7 +13,7 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class PiccodeTupleModule {
+public class PiccodeTypesModule {
 	public static void addFunctions() {
 		
 		NativeFunctionFactory.create("tuplesize", List.of("tuple"), (args, namedArgs) -> {
