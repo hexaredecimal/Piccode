@@ -33,6 +33,7 @@ import org.jline.terminal.impl.*;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.piccode.ast.IdentifierAst;
 import org.piccode.platf.Platforms;
 import org.piccode.rt.ReplState;
 
@@ -247,7 +248,7 @@ public class Piccode {
 
 		var bands = Chalk.on("| ").yellow();
 		System.out.println(bands + fmt);
-		Compiler.prepareGlobalScope();
+		Compiler.prepareGlobalScope(new IdentifierAst("globalScope"));
 		// Create a terminal
 		try (Terminal terminal = TerminalBuilder.builder()
 						.system(true)
