@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,22 @@ public class FunctionAst extends Ast {
 						.append(name)
 						.append("(");
 		if (arg != null) {
-			sb.append(arg);
+			sb.append(formatArgs());
 		}
-		sb.append(") = ");
-		sb.append(body);
+		sb.append(") = ..."); 
+		return sb.toString();
+	}
+
+	private String formatArgs() {
+		var sb = new StringBuilder();
+		var size = arg.size();
+		for (int i = 0; i < size; i++) {
+			var top_arg = arg.get(i);
+			sb.append(top_arg);
+			if (i < size - 1) {
+				sb.append(", ");
+			}
+		}
 		return sb.toString();
 	}
 
@@ -43,6 +56,7 @@ public class FunctionAst extends Ast {
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
+		cl.creator = this;
 		cl.callSite = new Ast.Location(line, column);
 		cl.callSiteFile = file;
 		cl.file = file;

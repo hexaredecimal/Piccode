@@ -31,11 +31,11 @@ public class DoExprAst extends Ast {
 	@Override
 	public PiccodeValue execute() {
 		PiccodeValue result = null;
-		Context.top.pushStack();
+		Context.top.pushScope();
 		for (var stmt: nodes) {
 			result = stmt.execute();
 		}
-		Context.top.dropStackFrame();
+		Context.top.dropScope();
 		return result;
 	}
 

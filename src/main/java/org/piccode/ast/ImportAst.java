@@ -39,7 +39,6 @@ public class ImportAst extends Ast {
 		this.path = path;
 		this.lifted = lifted;
 	}
-	
 
 	@Override
 	public String toString() {
@@ -50,8 +49,8 @@ public class ImportAst extends Ast {
 	public PiccodeValue execute() {
 		var nodes = loadModuleFromStdLib(path);
 
-		if (lifted.isEmpty()){
-      nodes.forEach(node -> node.execute());
+		if (lifted.isEmpty()) {
+			nodes.forEach(node -> node.execute());
 			return new PiccodeUnit();
 		}
 
@@ -59,15 +58,15 @@ public class ImportAst extends Ast {
 			executeLifted(nodes, liftedNode);
 		}
 
-		
 		return new PiccodeUnit();
 	}
-
-
 
 	private void executeLifted(List<Ast> moduleNodes, Ast liftedNode) {
 		if (liftedNode instanceof ImportId id) {
 			for (var node : moduleNodes) {
+				if (node instanceof ImportAst imp) {
+					imp.execute();
+				}
 				if (node instanceof StatementList sts) {
 					executeLifted(sts.nodes, id);
 					return;
@@ -86,6 +85,9 @@ public class ImportAst extends Ast {
 
 		if (liftedNode instanceof ImportLift lift) {
 			for (var node : moduleNodes) {
+				if (node instanceof ImportAst imp) {
+					imp.execute();
+				}
 				if (node instanceof StatementList sts) {
 					executeLifted(sts.nodes, lift);
 					return;
@@ -115,39 +117,52 @@ public class ImportAst extends Ast {
 		}
 	}
 
-
-	
-
 	private List<Ast> loadModuleFromStdLib(String module) {
 		var storage = getAppStorage();
 		var paths = List.of(storage, "./");
 		var nodes = new ArrayList<Ast>();
 		var _file = findModule(module, paths);
 		if (_file == null) {
-			throw new PiccodeException(file, line, column,"Invalid module " + module.replaceAll("/", "."));
+			throw new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
 		}
-		
+
+		var path = _file.getPath();
+		if (Context.top.isImportCached(path)) {
+			return Context.top.getCached(path);
+		}
+
 		for (var fp : _file.listFiles()) {
 			if (fp.getName().endsWith(".pics")) {
 				var code = readFile(fp);
 				if (code == null) {
-					throw new PiccodeException(file, line, column,"Invalid module " + module.replaceAll("/", "."));
+					throw new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
 				}
-				nodes.add(_import(fp.getAbsolutePath(), code));
+				var program = (StatementList) _import(fp.getAbsolutePath(), code);
+				var noImports = program.nodes
+								.stream()
+								.filter((value) -> {
+									if (value instanceof ImportAst) {
+										value.execute();
+									}
+									return !(value instanceof ImportAst);
+								})
+								.toList();
+				nodes.addAll(noImports);
 			}
+		}
+		if (!Context.top.isImportCached(path)) {
+			Context.top.cacheImport(path, lifted);
 		}
 		return nodes;
 	}
 
 	private Ast _import(String file, String code) {
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
-		Context.top.putLocal("false", new PiccodeBoolean("false")); 
+		Context.top.putLocal("false", new PiccodeBoolean("false"));
 
-		// In case of an error we leak the current scope on sym table. 
 		try {
 			return Compiler.program(file, code);
 		} catch (PiccodeException e) {
-			Context.top.dropStackFrame();
 			throw e;
 		}
 	}
@@ -181,7 +196,7 @@ public class ImportAst extends Ast {
 	}
 
 	private File findModule(String module, List<String> of) {
-		for (var dir: of) {
+		for (var dir : of) {
 			var fp = new File(dir + "/" + module);
 			if (fp.isDirectory()) {
 				return fp;

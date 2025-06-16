@@ -39,10 +39,22 @@ public class ClosureAst extends Ast {
 			.append("")
 		  .append("(");
 		if (args != null) {
-			sb.append(args);
+			sb.append(formatArgs());
+		} 
+		sb.append(") -> ...");
+		return sb.toString();
+	}
+
+	private String formatArgs() {
+		var sb = new StringBuilder();
+		var size = args.size();
+		for (int i = 0; i < size; i++) {
+			var top_arg = args.get(i);
+			sb.append(top_arg);
+			if (i < size - 1) {
+				sb.append(", ");
+			}
 		}
-		sb.append(") => ");
-		sb.append(body);
 		return sb.toString();
 	}
 
@@ -50,6 +62,7 @@ public class ClosureAst extends Ast {
 	public PiccodeValue execute() {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var result = new PiccodeClosure(args, newArgs, 0, body);
+		result.creator = this;
 		result.callSite = new Ast.Location(line, column);
 		result.callSiteFile = file;
 		result.file = file;

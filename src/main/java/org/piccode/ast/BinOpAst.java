@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import com.github.tomaslanger.chalk.Chalk;
 import org.piccode.piccodescript.Piccode;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeBoolean;
@@ -106,7 +107,9 @@ public class BinOpAst extends Ast {
 			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
 		}
 
-		throw new PiccodeException(file, line, column,"Invalid operator:  " + op + " " + left.getClass() + " vs " + right.getClass());
+		throw new PiccodeException(file, line, column,"Operator `" + Chalk.on(op).blue() + "`  cannot be used with types " 
+			+ Chalk.on(left.type()).red()
+			+ " and " + Chalk.on(right.type()).red());
 	}
 
 	@Override

@@ -44,14 +44,14 @@ public class WhenAst extends Ast {
 			var tempSymtable = new HashMap<String, PiccodeValue>();
 			if (isMatching(match_case.match, cond_value, tempSymtable)) {
 				if (!tempSymtable.isEmpty()) {
-					Context.top.pushStack();
+					Context.top.pushScope();
 					for (var entry : tempSymtable.entrySet()) {
 						Context.top.putLocal(entry.getKey(), entry.getValue());
 					}
 				}
 				var result = match_case.value.execute();
 				if (!tempSymtable.isEmpty()) {
-					Context.top.dropStackFrame();
+					Context.top.dropScope();
 				}
 				return result;
 			}
