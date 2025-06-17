@@ -30,21 +30,20 @@ You can download binary releases from the Official website or visit the file ser
 
 ## Build From Source
 
-- Step 1.
+- Step 1 - Clone the repo.
 ```sh
-$ git@github.com:Glimmr-Lang/PiccodeScript.git
+$ git clone git@github.com:Glimmr-Lang/PiccodeScript.git
 ```
 
-- Step 2.
+- Step 2 - Enter inside the dir.
 ```sh
 $ cd PiccodeScript
 ```
 
-- Step 3.
+- Step 3 - Run the build script.
 ```sh
 $ ./all.sh
 ```
-
 
 ## Documentation
 - [Standard library reference](https://piccodescriptdocs.fly.dev/)
