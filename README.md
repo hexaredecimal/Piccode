@@ -1,12 +1,13 @@
 # PiccodeScript
 
+> A simple interpreted, functional programming language.
+
 <div align="center">
 
 [![Java CI with Maven](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml/badge.svg)](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml)
  
 </div>
 
-> A simple interpreted, functional programming language.
 
 ## Why?
 
@@ -15,11 +16,24 @@ I fell in love with the simple syntax and I wanted to make to its own project, p
 embedding in my java programs or for general scripting. 
 
 ## Installation
->> TODO:
 
-## Example
+You can download binary releases from the Official website or visit the file server to find previous versions. 
+
+##### Latest
+
+- [Official Release](http://piccodescript.fly.dev/)
+
+##### Previous releases
+
+- [Release Server](https://picasso-releases.fly.dev/piccodescript/)
+
+## Documentation
+- [Standard library reference](https://piccodescriptdocs.fly.dev/)
+
+# Example
 
 ###### Hello World 
+
 ```js
 import std.io
 
