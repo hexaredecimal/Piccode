@@ -1,5 +1,11 @@
 # PiccodeScript
 
+<div align="center">
+
+[![Java CI with Maven](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml/badge.svg)](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml)
+ 
+</div>
+
 > A simple interpreted, functional programming language.
 
 ## Why?
