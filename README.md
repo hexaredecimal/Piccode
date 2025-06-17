@@ -74,6 +74,7 @@ To use the language in your project simply add it your `pom.xml` file as a depen
 	<version>Tag</version>
 </dependency>
 ```
+#### Note replace `Tag` with a release tag from the [releases](https://github.com/Glimmr-Lang/PiccodeScript/releases) page.
 
  and then add the following code to your solution:
 
