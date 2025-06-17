@@ -27,6 +27,25 @@ You can download binary releases from the Official website or visit the file ser
 
 - [Release Server](https://picasso-releases.fly.dev/piccodescript/)
 
+
+## Build From Source
+
+- Step 1.
+```sh
+$ git@github.com:Glimmr-Lang/PiccodeScript.git
+```
+
+- Step 2.
+```sh
+$ cd PiccodeScript
+```
+
+- Step 3.
+```sh
+$ ./all.sh
+```
+
+
 ## Documentation
 - [Standard library reference](https://piccodescriptdocs.fly.dev/)
 
