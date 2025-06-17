@@ -14,7 +14,7 @@ checkJar() {
     log "Found java in picoc/bin"
     JAVA=jpicoc/bin/java
   else
-    log "Using default tar and java"
+    log "Using default jar and java compiler"
   fi
 }
 
@@ -24,14 +24,14 @@ compileExample() {
 
 compileExamples() {
   checkJar
-  log "Compiling sources"
+  log "Compiling example sources"
 
   ls ./examples/*.pics | while read line; do
-    log "Compiling: $line"
+    log "Compiling example: $line"
     compileExample $line
   done
 
-  log "Done"
+  log "Done compiling examples"
 }
 
 main() {
