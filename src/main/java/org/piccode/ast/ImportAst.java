@@ -131,7 +131,9 @@ public class ImportAst extends Ast {
 			return Context.top.getCached(path);
 		}
 
-		for (var fp : _file.listFiles()) {
+		var files = _file.listFiles();
+
+		for (var fp : files) {
 			if (fp.getName().endsWith(".pics")) {
 				var code = readFile(fp);
 				if (code == null) {

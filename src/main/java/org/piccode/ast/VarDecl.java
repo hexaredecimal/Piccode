@@ -25,7 +25,9 @@ public class VarDecl extends Ast {
 
 	@Override
 	public PiccodeValue execute() {
+		Context.top.pushStackFrame(this);
 		var _value = value.execute();
+		Context.top.dropStackFrame();
 		Context.top.putLocal(name, _value);
 		return _value;
 	}
