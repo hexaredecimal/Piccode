@@ -1,0 +1,33 @@
+
+module WeekDays {
+  let MONDAY 		= "Monday"
+  let TUESDAY 		= "Tuesday"
+  let WEDNESDAY 	= "Wednesday"
+  let THURSDAY  	= "Thursday"
+  let FRIDAY 		= "Friday"
+  let SATURDAY		= "Saturday"
+  let SUNDAY		= "Sunday" 
+  
+  function getWeekDay(day = 0) = 
+    when day {
+      is 0 -> WeekDays.MONDAY
+      is 1 -> WeekDays.TUESDAY
+      is 2 -> WeekDays.WEDNESDAY
+      is 3 -> WeekDays.THURSDAY
+      is 4 -> WeekDays.FRIDAY
+      is 5 -> WeekDays.SATURDAY
+      is 6 -> WeekDays.SUNDAY
+    }
+
+	function toNumber(day) = 
+		when day {
+			is WeekDays.MONDAY 			-> 0
+			is WeekDays.TUESDAY 		-> 0
+			is WeekDays.WEDNESDAY		-> 0
+			is WeekDays.THURSDAY 		-> 0
+			is WeekDays.FRIDAY 			-> 0
+			is WeekDays.SATURDAY	  -> 0
+			is WeekDays.SUNDAY			-> 0
+		}
+}
+

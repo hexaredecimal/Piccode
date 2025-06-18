@@ -1,0 +1,49 @@
+
+
+module Months {
+	let JANUARY 		= "January"
+	let FEBRUARY 		= "February"
+	let MARCH 			= "March"
+	let APRIL				= "April"
+	let MAY 				= "May"
+	let JUNE				= "June"
+	let JULY				= "July"
+	let AUGUST			= "August"
+	let SEPTEMBER		= "September"
+	let OCTOBER			= "October"
+	let NOVEMBER		= "November"
+	let DECEMBER		= "December"
+
+  function getMonth(month = 0) = 
+    when month {
+			is 0 		-> Months.JANUARY
+			is 1 		-> Months.FEBRUARY
+			is 2 		-> Months.MARCH
+			is 3 		-> Months.APRIL
+			is 4 		-> Months.MAY
+			is 5 		-> Months.JUNE
+			is 6 		-> Months.JULY
+			is 7 		-> Months.AUGUST
+			is 8	 	-> Months.SEPTEMBER
+			is 9 		-> Months.OCTOBER
+			is 10 	-> Months.NOVEMBER
+			is 11 	-> Months.DECEMBER
+		}
+	
+  function toNumber(month) = 
+    when month {
+			is Months.JANUARYa -> 0
+			is Months.FEBRUARY -> 1
+			is Months.MARCH -> 2
+			is Months.APRIL -> 3
+			is Months.MAY -> 4
+			is Months.JUNE -> 5
+			is Months.JULY -> 6
+			is Months.AUGUST -> 7
+			is Months.SEPTEMBER -> 8
+			is Months.OCTOBER -> 9
+			is Months.NOVEMBER -> 10
+			is Months.DECEMBER -> 11
+		}
+}
+
