@@ -4,6 +4,8 @@
 
 <div align="center">
 
+<img src="./images/mascot.png" width="50%" />
+
 [![Java CI with Maven](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml/badge.svg)](https://github.com/Glimmr-Lang/PiccodeScript/actions/workflows/maven.yml)
  
 </div>
