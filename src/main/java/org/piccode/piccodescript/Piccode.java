@@ -35,6 +35,8 @@ import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.piccode.ast.IdentifierAst;
 import org.piccode.platf.Platforms;
+import org.piccode.rt.Context;
+import org.piccode.rt.PiccodeException;
 import org.piccode.rt.ReplState;
 
 /**
@@ -43,7 +45,7 @@ import org.piccode.rt.ReplState;
  */
 public class Piccode {
 
-	private static double VERSION = 0.2;
+	private static double VERSION = 0.3;
 
 	public static void main(String[] args) {
 		if (Platforms.isWindows()) {
@@ -300,6 +302,8 @@ public class Piccode {
 
 			var is_inner = false;
 			ReplState.ACTIVE = true;
+
+			Compiler.prepareGlobalScope("repl", "REPL");
 			outer:
 			while (true) {
 				StringBuilder inputBlock = new StringBuilder();
@@ -331,11 +335,25 @@ public class Piccode {
 					continue;
 				}
 
-				var result = Compiler.compile("repl", code, user_args);
-				terminal.writer().println(result + " : " + result.type());
-				terminal.flush();
+				var result = Compiler.program("repl", code);
+				PiccodeValue res = null;
+				try {
+					for (var stmt : result.nodes) {
+						res = stmt.execute();
+					}
+
+					terminal.writer().println(res + " : " + res.type());
+					terminal.flush();
+				} catch (PiccodeException e) {
+					e.reportError();
+					var stack_size = Context.top.getFramesCount();
+					if (stack_size > 1) {
+						Context.top.dropStackFrame();
+					}
+				}
 			}
 
+			Context.top.dropStackFrame();
 			ReplState.ACTIVE = false;
 			terminal.writer().println("Exiting REPL");
 		} catch (IOException | EndOfFileException | UserInterruptException e) {

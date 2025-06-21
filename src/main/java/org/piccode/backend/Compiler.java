@@ -26,6 +26,8 @@ import org.piccode.rt.modules.PiccodeStringModule;
 import org.piccode.rt.modules.PiccodeSystemModule;
 import org.piccode.rt.modules.PiccodeTimeModule;
 import org.piccode.rt.modules.PiccodeTupleModule;
+import org.piccode.rt.modules.PiccodeTypesModule;
+import org.piccode.rt.modules.PiccodeVirtualModule;
 
 /**
  *
@@ -40,13 +42,7 @@ public class Compiler {
 	public static PiccodeValue compile(String file, String code, List<PiccodeValue> args) {
 		try {
 			var result = program(file, code);
-
-			var scope_id = new IdentifierAst("globalScope");
-			scope_id.column = 0;
-			scope_id.line = 1;
-			scope_id.file = file;
-			
-			prepareGlobalScope(scope_id);
+			prepareGlobalScope(file);
 			addGlobalFunctions();
 
 			PiccodeValue res = new PiccodeUnit();
@@ -59,17 +55,20 @@ public class Compiler {
 			}
 
 			if (has_main) {
-				return new CallAst(new IdentifierAst("main"), List.of()).execute();
+				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute();
+				Context.top.dropStackFrame();
+				return _result;
 			}
 			
 			Context.top.dropStackFrame();
 			return res;
 		} catch (PiccodeException e) {
+			Context.top.dropStackFrame();
 			e.reportError();
 			//e.printStackTrace();
 			return new PiccodeUnit();
 		} catch (Exception rte) {
-			//Context.top.dropStackFrame();
+			Context.top.dropStackFrame();
 			rte.printStackTrace();
 			return new PiccodeUnit();
 		}
@@ -102,12 +101,21 @@ public class Compiler {
 		return String.join("\n", lines);
 	}
 
-	public static void prepareGlobalScope(Ast parent) {
-		Context.top.pushStackFrame(parent);
-		Context.top.addGlobal("true", new PiccodeBoolean("true"));
+	public static void prepareGlobalScope(String file) {
+		prepareGlobalScope(file, "globalScope");
+	}
+
+	public static void prepareGlobalScope(String file, String globalScopeName) {
+		var scope_id = new IdentifierAst(globalScopeName);
+		scope_id.column = 0;
+		scope_id.line = 1;
+		scope_id.file = file;
+		Context.top.pushStackFrame(scope_id);
+		Context.top.putLocal("true", new PiccodeBoolean("true"));
     Context.top.putLocal("false", new PiccodeBoolean("false"));
 		addGlobalFunctions();
 	}
+
 
 	private static void addGlobalFunctions() {
 		PiccodeIOModule.addFunctions();
@@ -117,6 +125,8 @@ public class Compiler {
 		PiccodeMathModule.addFunctions();
 		PiccodeSystemModule.addFunctions();
 		PiccodeTimeModule.addFunctions();
+		PiccodeTypesModule.addFunctions();
+		PiccodeVirtualModule.addFunctions();
 	}
 
 }
