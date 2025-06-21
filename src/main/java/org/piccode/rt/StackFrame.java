@@ -20,6 +20,13 @@ public class StackFrame {
 		this.scope_stack = new Stack<>();
 	}
 
+	public StackFrame(Ast caller, StackFrame from) {
+		this.caller = caller;
+		this.scope_stack = new Stack<>();
+		scope_stack.addAll(from.scope_stack);
+	}
+
+
 	public void addScope() {
 		if (!scope_stack.isEmpty()) {
 			var _top = scope_stack.peek();

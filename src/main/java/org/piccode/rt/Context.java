@@ -3,6 +3,10 @@ package org.piccode.rt;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.piccode.ast.Ast;
 
 /**
@@ -16,14 +20,44 @@ public class Context {
 	public static Context top = new Context();
 	public static HashMap<String, PiccodeModule> modules = new HashMap<>();
 	private HashMap<String, List<Ast>> import_cache = new HashMap<>();
+	private ExecutorService threadPool;
+	private HashMap<String, Future<PiccodeValue>> futureMap;
 	
 	public Context() {
 		call_frames = new Stack<>();
 		import_cache = new HashMap<>();
+		threadPool = Executors.newVirtualThreadPerTaskExecutor();
+		futureMap = new HashMap<>();
 	}
 
 	public Stack<StackFrame> getCallStack() {
 		return call_frames;
+	}
+
+	public int getFramesCount() {
+		return call_frames.size();
+	}
+
+	public String makeThread(PiccodeClosure node) {
+		var future = threadPool.submit(() -> {
+			var call = (PiccodeClosure) node.call(new PiccodeUnit());
+			return call.evaluateIfReady();
+		});
+		var id = UUID.randomUUID().toString();
+		futureMap.put(id, future);
+		return id;
+	}
+
+	public Future<PiccodeValue> getFuture(String id) {
+		return futureMap.get(id);
+	}
+
+	public void removeFuture(String uuid) {
+		futureMap.remove(uuid);
+	}
+	
+	public StackFrame getTopFrame() {
+		return call_frames.peek();
 	}
 
 	public static void addGlobal(String name, PiccodeValue value) {
@@ -52,7 +86,13 @@ public class Context {
 	}
 	
 	public void pushStackFrame(Ast top) {
-		call_frames.push(new StackFrame(top));
+		if (call_frames.isEmpty()) {
+			call_frames.push(new StackFrame(top));
+			return;
+		}
+	
+		var prev = call_frames.peek();
+		call_frames.push(new StackFrame(top, prev));
 	}
 
 	public void dropStackFrame() {
@@ -109,4 +149,5 @@ public class Context {
 		}
 		return result;
 	}
+
 }
