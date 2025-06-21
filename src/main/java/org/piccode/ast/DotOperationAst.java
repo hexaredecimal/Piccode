@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import java.util.concurrent.ExecutionException;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
@@ -38,11 +39,11 @@ public class DotOperationAst extends Ast {
 			var mod = Context.modules.get(id.text);
 
 			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-				throw new PiccodeException(file, line, column,"No node " + rhs + " found in module " + id.text);
+				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + id.text);
 			}
 
 			return process(id, mod);
-		} 
+		}
 
 		var left = lhs.execute();
 
@@ -52,21 +53,18 @@ public class DotOperationAst extends Ast {
 
 		if (left instanceof PiccodeString str && rhs instanceof IdentifierAst id && id.text.equals("len")) {
 			return new PiccodeNumber("" + str.toString().length());
-		}
-		
-		else if (left instanceof PiccodeArray arr){
+		} else if (left instanceof PiccodeArray arr) {
 			return processArrayIndexing(arr.array(), rhs.execute());
-		}
-		else if (left instanceof PiccodeTuple tupl){
+		} else if (left instanceof PiccodeTuple tupl) {
 			return processArrayIndexing(tupl.array(), rhs.execute());
 		}
-		
+
 		if (left instanceof PiccodeModule mod) {
 			return process(new IdentifierAst(mod.name), mod);
 		}
 
 		if (!(left instanceof PiccodeObject)) {
-			var err = new PiccodeException(file, line, column,"Invalid expression on the side of `.` : " + lhs + " has value " + left + " which is not an object");
+			var err = new PiccodeException(file, line, column, "Invalid expression on the side of `.` : " + lhs + " has value " + left + " which is not an object");
 			err.addNote(new PiccodeSimpleNote("Pehaphs consider adding a check to verify if " + lhs + " is indeed an object."));
 			throw err;
 		}
@@ -74,6 +72,20 @@ public class DotOperationAst extends Ast {
 		var obj = (PiccodeObject) left;
 
 		String key = null;
+		if (rhs instanceof IdentifierAst id
+						&& id.text.equals("await")
+						&& obj.obj.containsKey("uuid")
+						&& obj.obj.containsKey("future")) {
+			var uuid = obj.obj.get("uuid").raw().toString();
+			var future = Context.top.getFuture(uuid);
+			Context.top.removeFuture(uuid);
+			try {
+				var result = future.get();
+				return result;
+			} catch (InterruptedException | ExecutionException ex) {
+				throw new PiccodeException(file, line, column, "Internal error: " + ex.getMessage());
+			}
+		}
 		if (rhs instanceof IdentifierAst id) {
 			key = id.text;
 		} else {
@@ -82,7 +94,7 @@ public class DotOperationAst extends Ast {
 
 		var value = obj.getValue(key);
 		if (value == null) {
-			throw new PiccodeException(file, line, column,"Field `" + key + "` is not part of " + obj.raw());
+			throw new PiccodeException(file, line, column, "Field `" + key + "` is not part of " + obj.raw());
 		}
 
 		return value;
@@ -114,13 +126,13 @@ public class DotOperationAst extends Ast {
 				}
 			}
 
-			throw new PiccodeException(file, line, column,"No function or identifier " + _id.text + " found in module " + id.text);
+			throw new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
 		}
 
 		var call = (CallAst) rhs;
 
 		if (!(call.expr instanceof IdentifierAst)) {
-			throw new PiccodeException(file, line, column,"Invalid function reference in module access module " + id.text + ": " + call.expr);
+			throw new PiccodeException(file, line, column, "Invalid function reference in module access module " + id.text + ": " + call.expr);
 		}
 
 		var _id = (IdentifierAst) call.expr;
@@ -139,29 +151,30 @@ public class DotOperationAst extends Ast {
 			}
 		}
 
-		throw new PiccodeException(file, line, column,"No function or identifier " + _id.text + " found in module " + id.text);
+		throw new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
 	}
 
 	private PiccodeValue processArrayIndexing(PiccodeValue[] arr, PiccodeValue execute) {
 		if (!(execute instanceof PiccodeNumber)) {
-			throw new PiccodeException(file, line, column,"Attempt to index array value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
+			throw new PiccodeException(file, line, column, "Attempt to index array value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
 		}
 
 		int index = (int) ((double) execute.raw());
 		if (index < 0 || index >= arr.length) {
-			throw new PiccodeException(file, line, column,"Array index out of bounds: "+  lhs + " evaluates to an array with size" + arr.length + " which is indexed with " + execute);
+			throw new PiccodeException(file, line, column, "Array index out of bounds: " + lhs + " evaluates to an array with size" + arr.length + " which is indexed with " + execute);
 		}
 
 		return arr[index];
 	}
+
 	private PiccodeValue processTupleIndexing(PiccodeValue[] arr, PiccodeValue execute) {
 		if (!(execute instanceof PiccodeNumber)) {
-			throw new PiccodeException(file, line, column,"Attempt to index a tuple value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
+			throw new PiccodeException(file, line, column, "Attempt to index a tuple value with non numeric index: " + rhs + " which evaluates to " + execute + " is used as an index");
 		}
 
 		int index = (int) ((double) execute.raw());
 		if (index < 0 || index >= arr.length) {
-			throw new PiccodeException(file, line, column,"Array index out of bounds: "+  lhs + " evaluates to a tuple with size" + arr.length + " which is indexed with " + execute);
+			throw new PiccodeException(file, line, column, "Array index out of bounds: " + lhs + " evaluates to a tuple with size" + arr.length + " which is indexed with " + execute);
 		}
 
 		return arr[index];
