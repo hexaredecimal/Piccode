@@ -1,0 +1,10 @@
+
+
+module Virtual {
+	function task(fx) = pic_nat_task(fx)
+	function sleep(fx) = pic_nat_sleep(fx)
+	function await(task) = task.await
+}
+
+
+
