@@ -29,4 +29,39 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn package
+      continue-on-error: true
+
+    - name: Notify Zulip on success
+      if: steps.buildstep.outcome == 'success'
+      run: |
+        curl -X POST "https://piccodescript.zulipchat.com/api/v1/external/github?api_key=${{ secrets.ZULIP_API_KEY }}&stream=511550&ignore_private_repositories=true" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "action": "build succeeded",
+          "repository": {
+            "full_name": "${{ github.repository }}",
+            "html_url": "https://github.com/${{ github.repository }}"
+          },
+          "sender": {
+            "login": "${{ github.actor }}",
+            "html_url": "https://github.com/${{ github.actor }}"
+          }
+        }'
+
+    - name: Notify Zulip on failure
+      if: steps.buildstep.outcome == 'failure'
+      run: |
+        curl -X POST "https://piccodescript.zulipchat.com/api/v1/external/github?api_key=${{ secrets.ZULIP_API_KEY }}&stream=511550&ignore_private_repositories=true" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "action": "build failed",
+          "repository": {
+            "full_name": "${{ github.repository }}",
+            "html_url": "https://github.com/${{ github.repository }}"
+          },
+          "sender": {
+            "login": "${{ github.actor }}",
+            "html_url": "https://github.com/${{ github.actor }}"
+          }
+        }'
 
