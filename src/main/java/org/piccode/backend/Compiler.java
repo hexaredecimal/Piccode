@@ -63,7 +63,7 @@ public class Compiler {
 			Context.top.dropStackFrame();
 			return res;
 		} catch (PiccodeException e) {
-			Context.top.dropStackFrame();
+			//Context.top.dropStackFrame();
 			e.reportError();
 			//e.printStackTrace();
 			return new PiccodeUnit();
