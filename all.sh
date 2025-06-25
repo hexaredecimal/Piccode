@@ -88,10 +88,6 @@ install() {
   log "Installation is done"
 }
 
-verify() {
-  ./verify.sh
-}
-
 finalCleanUp() {
   log "Final clean up"
   rm -rf $OUTPUT $APP_NAME $JARDIR
