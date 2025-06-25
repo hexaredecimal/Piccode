@@ -1,0 +1,8 @@
+
+import std.sys { System { todo } }
+
+module File {
+	function new() = todo("Implement the file functions")
+}
+
+

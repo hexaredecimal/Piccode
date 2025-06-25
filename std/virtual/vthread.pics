@@ -1,10 +1,40 @@
 
-
+// Module: Virtual
+// Contains functions for working with threads
 module Virtual {
-	function task(fx) = pic_nat_task(fx)
-	function sleep(fx) = pic_nat_sleep(fx)
-	function await(task) = task.await
-}
 
+  // Function: task
+  // Executes a closure in a virtual thread
+  //
+  // Parameters:
+  //   fx - The closure to execute
+  //
+  // Returns:
+  //   A handle to the thread executing. 
+  //   This handle can be used to get the result of the closure
+  function task(fx) = pic_nat_task(fx)
+
+
+  // Function: sleep
+  // Pauses the current thread
+  //
+  // Parameters:
+  //   ms - Amount to pause by, in milliseconds
+  //
+  // Returns:
+  //   A Unit value
+  function sleep(ms) = pic_nat_sleep(ms)
+
+
+  // Function: await
+  // Waits for the virtual thread to finish and gets the result
+  //
+  // Parameters:
+  //   task - The task handle
+  //
+  // Returns:
+  //   The result of the thread. 
+  function await(task) = task.await
+}
 
 
