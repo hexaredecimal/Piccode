@@ -2,21 +2,32 @@ package org.piccode.piccodescript;
 
 import com.github.tomaslanger.chalk.Chalk;
 import com.github.tomaslanger.cli.choice.SingleChoice;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sound.midi.SysexMessage;
+import javax.xml.crypto.Data;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
@@ -126,6 +137,22 @@ public class Piccode {
 						.dest("extra_args")
 						.help("Pass-through args");
 
+		var lib = subparsers.addParser("lib")
+						.defaultHelp(true)
+						.help("Build sources into a lib");
+
+		lib.addArgument("--new")
+						.action(storeTrue())
+						.help("Create a new jar file");
+		
+		lib.addArgument("--ls")
+						.action(storeTrue())
+						.help("Lists the contents of the jar file");
+
+		lib.addArgument("file")
+						.nargs("?") // Optional
+						.help("The directory to build a lib from or the lib to work with");
+		
 		parser.addArgument("--version").action(Arguments.version());
 
 		// optional: glmr help
@@ -146,6 +173,31 @@ public class Piccode {
 					createNewProject();
 					return;
 				}
+			}
+
+			if ("lib".equals(command)) {
+				var input = res.getString("file");
+				if (input == null) {
+					System.out.println("No input directory or file");
+					return;
+				}
+
+				if (res.getBoolean("new")) {
+					createJarFile(input);
+					return;
+				}
+
+				if (res.getBoolean("ls")) {
+					if (!input.endsWith(".jar")) {
+						System.out.println("Invalid library archive file");
+						return;
+					}
+
+					printLib(input);
+					return;
+				}
+				
+				
 			}
 
 			if ("build".equals(command)) {
@@ -402,6 +454,85 @@ public class Piccode {
     } catch (Exception ex) {
 			System.out.println("Cancelled by user");
 			return;
+		}
+	}
+
+	private static void createJarFile(String input) {
+		var inputFile = new File(input);
+		var outputFile = new File(inputFile.getName() + ".jar");
+
+		String baseName = inputFile.getName();
+
+
+		// Create custom manifest
+		Manifest manifest = new Manifest();
+		var attr = manifest.getMainAttributes();
+		attr.putValue("Manifest-Version", "1.0");
+		attr.putValue("PiccodeScript-Version", "" + VERSION);
+		attr.putValue("Library-Name", inputFile.getName());
+		attr.putValue("Library-Type", "PiccodeScript-Native");
+		attr.putValue("Build-Date", new Date().toString());
+
+		try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(outputFile), manifest)) {
+			addToJar(inputFile, baseName ,jos);
+		} catch (FileNotFoundException ex) {
+		} catch (IOException ex) {
+		}
+
+		System.out.println("JAR with custom manifest created!");
+	}
+
+	
+	private static void addToJar(File file, String baseName, JarOutputStream jos) throws IOException {
+		String entryName = baseName + file.getPath()
+						.substring(new File(baseName).getPath().length()) // relative to base
+						.replace("\\", "/");
+
+		if (file.isDirectory()) {
+			if (!entryName.endsWith("/")) {
+				entryName += "/";
+			}
+			JarEntry dirEntry = new JarEntry(entryName);
+			jos.putNextEntry(dirEntry);
+			jos.closeEntry();
+
+			for (File child : file.listFiles()) {
+				addToJar(child, baseName, jos);
+			}
+		} else {
+			JarEntry fileEntry = new JarEntry(entryName);
+			jos.putNextEntry(fileEntry);
+			try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+				byte[] buffer = new byte[1024];
+				int count;
+				while ((count = in.read(buffer)) != -1) {
+					jos.write(buffer, 0, count);
+				}
+			}
+			jos.closeEntry();
+		}
+	}
+
+
+	
+	private static void printLib(String path) {
+		File jarPath = new File(path);
+		try (JarFile jarFile = new JarFile(jarPath)) {
+
+			// Print manifest entries
+			Manifest manifest = jarFile.getManifest();
+			System.out.println("Manifest contents:");
+			manifest.getMainAttributes().forEach((k, v) -> System.out.println(k + ": " + v));
+
+			// Print files in jar
+			System.out.println("\nSources:");
+			Enumeration<JarEntry> entries = jarFile.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+				System.out.println(" - " + entry.getName());
+			}
+		} catch (IOException ex) {
+			System.getLogger(Piccode.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
 		}
 	}
 }
