@@ -1,4 +1,7 @@
 
+import std.array
+
+
 // Module: Tuple
 // Provides utility functions for working with 2-element tuples (pairs).
 // Includes size inspection, mapping, zipping, comparisons, and conversions.
@@ -82,7 +85,7 @@ Tuple :: module {
   //   true if both tuples have the same elements in the same order, else false
   equals :: (t1=(0, 0), t2=(0, 0)) =
     when [t1, t2] {
-      is [(a1, b1), (a2, b2)] -> (a1 == a2 and b1 == b2)
+      is [(a1, b1), (a2, b2)] -> (a1 == a2) && (b1 == b2)
     }
 
 
@@ -94,10 +97,7 @@ Tuple :: module {
   //
   // Returns:
   //   String: "(a, b)" where a and b are the string representations of the tuple elements
-  toString :: (tup=(0, 0)) =
-    when tup {
-      is (a, b) -> "(" + a + ", " + b + ")"
-    } 
+  toString :: (tup=(0, 0)) = Array::toString(Tuple::toArray(tup))
 
 }
 
