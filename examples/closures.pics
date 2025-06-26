@@ -1,20 +1,20 @@
 
 import std.io
 
-function map(xs=[], f) =
+map :: (xs=[], f) =
   when xs{
     is [] -> []
     is x:rest -> f(x) : map(rest, f)
   }
 
-let add = |a, b| -> a + b
+add := |a, b| -> a + b
 
-let inc = add(1)
+inc := add(1)
 
-let numbers = [1,2,3]
-let mapped = map(numbers, inc)
-IO.println(mapped)
+numbers := [1,2,3]
+mapped := map(numbers, inc)
+IO::println(mapped)
 
-let mapped = map(numbers, |num| -> num:numbers)
-IO.println(mapped)
+mapped := map(numbers, |num| -> num:numbers)
+IO::println(mapped)
 

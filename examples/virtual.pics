@@ -1,0 +1,33 @@
+
+
+import std.io
+import std.virtual
+import std.array
+import std.iters
+
+
+getAnswer :: () = Virtual::task(|_| -> do {
+	Virtual::sleep(6000)
+	2000
+})
+
+handle := getAnswer()
+IO::println("Doing other things")
+
+add :: (x, y) = x + y
+answer := add(10, 20)
+
+IO::println(10 + " + " + 20 + " = " + answer)
+
+arr := Array::fromRange(1, 15)
+
+Iterators::forEach(arr, |value| -> do {
+	IO::println(value)
+})
+
+IO::println("Okay, now I need the result")
+result := handle.await
+
+IO::println("Yep, I found the result: " + result)
+
+

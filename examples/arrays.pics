@@ -2,17 +2,17 @@
 import std.array
 import std.io
 
-let numbers = [1,2,3]
-let strings = ["A", "B", "C"]
+numbers := [1,2,3]
+strings := ["A", "B", "C"]
 
-let concat = Array.concat(numbers, strings)
+concat := Array::concat(numbers, strings)
 
-IO.println(concat)
-IO.println(concat.len)
+IO::println(concat)
+IO::println(concat.len)
 
-let collon_sep = Array.join(strings, ":")
+collon_sep := Array::join(strings, ":")
 
-IO.println(collon_sep)
+IO::println(collon_sep)
 
-let new = collon_sep:concat
-IO.println(new)
+new := collon_sep:concat
+IO::println(new)

@@ -1,5 +1,5 @@
 
 import std.io
 
-IO.println("Hello, world")
+IO::println("Hello, world")
 

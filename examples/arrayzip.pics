@@ -1,13 +1,13 @@
 
 import std.io
 
-function zip(xs=[], ys=[]) =
+zip :: (xs=[], ys=[]) =
   when [xs, ys] {
     is [[], _] -> []
     is [_, []] -> []
     is [x:xs1, y:ys1] -> [ [x, y] ] : zip(xs1, ys1)
   }
 
-IO.println(zip)
+IO::println(zip)
 
-IO.println(zip([1, 2, 3], [4, 5, 6]))
+IO::println(zip([1, 2, 3], [4, 5, 6]))

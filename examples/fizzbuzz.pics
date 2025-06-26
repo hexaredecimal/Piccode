@@ -3,15 +3,15 @@ import std.io
 import std.array
 import std.iters
 
-let range = Array.fromRange(1, 50)
+range := Array::fromRange(1, 50)
 
-Iterators.forEach(range, |i| -> do {
+Iterators::forEach(range, |i| -> do {
 
   when ((i % 3) == 0, (i % 5) == 0) {
-    is (true, false) -> IO.println("Fizz")
-    is (false, true) -> IO.println("Buzz")
-    is (true, true) -> IO.println("FizzBuzz")
-    else -> IO.println(i)
+    is (true, false) -> IO::println("Fizz")
+    is (false, true) -> IO::println("Buzz")
+    is (true, true) -> IO::println("FizzBuzz")
+    else -> IO::println(i)
   }
 
 })

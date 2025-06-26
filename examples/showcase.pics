@@ -1,24 +1,23 @@
 
 // Syntax showcase
 
-import std.io
-
-// TODO: import std.io { println }
+import std.io { IO }
 
 // Variable declaration
-let n = 5 * 2
-let song = "Feel good Inc"
+n := 5 * 2
+song := "Feel good Inc"
 
 // The language supports the normal set of operators as in c.
 
 // Arrays
-let numbers = [1,2,3]
-let first = numbers.0
-let joined = first:numbers
+numbers := [1,2,3]
+first := numbers.0
+joined := first:numbers
 
 // Tuples
-let numbers = (1,2,3)
-let first = numbers.0
+numbers := (1,2,3)
+first := numbers[0]
+
 
 
 // If-Else
@@ -31,13 +30,13 @@ when numbers {
 }
 
 // Functions
-function add(x=1, y=1) = x + y
+add :: (x=1, y=1) = x + y
 
-let result = add(y=2)
-IO.println(result)
+result := add(y=2)
+IO::println(result)
 
-let answer = 10 |> add(10) |> add(10)
+answer := 10 |> add(10) |> add(10)
 
-IO.println(answer)
+IO::println(answer)
 
 

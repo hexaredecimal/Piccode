@@ -1,13 +1,13 @@
 
 import std.io
 
-function factorial(x=1) = 
+factorial :: (x=1) = 
   if x <= 1 { 1 } 
   else { x * factorial(x - 1) }
 
-let result = factorial(5)
-IO.println(result)
+result := factorial(5)
+IO::println(result)
 
-let result = factorial(100)
-IO.println(result)
+result := factorial(100)
+IO::println(result)
 

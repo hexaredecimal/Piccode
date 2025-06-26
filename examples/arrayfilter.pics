@@ -1,7 +1,7 @@
 
 import std.io
 
-function filter(xs=[], pred) =
+filter :: (xs=[], pred) =
   when xs {
     is [] -> []
     is x:rest -> 
@@ -9,7 +9,7 @@ function filter(xs=[], pred) =
       else { filter(rest, pred) }
   }
 
-let nums = [1,2,3,4]
+nums := [1,2,3,4]
 
-let greater = filter(nums, |num| -> num > 2)
-IO.println(greater)
+greater := filter(nums, |num| -> num > 2)
+IO::println(greater)

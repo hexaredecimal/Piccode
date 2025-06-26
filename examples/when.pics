@@ -1,28 +1,28 @@
 
 import std.io
 
-function fact(x=1) = 
+fact :: (x=1) = 
 	when x {
 	  is 0 -> 1
 	  is 1 -> 1
 	  else -> x * fact(x - 1)
 	}
 
-let result = fact(5)
+result := fact(5)
 
-IO.println(result)
+IO::println(result)
 
-let a = [1,2,3,4]
+a := [1,2,3,4]
 
 when a {
  is h:r -> do {
-	IO.println(h)
-	IO.println(r)
+	IO::println(h)
+	IO::println(r)
  } 
 }
 
 when a {
- is [2,b,c,4] -> IO.println(b + " " + c)
- is [a,b, c,4] -> IO.println(a + " " + b + " " + c)
- else -> IO.println("No match")"
+ is [2,b,c,4] -> IO::println(b + " " + c)
+ is [a,b, c,4] -> IO::println(a + " " + b + " " + c)
+ else -> IO::println("No match")"
 }

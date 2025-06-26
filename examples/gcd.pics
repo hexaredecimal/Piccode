@@ -1,13 +1,13 @@
 
 import std.io
 
-function gcd(a, b=0) = 
+gcd :: (a, b=0) = 
   when (a, b) {
     is (_, 0) -> a
     else -> gcd(b, a % b)
   }
 
-let result = gcd(10, 20)
+result := gcd(10, 20)
 
-IO.println(result)
+IO::println(result)
 

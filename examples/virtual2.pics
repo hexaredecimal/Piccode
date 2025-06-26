@@ -1,0 +1,27 @@
+
+
+import std.io
+import std.virtual
+
+getUser :: (id = 0) = Virtual::task(|_| -> do {
+  Virtual::sleep(1000 * 3) 
+  user := {name: "User" + id, id: id}
+  user
+})
+
+getProfile :: (id = 0) = Virtual::task(|_| -> do {
+  user := getUser(id)
+  profile := {kind: "Profile", user: user}
+  profile
+})
+
+IO::println("Start")
+
+profile_future := getProfile(100)
+IO::println(profile_future)
+
+profile := profile_future.await
+IO::println(profile)
+IO::println(profile.user.await)
+
+

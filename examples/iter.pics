@@ -3,9 +3,9 @@ import std.io
 import std.array
 import std.iters
 
-let arr = Array.fromRange(1, 5)
+arr := Array::fromRange(1, 5)
 
-Iterators.forEach(arr, |item| -> do {
-  IO.println(item)
+Iterators::forEach(arr, |item| -> do {
+  IO::println(item)
 })
 
