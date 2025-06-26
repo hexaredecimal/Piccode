@@ -57,9 +57,7 @@ $ ./all.sh
 ```js
 import std.io
 
-function main() = IO.println("Hello, world")
-
-main()
+main :: () = IO::println("Hello, world")
 ```
 
 ###### Factorial
@@ -67,12 +65,15 @@ main()
 ```js
 import std.io
 
-function fact(x=1) = 
+fact :: (x=1) = 
   when x {
     is 0 -> 1
     is 1 -> 1
     else -> x * fact(x - 1)
   }
+
+result := fact(5)
+IO::println(result)
 ```
 
 ## Embedding API
