@@ -1,8 +1,8 @@
 
 import std.sys { System { todo } }
 
-module File {
-	function new() = todo("Implement the file functions")
+File :: module {
+	new :: () = todo("Implement the file functions")
 }
 
 

@@ -1,7 +1,7 @@
 
 // Module: Array
 // Common array operations including transformation, combination, and querying
-module Array {
+Array :: module {
 
   // Function: concat
   // Combines two arrays into a single array
@@ -12,7 +12,7 @@ module Array {
   //
   // Returns:
   //   A new array consisting of all elements of `a` followed by all elements of `b`
-  function concat(a=[], b=[]) =
+  concat :: (a=[], b=[]) =
     when a {
       is [] -> b
       is x:rest -> x : concat(rest, b)
@@ -26,7 +26,7 @@ module Array {
   //
   // Returns:
   //   A string representation of the array
-  function toString(arr=[]) = pic_nat_array_tostring(arr)
+  toString :: (arr=[]) = pic_nat_array_tostring(arr)
 
   // Function: join
   // Concatenates elements into a string, separated by a given separator
@@ -37,7 +37,7 @@ module Array {
   //
   // Returns:
   //   A string of array elements joined by the separator
-  function join(xs=[], sep=",") =
+  join :: (xs=[], sep=",") =
     when xs {
       is [] -> ""
       is [x] -> x
@@ -53,7 +53,7 @@ module Array {
   //
   // Returns:
   //   An array of [x, y] pairs from corresponding elements of `xs` and `ys`
-  function zip(xs=[], ys=[]) =
+  zip :: (xs=[], ys=[]) =
     when [xs, ys] {
       is [[], _] -> []
       is [_, []] -> []
@@ -61,15 +61,15 @@ module Array {
     }
 
   // Function: map
-  // Applies a function to every element in the array
+  // Applies a to every element in the array
   //
   // Parameters:
   //   xs - The array to transform
-  //   f - The function to apply to each element
+  //   f - The to apply to each element
   //
   // Returns:
   //   A new array with transformed values
-  function map(xs=[], f) =
+  map :: (xs=[], f) =
     when xs {
       is [] -> []
       is x:rest -> f(x) : map(rest, f)
@@ -80,11 +80,11 @@ module Array {
   //
   // Parameters:
   //   xs - The array to filter
-  //   pred - A predicate function returning true or false
+  //   pred - A predicate returning true or false
   //
   // Returns:
   //   A new array containing elements for which `pred` returns true
-  function filter(xs=[], pred) =
+  filter :: (xs=[], pred) =
     when xs {
       is [] -> []
       is x:rest ->
@@ -100,12 +100,12 @@ module Array {
   //
   // Parameters:
   //   xs - The array to reduce
-  //   f - The reducer function (accumulator, element) => result
+  //   f - The reducer (accumulator, element) => result
   //   acc - The initial accumulator value
   //
   // Returns:
   //   The final reduced value
-  function reduce(xs=[], f, acc) =
+  reduce :: (xs=[], f, acc) =
     when xs {
       is [] -> acc
       is x:rest -> reduce(rest, f, f(acc, x))
@@ -119,7 +119,7 @@ module Array {
   //
   // Returns:
   //   The length of the array
-  function length(xs=[]) = xs.len
+  length :: (xs=[]) = xs.len
 
   // Function: reverse
   // Reverses the array
@@ -129,19 +129,19 @@ module Array {
   //
   // Returns:
   //   A new array with elements in reverse order
-  function reverse(xs=[]) =
+  reverse :: (xs=[]) =
     Array.reduce(xs, |acc, x| -> x : acc, [])
 
   // Function: flatMap
-  // Maps a function over an array and flattens the result
+  // Maps a over an array and flattens the result
   //
   // Parameters:
   //   xs - The array to map over
-  //   f - A function returning an array for each element
+  //   f - A returning an array for each element
   //
   // Returns:
   //   A flat array of concatenated results
-  function flatMap(xs=[], f) =
+  flatMap :: (xs=[], f) =
     Array.reduce(xs, |acc, x| -> Array.concat(acc, f(x)), [])
 
   // Function: take
@@ -153,7 +153,7 @@ module Array {
   //
   // Returns:
   //   A new array with at most N elements
-  function take(xs=[], n=0) =
+  take :: (xs=[], n=0) =
     if n <= 0 {
       []
     } else {
@@ -172,7 +172,7 @@ module Array {
   //
   // Returns:
   //   A new array without the first N elements
-  function drop(xs=[], n=0) =
+  drop :: (xs=[], n=0) =
     if n <= 0 {
       xs
     } else {
@@ -191,7 +191,7 @@ module Array {
   //
   // Returns:
   //   True if the value exists in the array, otherwise false
-  function contains(xs=[], value) =
+  contains :: (xs=[], value) =
     when xs {
       is [] -> false
       is x:rest -> if x == value { true } else { contains(rest, value) }
@@ -207,7 +207,7 @@ module Array {
   //
   // Returns:
   //   The index of the value or -1 if not found
-  function indexOf(xs=[], value, i=0) =
+  indexOf :: (xs=[], value, i=0) =
     when xs {
       is [] -> -1
       is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
@@ -222,7 +222,7 @@ module Array {
   //
   // Returns:
   //   An array representing the range [start, ..., end]
-  function fromRange(start, end) = 
+  fromRange :: (start, end) = 
     if start == end {
       [end]
     } else {

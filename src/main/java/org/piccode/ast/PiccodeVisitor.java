@@ -27,12 +27,17 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitVar_decl(Var_declContext var_decl) {
 		var tok = var_decl.ID().getSymbol();
 		var name = tok.getText();
-		var expr = visitExpr(var_decl.expr());
-		var result = new VarDecl(name, expr);
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
+
+		if (var_decl.DASSIGN() != null) {
+			var expr = visitExpr(var_decl.expr());
+			var result = new VarDecl(name, expr);
+			result.file = fileName;
+			return finalizeAstNode(result, tok);
+		}
+		
+		var result = new IdentifierAst(name);
 		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	@Override
@@ -64,20 +69,20 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitFunc(FuncContext ctx) {
-		var tok = ctx.ID().getSymbol();
+		var tok = ctx.getStart();
 		var name = tok.getText();
 		var args = visitFuncArgs(ctx.func_args());
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
-			var result = new FunctionAst(name, null, body);
+			var result = new FunctionAst(null, null, body);
 			result.line = tok.getLine();
 			result.column = tok.getCharPositionInLine();
 			result.file = fileName;
 			return result;
 		}
 
-		var result = new FunctionAst(name, args, body);
+		var result = new FunctionAst(null, args, body);
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
 		result.file = fileName;
@@ -142,7 +147,8 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitObject(ctx.object());
 		}
 
-		return null;
+		var tok = ctx.getStart();
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
 	}
 
 	@Override
@@ -151,19 +157,30 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitExpr(ctx.expr_stmt().expr());
 		}
 
-		if (ctx.func() != null) {
-			return visitFunc(ctx.func());
-		}
-
-		if (ctx.module() != null) {
-			return visitModule(ctx.module());
+		if (ctx.declaration() != null) {
+			return visitDeclaration(ctx.declaration());
 		}
 
 		if (ctx.import_module() != null) {
 			return visitImport_module(ctx.import_module());
 		}
 
-		return null;
+		var tok = ctx.getStart();
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+	}
+
+	@Override
+	public Ast visitDeclaration(DeclarationContext ctx) {
+		var id = ctx.ID().getText();
+		if (ctx.func() != null) {
+			var func = (FunctionAst) visitFunc(ctx.func());
+			func.name = id;
+			return func;
+		}
+		
+		var mod = (ModuleAst) visitModule(ctx.module());
+		mod.name = id;
+		return mod;
 	}
 
 	@Override
@@ -210,12 +227,11 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	
 	@Override
 	public Ast visitModule(ModuleContext ctx) {
-		var name = ctx.ID().getText();
 		if (ctx.module_stmts() != null) {
 			var nodes = visitModuleStmts(ctx.module_stmts());
-			return new ModuleAst(name, nodes);
+			return new ModuleAst(null, nodes);
 		}
-		return new ModuleAst(name, List.of());
+		return new ModuleAst(null, List.of());
 	}
 
 	public List<Ast> visitModuleStmts(Module_stmtsContext ctx) {
@@ -227,18 +243,17 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	private Ast visitModuleStmt(Module_stmtContext stmt) {
-		if (stmt.func() != null) {
-			return visitFunc(stmt.func());
-		}
-
 		if (stmt.var_decl() != null) {
 			return visitVar_decl(stmt.var_decl());
 		}
 
-		if (stmt.module() != null) {
-			return visitModule(stmt.module());
+		if (stmt.declaration() != null) {
+			return visitDeclaration(stmt.declaration());
 		}
-		return null;
+
+		var tok = stmt.getStart();
+
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid statement");
 	}
 
 	@Override
@@ -397,6 +412,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return result;
 		}
 
+		if (expr.CC() != null) {
+			var tok = expr.CC().getSymbol();
+			var result = finalizeAstNode(visitCCOperation(expr), tok);
+			return result;
+		}
+
 		if (expr.COLON() != null) {
 			var tok = expr.COLON().getSymbol();
 			var result = finalizeAstNode(visitConsOperation(expr), tok);
@@ -423,10 +444,6 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 		if (expr.object() != null) {
 			return visitObject(expr.object());
-		}
-
-		if (expr.ID() != null) {
-			return visitId(expr.ID());
 		}
 
 		if (expr.do_expr() != null) {
@@ -485,9 +502,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitIf_expr(If_exprContext ctx) {
 		var cond = visitExpr(ctx.expr(0));
 		var t = visitExpr(ctx.expr(1));
-		var f = visitExpr(ctx.expr(2));
 
-		return new IfExpression(cond, t, f);
+		if (ctx.ELSE() != null) {
+			var f = visitExpr(ctx.expr(2));
+			return new IfExpression(cond, t, f);
+		}
+		return new IfExpression(cond, t, new UnitAst());
 	}
 
 	private Ast visitUnaryExpr(UnaryContext ctx) {
@@ -664,6 +684,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var lhs = visitExpr(expr.expr().getFirst());
 		var rhs = visitExpr(expr.expr().getLast());
 		return new DotOperationAst(lhs, rhs);
+	}
+
+	private Ast visitCCOperation(ExprContext expr) {
+		var lhs = visitExpr(expr.expr().getFirst());
+		var rhs = visitExpr(expr.expr().getLast());
+		return new CCOperationAst(lhs, rhs);
 	}
 
 	private Ast visitId(TerminalNode ID) {

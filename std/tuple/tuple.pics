@@ -2,7 +2,7 @@
 // Module: Tuple
 // Provides utility functions for working with 2-element tuples (pairs).
 // Includes size inspection, mapping, zipping, comparisons, and conversions.
-module Tuple {
+Tuple :: module {
 
   // Function: size
   // Returns the number of elements in a tuple (always 2).
@@ -12,7 +12,7 @@ module Tuple {
   //
   // Returns:
   //   Integer: Always returns 2 for a 2-element tuple.
-  function size(tup=(0, 0)) = pic_nat_tuplesize(tup)
+  size :: (tup=(0, 0)) = pic_nat_tuplesize(tup)
   
 
   // Function: toArray
@@ -23,19 +23,19 @@ module Tuple {
   //
   // Returns:
   //   [a, b] as an array
-  function toArray(tup=(0, 0)) = pic_nat_tupletoarray(tup)
+  toArray :: (tup=(0, 0)) = pic_nat_tupletoarray(tup)
 
 
   // Function: map
-  // Applies a function to both elements of a tuple.
+  // Applies a to both elements of a tuple.
   //
   // Parameters:
   //   tup - A tuple (a, b)
-  //   f   - A function to apply to both a and b
+  //   f   - A to apply to both a and b
   //
   // Returns:
   //   A new tuple (f(a), f(b))
-  function map(tup=(0, 0), f) =
+  map :: (tup=(0, 0), f) =
     when tup {
       is (a, b) -> (f(a), f(b))
     }
@@ -47,11 +47,11 @@ module Tuple {
   // Parameters:
   //   t1 - Tuple (a1, b1)
   //   t2 - Tuple (a2, b2)
-  //   f  - A binary function applied to each pair of elements
+  //   f  - A binary applied to each pair of elements
   //
   // Returns:
   //   A new tuple (f(a1, a2), f(b1, b2))
-  function zipWith(t1=(0, 0), t2=(0, 0), f) =
+  zipWith :: (t1=(0, 0), t2=(0, 0), f) =
     when [t1, t2] {
       is [(a1, b1), (a2, b2)] -> (f(a1, a2), f(b1, b2))
     }
@@ -65,7 +65,7 @@ module Tuple {
   //
   // Returns:
   //   Tuple (b, a)
-  function swap(tup=(0, 0)) =
+  swap :: (tup=(0, 0)) =
     when tup {
       is (a, b) -> (b, a)
     }
@@ -80,7 +80,7 @@ module Tuple {
   //
   // Returns:
   //   true if both tuples have the same elements in the same order, else false
-  function equals(t1=(0, 0), t2=(0, 0)) =
+  equals :: (t1=(0, 0), t2=(0, 0)) =
     when [t1, t2] {
       is [(a1, b1), (a2, b2)] -> (a1 == a2 and b1 == b2)
     }
@@ -94,7 +94,7 @@ module Tuple {
   //
   // Returns:
   //   String: "(a, b)" where a and b are the string representations of the tuple elements
-  function toString(tup=(0, 0)) =
+  toString :: (tup=(0, 0)) =
     when tup {
       is (a, b) -> "(" + a + ", " + b + ")"
     } 

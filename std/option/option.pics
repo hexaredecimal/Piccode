@@ -2,7 +2,7 @@ import std.sys
 
 // Module: Option
 // Provides utilities for working with optional values using the Option type pattern
-module Option {
+Option :: module {
 
   // Function: some
   // Wraps a value in a `some` variant of Option
@@ -12,7 +12,7 @@ module Option {
   //
   // Returns:
   //   An Option representing the presence of a value
-  function some(value) = {tag: "some", value: value}
+  some :: (value) = {tag: "some", value: value}
 
 
   // Function: none
@@ -20,12 +20,12 @@ module Option {
   //
   // Returns:
   //   An Option representing no value
-  function none() = {tag: "none"}
+  none :: () = {tag: "none"}
 
 
   // Variable: NONE
   // Predefined constant for the `none` value
-  let NONE = Option.none()
+  NONE := Option.none()
 
 
   // Function: unwrap
@@ -39,7 +39,7 @@ module Option {
   //
   // Panics:
   //   If the Option is `none`, the program will panic with an error message
-  function unwrap(result) = 
+  unwrap :: (result) = 
     when result {
       is {tag: "some", value: value} -> value
       is {tag: "none"} -> System.panic("Unwrapped none value")
@@ -56,7 +56,7 @@ module Option {
   //
   // Returns:
   //   The inner value if present, otherwise `or`
-  function unwrapOr(result, or) = 
+  unwrapOr :: (result, or) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> or
@@ -64,15 +64,15 @@ module Option {
 
 
   // Function: unwrapOrElse
-  // Returns the value if present, or calls a function to generate a fallback
+  // Returns the value if present, or calls a to generate a fallback
   //
   // Parameters:
   //   result - The Option to check
-  //   fx - A function that returns a fallback value
+  //   fx - A that returns a fallback value
   //
   // Returns:
   //   The inner value if present, otherwise the result of `fx(result)`
-  function unwrapOrElse(result, fx) = 
+  unwrapOrElse :: (result, fx) = 
     when result {
       is {tag: "some", value: value} -> value
       else -> fx(result)
@@ -87,7 +87,7 @@ module Option {
   //
   // Returns:
   //   true if the Option is `some`, false otherwise
-  function isSome(result) = 
+  isSome :: (result) = 
     when result {
       is {tag: "some", value: _} -> true
       else -> false
@@ -102,7 +102,7 @@ module Option {
   //
   // Returns:
   //   true if the Option is `none`, false otherwise
-  function isNone(result) = 
+  isNone :: (result) = 
     when result {
       is {tag: "some", value: _} -> false
       else -> true

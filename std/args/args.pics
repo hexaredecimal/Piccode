@@ -1,7 +1,7 @@
 
 // Module: Args
 // Provides access to user-provided program arguments.
-module Args {
+Args :: module {
 
   // Function: get
   // Returns the list of arguments passed to the program by the user.
@@ -12,7 +12,7 @@ module Args {
   //   let args = Args.get()
   //   IO.println(Array.toString(args))
   // --- Code
-  function get() = _pic_nat_user_args
+  get :: () = _pic_nat_user_args
 
 }
 

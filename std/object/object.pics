@@ -1,7 +1,7 @@
 
 // Module: Object
 // Provides functions for working with objects
-module Object {
+Object :: module {
 	// Function: hasKey
   // Checks is the objects has the specified value as a key
 	//
@@ -10,5 +10,5 @@ module Object {
 	//
 	// Returns:
 	// 	true if the object contains the key, false if not
-	function haskey(value) = pic_nat_ishaskey(value)
+	haskey :: (value) = pic_nat_ishaskey(value)
 }

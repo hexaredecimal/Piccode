@@ -1,20 +1,20 @@
 
 
-module Months {
-	let JANUARY 		= "January"
-	let FEBRUARY 		= "February"
-	let MARCH 			= "March"
-	let APRIL				= "April"
-	let MAY 				= "May"
-	let JUNE				= "June"
-	let JULY				= "July"
-	let AUGUST			= "August"
-	let SEPTEMBER		= "September"
-	let OCTOBER			= "October"
-	let NOVEMBER		= "November"
-	let DECEMBER		= "December"
+Months :: module {
+	JANUARY 		:= "January"
+	FEBRUARY 		:= "February"
+	MARCH 			:= "March"
+	APRIL				:= "April"
+	MAY 				:= "May"
+	JUNE				:= "June"
+	JULY				:= "July"
+	AUGUST			:= "August"
+	SEPTEMBER		:= "September"
+	OCTOBER			:= "October"
+	NOVEMBER		:= "November"
+	DECEMBER		:= "December"
 
-  function getMonth(month = 0) = 
+  getMonth :: (month = 0) = 
     when month {
 			is 0 		-> Months.JANUARY
 			is 1 		-> Months.FEBRUARY
@@ -30,7 +30,7 @@ module Months {
 			is 11 	-> Months.DECEMBER
 		}
 	
-  function toNumber(month) = 
+  toNumber :: (month) = 
     when month {
 			is Months.JANUARYa -> 0
 			is Months.FEBRUARY -> 1

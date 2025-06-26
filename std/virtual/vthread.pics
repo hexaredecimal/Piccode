@@ -1,7 +1,7 @@
 
 // Module: Virtual
 // Contains functions for working with threads
-module Virtual {
+Virtual :: module {
 
   // Function: task
   // Executes a closure in a virtual thread
@@ -12,7 +12,7 @@ module Virtual {
   // Returns:
   //   A handle to the thread executing. 
   //   This handle can be used to get the result of the closure
-  function task(fx) = pic_nat_task(fx)
+  task :: (fx) = pic_nat_task(fx)
 
 
   // Function: sleep
@@ -23,7 +23,7 @@ module Virtual {
   //
   // Returns:
   //   A Unit value
-  function sleep(ms) = pic_nat_sleep(ms)
+  sleep :: (ms) = pic_nat_sleep(ms)
 
 
   // Function: await
@@ -34,7 +34,7 @@ module Virtual {
   //
   // Returns:
   //   The result of the thread. 
-  function await(task) = task.await
+  await :: (task) = task.await
 }
 
 

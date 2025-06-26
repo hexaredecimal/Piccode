@@ -1,11 +1,11 @@
 
 import std.sys
-import std.option // TODO: Fix circular dependency
+import std.option 
 
 // Module: Result
 // Provides a standard way to represent success (`ok`) or failure (`err`) outcomes.
 // Inspired by Rust's Result type, this allows safe and composable error handling.
-module Result {
+Result :: module {
 
   // Function: ok
   // Wraps a value in an `ok` result
@@ -15,7 +15,7 @@ module Result {
   //
   // Returns:
   //   A Result tagged as `ok`
-  function ok(value) = {tag: "ok", value: value}
+  ok :: (value) = {tag: "ok", value: value}
 
 
   // Function: err
@@ -26,7 +26,7 @@ module Result {
   //
   // Returns:
   //   A Result tagged as `err`
-  function err(msg) = {tag: "err", message: msg}
+  err :: (msg) = {tag: "err", message: msg}
 
 
   // Function: unwrap
@@ -40,7 +40,7 @@ module Result {
   //
   // Panics:
   //   If the result is `err`, panics with its error message
-  function unwrap(result) = 
+  unwrap :: (result) = 
     when result {
       is {tag: "ok", value: value} -> value
       is {tag: "err", message: msg} -> System.panic(msg)
@@ -57,7 +57,7 @@ module Result {
   //
   // Returns:
   //   The value if `ok`, otherwise `or`
-  function unwrapOr(result, or) = 
+  unwrapOr :: (result, or) = 
     when result {
       is {tag: "ok", value: value} -> value
       else -> or
@@ -65,15 +65,15 @@ module Result {
 
 
   // Function: unwrapOrElse
-  // Returns the value if `ok`, or calls a function to compute a fallback from the error
+  // Returns the value if `ok`, or calls a to compute a fallback from the error
   //
   // Parameters:
   //   result - The Result to unwrap
-  //   fx - A function to call with the `err` value if present
+  //   fx - A to call with the `err` value if present
   //
   // Returns:
   //   The value if `ok`, otherwise the result of `fx(result)`
-  function unwrapOrElse(result, fx) = 
+  unwrapOrElse :: (result, fx) = 
     when result {
       is {tag: "ok", value: value} -> value
       else -> fx(result)
@@ -88,7 +88,7 @@ module Result {
   //
   // Returns:
   //   true if the result is `ok`, false otherwise
-  function isOk(result) = 
+  isOk :: (result) = 
     when result {
       is {tag: "ok", value: _} -> true
       else -> false
@@ -103,7 +103,7 @@ module Result {
   //
   // Returns:
   //   true if the result is `err`, false otherwise
-  function isErr(result) = 
+  isErr :: (result) = 
     when result {
       is {tag: "ok", value: _} -> false
       else -> true
@@ -111,15 +111,15 @@ module Result {
 
 
   // Function: map
-  // Applies a function to the value if it's `ok`; passes through `err` unchanged
+  // Applies a to the value if it's `ok`; passes through `err` unchanged
   //
   // Parameters:
   //   result - The Result to map
-  //   fx - A function to transform the `ok` value
+  //   fx - A to transform the `ok` value
   //
   // Returns:
   //   A new Result with the transformed value or the original `err`
-  function map(result, fx) = 
+  map :: (result, fx) = 
     when result {
       is {tag: "ok", value: v} -> Result.ok(fx(v))
       else -> result
@@ -127,15 +127,15 @@ module Result {
 
 
   // Function: mapErr
-  // Applies a function to the error message if it's `err`; passes through `ok` unchanged
+  // Applies a to the error message if it's `err`; passes through `ok` unchanged
   //
   // Parameters:
   //   result - The Result to map
-  //   fx - A function to transform the error message
+  //   fx - A to transform the error message
   //
   // Returns:
   //   A new Result with the transformed error or the original `ok`
-  function mapErr(result, fx) = 
+  mapErr :: (result, fx) = 
     when result {
       is {tag: "err", message: msg} -> Result.err(fx(msg))
       else -> result
@@ -143,15 +143,15 @@ module Result {
 
 
   // Function: flatMap
-  // Applies a function that returns a Result, flattening the output
+  // Applies a that returns a Result, flattening the output
   //
   // Parameters:
   //   result - The Result to transform
-  //   fx - A function that returns another Result
+  //   fx - A that returns another Result
   //
   // Returns:
   //   The output of `fx` if input was `ok`, or the original `err`
-  function flatMap(result, fx) = 
+  flatMap :: (result, fx) = 
     when result {
       is {tag: "ok", value: v} -> fx(v)
       else -> result
@@ -168,7 +168,7 @@ module Result {
   //
   // Returns:
   //   The result of calling the appropriate function
-  function match(result, okFx, errFx) =
+  match :: (result, okFx, errFx) =
     when result {
       is {tag: "ok", value: v} -> okFx(v)
       is {tag: "err", message: msg} -> errFx(msg)
@@ -183,7 +183,7 @@ module Result {
   //
   // Returns:
   //   Option.some(value) if `ok`, Option.none() if `err`
-  function toOption(result) =
+  toOption :: (result) =
     when result {
       is {tag: "ok", value: v} -> Option.some(v)
       else -> Option.none()
@@ -198,7 +198,7 @@ module Result {
   //
   // Returns:
   //   A string like "Result.ok(value)" or "Result.err(message)"
-  function toString(result) =
+  toString :: (result) =
     when result {
       is {tag: "ok", value: v} -> "Result.ok(" + v + ")"
       is {tag: "err", message: msg} -> "Result.err(" + msg + ")"

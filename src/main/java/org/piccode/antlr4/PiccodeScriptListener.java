@@ -70,6 +70,16 @@ public interface PiccodeScriptListener extends ParseTreeListener {
 	 */
 	void exitSymbol_entry(PiccodeScriptParser.Symbol_entryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaration(PiccodeScriptParser.DeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaration(PiccodeScriptParser.DeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PiccodeScriptParser#module}.
 	 * @param ctx the parse tree
 	 */

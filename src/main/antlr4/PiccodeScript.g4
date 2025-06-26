@@ -13,8 +13,7 @@ stmts: stmt*
 
 stmt:
 	import_module
-	| func
-	| module
+	| declaration
 	| expr_stmt;
 
 import_module:
@@ -29,19 +28,19 @@ symbol_lift
 symbol_entry
 : ID (symbol_lift)? ;
 
+declaration: ID CC (module | func);
 	
 module: 
-	MODULE ID LBRACE module_stmts RBRACE;
+	MODULE LBRACE module_stmts RBRACE;
 
 module_stmts:
 	module_stmt*;
 
 module_stmt:
-	func
-	| var_decl
-	| module;
+	declaration
+	| var_decl;
 
-func: FUNCTION ID func_args ASSIGN expr ;
+func: func_args ASSIGN expr ;
 
 func_args: '(' arg_list? ')' ;
 
@@ -64,6 +63,7 @@ expr
 	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
+	| expr CC expr
 	| expr DOT expr
 	| expr MUL expr         
 	| expr DIV expr         
@@ -93,7 +93,6 @@ expr
 	| array
 	| tuple
 	| object
-	| ID
 	| NUMBER                           
 	| STRING                           
 	;
@@ -107,7 +106,7 @@ unary:
 	| BAND expr;
 
 if_expr:
-	IF expr LBRACE expr RBRACE ELSE LBRACE expr RBRACE;
+	IF expr LBRACE expr* RBRACE (ELSE LBRACE expr* RBRACE)?;
 
 when_expr: 
  WHEN expr LBRACE when_cases else_case? RBRACE;
@@ -118,7 +117,7 @@ when_case: IS expr_list ARROW expr;
 
 else_case: ELSE ARROW expr;
 
-var_decl: LET ID ASSIGN expr;
+var_decl: ID (DASSIGN expr)?;
 tuple: LPAREN expr_list RPAREN;
 array: LBRACKET expr_list? RBRACKET;
 object: LBRACE key_val_pairs RBRACE;
@@ -157,6 +156,7 @@ BAND: '&';
 BOR: '|';
 EXCLAIM : '!';
 PIPE: '|>';
+CC: '::';
 
 LBRACE: '{';
 RBRACE: '}';
@@ -172,9 +172,8 @@ TILDE: '~';
 
 
 ASSIGN: '=';
+DASSIGN: ':=';
 
-LET: 'let';
-FUNCTION: 'function';
 WHEN: 'when';
 IMPORT: 'import';
 IS: 'is';

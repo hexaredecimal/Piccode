@@ -6,7 +6,7 @@
 // These functions immediately halt execution with native behavior,
 // often useful for development, assertion, and exhaustiveness checking.
 
-module System {
+System :: module {
 
   // Function: panic
   // Halts execution and reports a fatal error with the given message.
@@ -18,8 +18,8 @@ module System {
   //   Immediately stops the program and raises an unrecoverable error.
   //
   // Usage:
-  //   System.panic("Something went horribly wrong")
-  function panic(message="") = pic_nat_panic(message) 
+  //   System::panic("Something went horribly wrong")
+  panic :: (message="") = pic_nat_panic(message) 
 
 
   // Function: todo
@@ -32,8 +32,8 @@ module System {
   //   Panics at runtime to indicate that this code hasn’t been written yet.
   //
   // Usage:
-  //   System.todo("Finish the file upload logic here")
-  function todo(message="") = pic_nat_todo(message) 
+  //   System::todo("Finish the file upload logic here")
+  todo :: (message="") = pic_nat_todo(message) 
 
 
   // Function: unreachable
@@ -46,8 +46,8 @@ module System {
   //   Panics at runtime to indicate an internal logic error or failed exhaustiveness.
   //
   // Usage:
-  //   System.unreachable("Should never hit this case")
-  function unreachable(message="") = pic_nat_unreachable(message) 
+  //   System::unreachable("Should never hit this case")
+  unreachable :: (message="") = pic_nat_unreachable(message) 
 
 }
 

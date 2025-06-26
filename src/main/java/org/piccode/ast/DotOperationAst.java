@@ -36,13 +36,7 @@ public class DotOperationAst extends Ast {
 	public PiccodeValue execute() {
 
 		if (lhs instanceof IdentifierAst id && Context.modules.containsKey(id.text)) {
-			var mod = Context.modules.get(id.text);
-
-			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + id.text);
-			}
-
-			return process(id, mod);
+			throw new PiccodeException(file, line, column, "Cannot access the module `" + id.text + "` using dot. Please use `::` instead");
 		}
 
 		var left = lhs.execute();

@@ -1,7 +1,7 @@
 
 // Module: Math
 // Mathematical functions 
-module Math {
+Math :: module {
 
   // Function: sin
   // Computes the sine wave of the given value
@@ -11,7 +11,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the sine 
-  function sin(a=0) = pic_nat_sin(a)
+  sin :: (a=0) = pic_nat_sin(a)
 
 
   // Function: cos
@@ -22,7 +22,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the cosine
-  function cos(a=0) = pic_nat_cos(a)
+  cos :: (a=0) = pic_nat_cos(a)
 
 
   // Function: tan
@@ -33,7 +33,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the tangent
-  function tan(a=0) = pic_nat_tan(a) 
+  tan :: (a=0) = pic_nat_tan(a) 
 
 
   // Function: sinh
@@ -44,7 +44,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the hyperbolic sine
-  function sinh(a=0) = pic_nat_sinh(a) 
+  sinh :: (a=0) = pic_nat_sinh(a) 
 
 
   // Function: cosh
@@ -55,7 +55,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the hyperbolic cosine
-  function cosh(a=0) = pic_nat_cosh(a) 
+  cosh :: (a=0) = pic_nat_cosh(a) 
 
 
   // Function: tanh
@@ -66,7 +66,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the hyperbolic tangent
-  function tanh(a=0) = pic_nat_tanh(a) 
+  tanh :: (a=0) = pic_nat_tanh(a) 
 
 
   // Function: asin
@@ -77,7 +77,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the arc sine
-  function asin(a=0) = pic_nat_asin(a) 
+  asin :: (a=0) = pic_nat_asin(a) 
 
 
   // Function: acos
@@ -88,7 +88,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the arc cosine
-  function acos(a=0) = pic_nat_acos(a) 
+  acos :: (a=0) = pic_nat_acos(a) 
 
 
   // Function: atan
@@ -99,7 +99,7 @@ module Math {
   //
   // Returns:
   //   The numeric representation of the arc tangent
-  function atan(a=0) = pic_nat_atan(a) 
+  atan :: (a=0) = pic_nat_atan(a) 
 
 
   // Function: abs
@@ -110,7 +110,7 @@ module Math {
   //
   // Returns:
   //   The absolute value of `a`
-  function abs(a=0) = pic_nat_abs(a) 
+  abs :: (a=0) = pic_nat_abs(a) 
 
 
   // Function: floor
@@ -121,7 +121,7 @@ module Math {
   //
   // Returns:
   //   The largest integer less than or equal to `a`
-  function floor(a=0) = pic_nat_floor(a) 
+  floor :: (a=0) = pic_nat_floor(a) 
 
 
   // Function: ceil
@@ -132,7 +132,7 @@ module Math {
   //
   // Returns:
   //   The smallest integer greater than or equal to `a`
-  function ceil(a=0) = pic_nat_ceil(a) 
+  ceil :: (a=0) = pic_nat_ceil(a) 
 
 
   // Function: pow
@@ -144,7 +144,7 @@ module Math {
   //
   // Returns:
   //   The value of `a` raised to the power of `b`
-  function pow(a=0, b=0) = pic_nat_pow(a, b) 
+  pow :: (a=0, b=0) = pic_nat_pow(a, b) 
 
 
   // Function: clamp
@@ -157,7 +157,7 @@ module Math {
   //
   // Returns:
   //   The clamped value, either `a`, `low`, or `high`
-  function clamp(a=0, low=-1, high=1) = 
+  clamp :: (a=0, low=-1, high=1) = 
      if a < low { low }
      else { 
        if a > high { high }
@@ -174,7 +174,7 @@ module Math {
   //
   // Returns:
   //   The maximum between `a` and `b`
-  function max(a=0, b=0) = if a > b { a } else { b }
+  max :: (a=0, b=0) = if a > b { a } else { b }
 
 
   // Function: min
@@ -186,7 +186,7 @@ module Math {
   //
   // Returns:
   //   The minimum between `a` and `b`
-  function min(a=0, b=0) = if a < b { a } else { b }
+  min :: (a=0, b=0) = if a < b { a } else { b }
 
 
   // Function: degToRad
@@ -197,7 +197,7 @@ module Math {
   //
   // Returns:
   //   The value in radians
-  function degToRad(deg=0) = deg * (3.141592653589793 / 180)
+  degToRad :: (deg=0) = deg * (3.141592653589793 / 180)
 
 
   // Function: radToDeg
@@ -208,7 +208,7 @@ module Math {
   //
   // Returns:
   //   The value in degrees
-  function radToDeg(rad=0) = rad * (180 / 3.141592653589793)
+  radToDeg :: (rad=0) = rad * (180 / 3.141592653589793)
 
 
   // Function: factorial
@@ -219,22 +219,22 @@ module Math {
   //
   // Returns:
   //   The factorial of `n`
-  function factorial(n=0) =
+  factorial :: (n=0) =
     if n <= 1 { 1 }
     else { n * factorial(n - 1) } 
 
   // Variable: E
   // The double value that is closer than any other to e, the base of the natural logarithms.
-  let E = 2.718281828459045
+  E := 2.718281828459045
 
 
   // Variable: PI
   // The PI constant
-  let PI = 3.141592653589793
+  PI := 3.141592653589793
 
   // Variable: TAU
   // The double value that is closer than any other to tau.
-  let TAU = 6.283185307179586
+  TAU := 6.283185307179586
   
 }
 

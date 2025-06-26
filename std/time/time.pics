@@ -1,28 +1,28 @@
 
 // Module: Time
 // Provides functions for working with dates and time
-module Time {
+Time :: module {
 
   // Function: now
   // Returns the current time
   //
   // Returns:
   //   The current time as an object
-  function now() = pic_nat_now()
+  now :: () = pic_nat_now()
 
   // Function: min
   // Returns the minimum supported time
   //
   // Returns:
   //   The minimum time as an object
-  function min() = pic_nat_min()
+  min :: () = pic_nat_min()
 
   // Function: max
   // Returns the maximum supported time
   //
   // Returns:
   //   The maximum time as an object
-  function max() = pic_nat_max()
+  max :: () = pic_nat_max()
 
   // Function: from
   // Returns the maximum supported time
@@ -36,7 +36,7 @@ module Time {
   //
   // Returns:
   //   The time as an object
-  function from(year=1980, month=10, day=11, hour=0, minute=0) = pic_nat_from(year, month, day, hour, minute)
+  from :: (year=1980, month=10, day=11, hour=0, minute=0) = pic_nat_from(year, month, day, hour, minute)
 
 }
 

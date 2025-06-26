@@ -1,7 +1,7 @@
 
 // Module: Type
 // Provides functions for type checking at runtime
-module Type {
+Type :: module {
 
 
 	// Function: isNumber
@@ -12,7 +12,7 @@ module Type {
 	//
 	// Returns:
 	// 	true when it is a number, false if not
-	function isNumber(value) = pic_nat_isnumber(value)
+	isNumber :: (value) = pic_nat_isnumber(value)
 
 
 
@@ -25,7 +25,7 @@ module Type {
 	//
 	// Returns:
 	// 	true when it is a string, false if not
-	function isString(value) = pic_nat_isstring(value)
+	isString :: (value) = pic_nat_isstring(value)
 
 
 
@@ -37,7 +37,7 @@ module Type {
 	//
 	// Returns:
 	// 	true when it is a object, false if not
-	function isObject(value) = pic_nat_isobject(value)
+	isObject :: (value) = pic_nat_isobject(value)
 
 
 
@@ -49,7 +49,7 @@ module Type {
 	//
 	// Returns:
 	// 	true when it is a array, false if not
-	function isArray(value) = pic_nat_isarray(value)
+	isArray :: (value) = pic_nat_isarray(value)
 
 
 
@@ -61,7 +61,7 @@ module Type {
 	//
 	// Returns:
 	// 	true when it is a tuple, false if not
-	function isTuple(value) = pic_nat_istuple(value)
+	isTuple :: (value) = pic_nat_istuple(value)
 
 
 
