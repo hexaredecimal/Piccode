@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.piccode.rt.PiccodeArray;
+import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeNumber;
+import org.piccode.rt.PiccodeObject;
+import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeValue;
 
@@ -16,16 +19,29 @@ import org.piccode.rt.PiccodeValue;
 public class PiccodeTypesModule {
 	public static void addFunctions() {
 		
-		NativeFunctionFactory.create("tuplesize", List.of("tuple"), (args, namedArgs) -> {
-				var arr = ((PiccodeTuple) namedArgs.get("tuple")).array().length;
-				return new PiccodeNumber("" + arr);
+		NativeFunctionFactory.create("isnumber", List.of("value"), (args, namedArgs) -> {
+			var value = namedArgs.get("value");
+			return new PiccodeBoolean(String.valueOf(value instanceof PiccodeNumber));
 		});
 		
-		NativeFunctionFactory.create("tupletoarray", List.of("tuple"), (args, namedArgs) -> {
-				var arr = ((PiccodeTuple) namedArgs.get("tuple")).array();
-				var list = new ArrayList<PiccodeValue>();
-				list.addAll(Arrays.asList(arr));
-				return new PiccodeArray(list);
+		NativeFunctionFactory.create("isstring", List.of("value"), (args, namedArgs) -> {
+			var value = namedArgs.get("value");
+			return new PiccodeBoolean(String.valueOf(value instanceof PiccodeString));
+		});
+
+		NativeFunctionFactory.create("isobject", List.of("value"), (args, namedArgs) -> {
+			var value = namedArgs.get("value");
+			return new PiccodeBoolean(String.valueOf(value instanceof PiccodeObject));
+		});
+
+		NativeFunctionFactory.create("isarr", List.of("value"), (args, namedArgs) -> {
+			var value = namedArgs.get("value");
+			return new PiccodeBoolean(String.valueOf(value instanceof PiccodeArray));
+		});
+
+		NativeFunctionFactory.create("istuple", List.of("value"), (args, namedArgs) -> {
+			var value = namedArgs.get("value");
+			return new PiccodeBoolean(String.valueOf(value instanceof PiccodeTuple));
 		});
 		
 	}

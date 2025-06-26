@@ -46,7 +46,7 @@ public class CallAst extends Ast {
 	public PiccodeValue execute() {
 		var expr_val = expr.execute();
 		if (!(expr_val instanceof PiccodeClosure) && !(expr_val instanceof NativeFunction)) {
-			throw new PiccodeException(file, line, column, "Attempt to call a non-callable expression");
+			throw new PiccodeException(file, line, column, "Attempt to call a non-callable expression. Issue is: " + expr + " = " + expr_val);
 		}
 		lastCall = expr;
 

@@ -1332,11 +1332,11 @@ public class PiccodeScriptParser extends Parser {
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(183);
-						if (!(precpred(_ctx, 32))) throw new FailedPredicateException(this, "precpred(_ctx, 32)");
+						if (!(precpred(_ctx, 35))) throw new FailedPredicateException(this, "precpred(_ctx, 35)");
 						setState(184);
 						match(CC);
 						setState(185);
-						expr(33);
+						expr(36);
 						}
 						break;
 					case 2:
@@ -1596,7 +1596,7 @@ public class PiccodeScriptParser extends Parser {
 						_localctx = new ExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
 						setState(249);
-						if (!(precpred(_ctx, 35))) throw new FailedPredicateException(this, "precpred(_ctx, 35)");
+						if (!(precpred(_ctx, 34))) throw new FailedPredicateException(this, "precpred(_ctx, 34)");
 						setState(250);
 						match(LPAREN);
 						setState(252);
@@ -2752,7 +2752,7 @@ public class PiccodeScriptParser extends Parser {
 	private boolean expr_sempred(ExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 32);
+			return precpred(_ctx, 35);
 		case 1:
 			return precpred(_ctx, 31);
 		case 2:
@@ -2796,7 +2796,7 @@ public class PiccodeScriptParser extends Parser {
 		case 21:
 			return precpred(_ctx, 11);
 		case 22:
-			return precpred(_ctx, 35);
+			return precpred(_ctx, 34);
 		}
 		return true;
 	}
@@ -2872,8 +2872,8 @@ public class PiccodeScriptParser extends Parser {
 		",\2\2\u00b7\u00a6\3\2\2\2\u00b7\u00a8\3\2\2\2\u00b7\u00a9\3\2\2\2\u00b7"+
 		"\u00ae\3\2\2\2\u00b7\u00af\3\2\2\2\u00b7\u00b0\3\2\2\2\u00b7\u00b1\3\2"+
 		"\2\2\u00b7\u00b2\3\2\2\2\u00b7\u00b3\3\2\2\2\u00b7\u00b4\3\2\2\2\u00b7"+
-		"\u00b5\3\2\2\2\u00b7\u00b6\3\2\2\2\u00b8\u0103\3\2\2\2\u00b9\u00ba\f\""+
-		"\2\2\u00ba\u00bb\7\26\2\2\u00bb\u0102\5\"\22#\u00bc\u00bd\f!\2\2\u00bd"+
+		"\u00b5\3\2\2\2\u00b7\u00b6\3\2\2\2\u00b8\u0103\3\2\2\2\u00b9\u00ba\f%"+
+		"\2\2\u00ba\u00bb\7\26\2\2\u00bb\u0102\5\"\22&\u00bc\u00bd\f!\2\2\u00bd"+
 		"\u00be\7-\2\2\u00be\u0102\5\"\22\"\u00bf\u00c0\f \2\2\u00c0\u00c1\7\5"+
 		"\2\2\u00c1\u0102\5\"\22!\u00c2\u00c3\f\37\2\2\u00c3\u00c4\7\6\2\2\u00c4"+
 		"\u0102\5\"\22 \u00c5\u00c6\f\36\2\2\u00c6\u00c7\7\7\2\2\u00c7\u0102\5"+
@@ -2892,7 +2892,7 @@ public class PiccodeScriptParser extends Parser {
 		"\f\20\2\2\u00f0\u00f1\7\21\2\2\u00f1\u0102\5\"\22\21\u00f2\u00f3\f\17"+
 		"\2\2\u00f3\u00f4\7\23\2\2\u00f4\u0102\5\"\22\20\u00f5\u00f6\f\16\2\2\u00f6"+
 		"\u00f7\7\22\2\2\u00f7\u0102\5\"\22\17\u00f8\u00f9\f\r\2\2\u00f9\u00fa"+
-		"\7\35\2\2\u00fa\u0102\5\"\22\16\u00fb\u00fc\f%\2\2\u00fc\u00fe\7\31\2"+
+		"\7\35\2\2\u00fa\u0102\5\"\22\16\u00fb\u00fc\f$\2\2\u00fc\u00fe\7\31\2"+
 		"\2\u00fd\u00ff\5<\37\2\u00fe\u00fd\3\2\2\2\u00fe\u00ff\3\2\2\2\u00ff\u0100"+
 		"\3\2\2\2\u0100\u0102\7\32\2\2\u0101\u00b9\3\2\2\2\u0101\u00bc\3\2\2\2"+
 		"\u0101\u00bf\3\2\2\2\u0101\u00c2\3\2\2\2\u0101\u00c5\3\2\2\2\u0101\u00c8"+

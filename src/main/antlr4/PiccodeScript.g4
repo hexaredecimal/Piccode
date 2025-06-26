@@ -60,10 +60,10 @@ literal_expr :
 expr_stmt: expr;
 	// parser rules
 expr
-	: expr LPAREN call_expr_list? RPAREN
+	: expr CC expr
+	| expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
-	| expr CC expr
 	| expr DOT expr
 	| expr MUL expr         
 	| expr DIV expr         

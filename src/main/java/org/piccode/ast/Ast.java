@@ -71,6 +71,10 @@ public abstract class Ast {
 		if (node instanceof DoExprAst dot) {
 			return new Location(dot.line, dot.column);
 		}
+
+		if (node instanceof CCOperationAst cc) {
+			return new Location(cc.line, cc.column);
+		}
 		
 		if (node instanceof DotOperationAst dot) {
 			return new Location(dot.line, dot.column);
