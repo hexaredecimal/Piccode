@@ -391,7 +391,7 @@ public class Piccode {
 				PiccodeValue res = null;
 				try {
 					for (var stmt : result.nodes) {
-						res = stmt.execute();
+						res = stmt.execute(null);
 					}
 
 					terminal.writer().println(res + " : " + res.type());
