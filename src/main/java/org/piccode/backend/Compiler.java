@@ -43,7 +43,6 @@ public class Compiler {
 		try {
 			var result = program(file, code);
 			prepareGlobalScope(file);
-			addGlobalFunctions();
 
 			PiccodeValue res = new PiccodeUnit();
 			var has_main = false;
@@ -51,11 +50,11 @@ public class Compiler {
 				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
 					has_main = true;
 				}
-				res = stmt.execute();
+				res = stmt.execute(null);
 			}
 
 			if (has_main) {
-				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute();
+				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
 				Context.top.dropStackFrame();
 				return _result;
 			}
@@ -118,11 +117,11 @@ public class Compiler {
 		Context.top.pushStackFrame(scope_id);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
     Context.top.putLocal("false", new PiccodeBoolean("false"));
-		addGlobalFunctions();
+		addSystemFunctions();
 	}
 
 
-	private static void addGlobalFunctions() {
+	private static void addSystemFunctions() {
 		PiccodeIOModule.addFunctions();
 		PiccodeArrayModule.addFunctions();
 		PiccodeStringModule.addFunctions();
