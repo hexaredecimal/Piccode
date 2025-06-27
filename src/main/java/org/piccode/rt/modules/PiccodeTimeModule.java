@@ -36,22 +36,22 @@ public class PiccodeTimeModule {
 
 	public static void addFunctions() {
 
-		NativeFunctionFactory.create("now", List.of(), (args, namedArgs) -> {
+		NativeFunctionFactory.create("now", List.of(), (args, namedArgs, frame) -> {
 			var time = LocalDateTime.now();
 			return makeTime(time);
-		});
+		}, null);
 
-		NativeFunctionFactory.create("min", List.of(), (args, namedArgs) -> {
+		NativeFunctionFactory.create("min", List.of(), (args, namedArgs, frame) -> {
 			var time = LocalDateTime.MIN;
 			return makeTime(time);
-		});
+		}, null);
 
-		NativeFunctionFactory.create("max", List.of(), (args, namedArgs) -> {
+		NativeFunctionFactory.create("max", List.of(), (args, namedArgs, frame) -> {
 			var time = LocalDateTime.MAX;
 			return makeTime(time);
-		});
+		}, null);
 
-		NativeFunctionFactory.create("from", List.of("year", "month", "day", "hour", "minute"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("from", List.of("year", "month", "day", "hour", "minute"), (args, namedArgs, frame) -> {
 			try {
 				var year = (int) (double) namedArgs.get("year").raw();
 				var month = (int) (double) namedArgs.get("month").raw();
@@ -64,11 +64,12 @@ public class PiccodeTimeModule {
 			} catch (RuntimeException e) {
 				var last = CallAst.lastCall;
 				if (last == null) {
-					throw new PiccodeException("repl", 0, 0, e.getMessage());
+					var err = new PiccodeException("repl", 0, 0, e.getMessage());
+					throw err;
 				}
 
 				throw new PiccodeException(last.file, last.line, last.column, e.getMessage());
 			}
-		});
+		}, null);
 	}
 }

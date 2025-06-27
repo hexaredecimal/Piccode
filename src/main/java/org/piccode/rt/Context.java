@@ -1,33 +1,60 @@
 package org.piccode.rt;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.piccode.ast.Ast;
+import org.piccode.backend.Compiler;
 
 /**
  *
  * @author hexaredecimal
  */
 public class Context {
+
 	private static HashMap<String, PiccodeValue> global_scope = new HashMap<>();
+	private static MessageDigest hash = null;
+
 	private Stack<StackFrame> call_frames;
+	public StackFrame bottom = null;
 
 	public static Context top = new Context();
-	public static HashMap<String, PiccodeModule> modules = new HashMap<>();
-	private HashMap<String, List<Ast>> import_cache = new HashMap<>();
-	private ExecutorService threadPool;
-	private HashMap<String, Future<PiccodeValue>> futureMap;
-	
+	public static ConcurrentHashMap<String, PiccodeModule> modules = new ConcurrentHashMap<>();
+	private static List<Context> threadContexts = new ArrayList<>();
+	private ConcurrentHashMap<String, List<Ast>> import_cache = new ConcurrentHashMap<>();
+	private static ExecutorService threadPool = Executors.newVirtualThreadPerTaskExecutor();
+	private static ConcurrentMap<String, Future<PiccodeValue>> futureMap = new ConcurrentHashMap<>();
+
 	public Context() {
 		call_frames = new Stack<>();
-		import_cache = new HashMap<>();
-		threadPool = Executors.newVirtualThreadPerTaskExecutor();
-		futureMap = new HashMap<>();
+		import_cache = new ConcurrentHashMap<>();
+	}
+
+	public static int makeThreadContext(Context base) {
+		int index = threadContexts.size();
+		var context = new Context();
+		context.call_frames.addAll(base.call_frames);
+		context.futureMap.putAll(base.futureMap);
+		threadContexts.add(context);
+		return index;
+	}
+
+	public static void dropThreadContext(int index) {
+		threadContexts.remove(index);
+	}
+
+	public static Context getContextAt(int index) {
+		return threadContexts.get(index);
 	}
 
 	public Stack<StackFrame> getCallStack() {
@@ -38,24 +65,35 @@ public class Context {
 		return call_frames.size();
 	}
 
-	public String makeThread(PiccodeClosure node) {
-		var future = threadPool.submit(() -> {
-			var call = (PiccodeClosure) node.call(new PiccodeUnit());
-			return call.evaluateIfReady();
-		});
-		var id = UUID.randomUUID().toString();
-		futureMap.put(id, future);
-		return id;
+	public static String makeThread(PiccodeClosure node) {
+		synchronized (Context.class) {
+			var future = threadPool.submit(() -> {
+				synchronized (node) {
+					var ctx = node.frame == null ? top : threadContexts.get(node.frame);
+					var frame = makeThreadContext(ctx);
+					var call = (PiccodeClosure) node.call(new PiccodeUnit());
+					call.frame = frame;
+					return call.evaluateIfReady();
+				}
+			});
+			var size = futureMap.size();
+			var name = String.format("Thread@%d", size);
+			var id = name + UUID.randomUUID().toString();
+			futureMap.put(id, future);
+			return id;
+		}
 	}
 
-	public Future<PiccodeValue> getFuture(String id) {
-		return futureMap.get(id);
+	public static Future<PiccodeValue> getFuture(String id) {
+		synchronized (Context.class) {
+			return futureMap.get(id);
+		}
 	}
 
-	public void removeFuture(String uuid) {
+	public static void removeFuture(String uuid) {
 		futureMap.remove(uuid);
 	}
-	
+
 	public StackFrame getTopFrame() {
 		return call_frames.peek();
 	}
@@ -75,8 +113,7 @@ public class Context {
 	public List<Ast> getCached(String path) {
 		return import_cache.get(path);
 	}
-	
-	
+
 	public void pushScope() {
 		call_frames.peek().addScope();
 	}
@@ -84,13 +121,15 @@ public class Context {
 	public void dropScope() {
 		call_frames.peek().dropScope();
 	}
-	
+
 	public void pushStackFrame(Ast top) {
 		if (call_frames.isEmpty()) {
-			call_frames.push(new StackFrame(top));
+			var sp = new StackFrame(top);
+			bottom = sp;
+			call_frames.push(sp);
 			return;
 		}
-	
+
 		var prev = call_frames.peek();
 		call_frames.push(new StackFrame(top, prev));
 	}
@@ -115,7 +154,6 @@ public class Context {
 		}
 		return value;
 	}
-
 
 	public String getSimilarName(String id) {
 		HashMap<String, Integer> calculations = new HashMap<>();

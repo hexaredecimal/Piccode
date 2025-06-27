@@ -14,35 +14,35 @@ import org.piccode.rt.PiccodeValue;
 public class PiccodeStringModule {
 	
 	public static void addFunctions() {
-		NativeFunctionFactory.create("stringformat", List.of("fmt", "args"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringformat", List.of("fmt", "args"), (args, namedArgs, frame) -> {
 			var fmt = namedArgs.get("fmt").raw().toString();
 			var arr = ((PiccodeArray) namedArgs.get("args")).array();
 			var result = String.format(fmt, (Object[]) arr);
 			return new PiccodeString(result);
-		});
+		}, null);
 
-		NativeFunctionFactory.create("stringtrim", List.of("value"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringtrim", List.of("value"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").raw().toString().trim();
 			return new PiccodeString(value);
-		});
+		}, null);
 		
-		NativeFunctionFactory.create("stringuppercase", List.of("value"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringuppercase", List.of("value"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").raw().toString().toUpperCase();
 			return new PiccodeString(value);
-		});
+		}, null);
 		
-		NativeFunctionFactory.create("stringlowercase", List.of("value"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringlowercase", List.of("value"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").raw().toString().toLowerCase();
 			return new PiccodeString(value);
-		});
+		}, null);
 
-		NativeFunctionFactory.create("stringlength", List.of("value"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringlength", List.of("value"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").raw().toString().length();
 			return new PiccodeNumber(""+value);
-		});
+		}, null);
 
 		
-		NativeFunctionFactory.create("stringsplit", List.of("value", "delim"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("stringsplit", List.of("value", "delim"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").raw().toString();
 			var delim = namedArgs.get("delim").raw().toString();
 			var splits = value.split(delim);
@@ -51,6 +51,6 @@ public class PiccodeStringModule {
 				nodes.add(new PiccodeString(split));
 			}
 			return new PiccodeArray(args);
-		});
+		}, null);
 	}
 }

@@ -16,17 +16,17 @@ import org.piccode.rt.PiccodeValue;
 public class PiccodeTupleModule {
 	public static void addFunctions() {
 		
-		NativeFunctionFactory.create("tuplesize", List.of("tuple"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("tuplesize", List.of("tuple"), (args, namedArgs, frame) -> {
 				var arr = ((PiccodeTuple) namedArgs.get("tuple")).array().length;
 				return new PiccodeNumber("" + arr);
-		});
+		}, null);
 		
-		NativeFunctionFactory.create("tupletoarray", List.of("tuple"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("tupletoarray", List.of("tuple"), (args, namedArgs, frame) -> {
 				var arr = ((PiccodeTuple) namedArgs.get("tuple")).array();
 				var list = new ArrayList<PiccodeValue>();
 				list.addAll(Arrays.asList(arr));
 				return new PiccodeArray(list);
-		});
+		}, null);
 		
 	}
 }

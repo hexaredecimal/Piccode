@@ -23,6 +23,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 	public String file;
 	public int line, column;
+	public Integer frame = null;
 	public PiccodeClosure(List<Arg> params, Map<String, PiccodeValue> appliedArgs, int positionalIndex, Ast body) {
 		this.params = params == null ? List.of() : params;
 		this.appliedArgs = appliedArgs;
@@ -34,6 +35,7 @@ public class PiccodeClosure implements PiccodeValue {
 	public PiccodeValue call(PiccodeValue arg) {
 		if (positionalIndex >= params.size()) {
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Too many arguments. Expected " + params.size() + " but got " + (positionalIndex +  1));
+			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
 			err.addNote(note);
 			throw err;
@@ -45,6 +47,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
 		result.creator = creator;
+		result.frame = frame;
 		result.callSite = callSite;
 		result.callSiteFile = callSiteFile;
 		result.file = file;
@@ -57,6 +60,7 @@ public class PiccodeClosure implements PiccodeValue {
 		boolean paramExists = params.stream().anyMatch(p -> p.name.equals(name));
 		if (!paramExists) {
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Function does not have a parameter named '" + name + "'");
+			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
 			err.addNote(note);
 			throw err;
@@ -64,6 +68,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 		if (positionalIndex >= params.size()) {
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Too many arguments. Expected " + params.size() + " but got " + (positionalIndex + 1));
+			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
 			err.addNote(note);
 			throw err;
@@ -71,6 +76,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 		if (appliedArgs.containsKey(name)) {
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Duplicate argument: " + name);
+			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "The function you are trying to call is declared below");
 			err.addNote(note);
 			throw err;
@@ -81,6 +87,7 @@ public class PiccodeClosure implements PiccodeValue {
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
 		result.creator = creator;
+		result.frame = frame;
 		result.callSite = callSite;
 		result.callSiteFile = callSiteFile;
 		result.file = file;
@@ -98,23 +105,29 @@ public class PiccodeClosure implements PiccodeValue {
 			}
 		}
 
+		var top = Context.top;
+		if (frame != null) {
+			top = Context.getContextAt(frame);
+		}
 		// All required args satisfied (either by user or by default), run
-		Context.top.pushStackFrame(creator);
+		top.pushStackFrame(creator);
 		for (Arg param : params) {
 			PiccodeValue val = appliedArgs.getOrDefault(
 							param.name,
-							param.def_val != null ? param.def_val.execute() : null
+							param.def_val != null ? param.def_val.execute(frame) : null
 			);
-			Context.top.putLocal(param.name, val);
+			top.putLocal(param.name, val);
 		}
 
 		try {
-			var result = body.execute();
-			Context.top.dropStackFrame();
+			var result = body.execute(frame);
+			top.dropStackFrame();
+			
 			return result;
 		} catch (StackOverflowError se) {
-			Context.top.dropStackFrame();
+			top.dropStackFrame();
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Stack overflow");
+			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "Stack overflow error most likely occured when you called the function below. ");
 			err.addNote(note);
 			throw err;

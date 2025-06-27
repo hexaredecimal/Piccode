@@ -17,6 +17,8 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	public int line, col;
 	public String message;
 
+	public Integer frame = null;
+
 	private List<PiccodeInfo> notes = new ArrayList<>();
 
 	public PiccodeException(String file, int line, int col, String message) {
@@ -92,15 +94,20 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			}
 		}
 
-		var stack = Context.top.getCallStack();
+		var top = Context.top;
+		if (frame != null) {
+			top = Context.getContextAt(frame);
+		}
+		var stack = top.getCallStack();
 
 		var list = List.of(stack.toArray(StackFrame[]::new)).reversed();
 
 		if (!list.isEmpty()) {
-			System.out.println("\n[STACK TRACE]");
+			var thread = frame == null ? "" : String.format(".THREAD[%s]", frame);
+			System.out.println("\n[STACK TRACE]" + thread);
 			for (int i = 0; i < list.size(); i++) {
-				var frame = list.get(i);
-				var callSite = frame.caller;
+				var _frame = list.get(i);
+				var callSite = _frame.caller;
 				var _str = String.format(
 								"[%s:%d:%d]: %s", callSite.file,
 								callSite.line, callSite.column + 1,

@@ -11,9 +11,9 @@ import org.piccode.rt.PiccodeString;
  */
 public class PiccodeArrayModule {
 	public static void addFunctions() {
-		NativeFunctionFactory.create("array_tostring", List.of("arr"), (args, namedArgs) -> {
+		NativeFunctionFactory.create("array_tostring", List.of("arr"), (args, namedArgs, frame) -> {
 				var arr = ((PiccodeArray) namedArgs.get("arr")).getList();
 				return new PiccodeString(arr.toString());
-		});
+		}, null);
 	}
 }
