@@ -52,7 +52,7 @@ public class NumberAst extends  Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		return new PiccodeNumber(text);
 	}
 

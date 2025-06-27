@@ -41,11 +41,11 @@ public class ObjectAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		HashMap<String, PiccodeValue> obj = new HashMap<>();
 		
 		for (var kv: objs.entrySet()) {
-			obj.put(kv.getKey(), kv.getValue().execute());
+			obj.put(kv.getKey(), kv.getValue().execute(frame));
 		}
 
 		return new PiccodeObject(obj);

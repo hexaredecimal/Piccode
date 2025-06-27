@@ -59,7 +59,7 @@ public class ClosureAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var result = new PiccodeClosure(args, newArgs, 0, body);
 		result.creator = this;

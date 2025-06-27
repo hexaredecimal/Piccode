@@ -32,9 +32,9 @@ public class ListConstAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var left = lhs.execute();
-		var right = rhs.execute();
+	public PiccodeValue execute(Integer frame) {
+		var left = lhs.execute(frame);
+		var right = rhs.execute(frame);
 
 		if (left instanceof PiccodeArray larr && right instanceof PiccodeArray rarr) {
 			var nodes = new ArrayList<PiccodeValue>();

@@ -46,84 +46,91 @@ public class ImportAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var nodes = loadModuleFromStdLib(path);
+	public PiccodeValue execute(Integer frame) {
+		var nodes = loadModuleFromStdLib(path, frame);
 
 		if (lifted.isEmpty()) {
-			nodes.forEach(node -> node.execute());
+			nodes.forEach(node -> node.execute(frame));
 			return new PiccodeUnit();
 		}
 
 		for (var liftedNode : lifted) {
-			executeLifted(nodes, liftedNode);
+			executeLifted(nodes, liftedNode, frame);
 		}
 
 		return new PiccodeUnit();
 	}
 
-	private void executeLifted(List<Ast> moduleNodes, Ast liftedNode) {
+	private void executeLifted(List<Ast> moduleNodes, Ast liftedNode, Integer frame) {
 		if (liftedNode instanceof ImportId id) {
 			for (var node : moduleNodes) {
 				if (node instanceof ImportAst imp) {
-					imp.execute();
+					imp.execute(frame);
 				}
 				if (node instanceof StatementList sts) {
-					executeLifted(sts.nodes, id);
+					executeLifted(sts.nodes, id, frame);
 					return;
 				}
 				if (node instanceof FunctionAst func && func.name.equals(id.text)) {
-					func.execute();
+					func.execute(frame);
 					return;
 				}
 				if (node instanceof ModuleAst mod && mod.name.equals(id.text)) {
-					mod.execute();
+					mod.execute(frame);
 					return;
 				}
 			}
-			throw new PiccodeException(file, line, column, "Symbol '" + id.text + "' not found in module: " + path);
+			var err = new PiccodeException(file, line, column, "Symbol '" + id.text + "' not found in module: " + path);
+			err.frame = frame;
+			throw err;
 		}
 
 		if (liftedNode instanceof ImportLift lift) {
 			for (var node : moduleNodes) {
 				if (node instanceof ImportAst imp) {
-					imp.execute();
+					imp.execute(frame);
 				}
 				if (node instanceof StatementList sts) {
-					executeLifted(sts.nodes, lift);
+					executeLifted(sts.nodes, lift, frame);
 					return;
 				}
 				if (node instanceof ModuleAst mod && mod.name.equals(lift.text)) {
 					// Recursively execute lifted symbols from inside the module
-					executeLifted(mod.nodes, lift.nodes);
+					executeLifted(mod.nodes, lift.nodes, frame);
 					return;
 				}
 				if (node instanceof FunctionAst func && func.name.equals(lift.text)) {
 					var err = new PiccodeException(lift.file, lift.line, lift.column,
 									"Invalid import lift. Attempt to lift function as module");
+					err.frame = frame;
 					PiccodeInfo note = new PiccodeException(func.file, func.line, func.column,
 									"Function is declared here");
 					err.addNote(note);
 					throw err;
 				}
 			}
-			throw new PiccodeException(file, line, column,
+			var err = new PiccodeException(file, line, column,
 							"Module '" + lift.text + "' not found in module: " + path.replaceAll("/", "."));
+			err.frame = frame;
+			throw err;
 		}
 	}
 
-	private void executeLifted(List<Ast> moduleNodes, List<Ast> nestedLifted) {
+	private void executeLifted(List<Ast> moduleNodes, List<Ast> nestedLifted, Integer frame) {
 		for (var lifted : nestedLifted) {
-			executeLifted(moduleNodes, lifted);
+			executeLifted(moduleNodes, lifted, frame);
 		}
 	}
 
-	private List<Ast> loadModuleFromStdLib(String module) {
+	private List<Ast> loadModuleFromStdLib(String module, Integer frame) {
 		var storage = getAppStorage();
 		var paths = List.of(storage, "./");
 		var nodes = new ArrayList<Ast>();
 		var _file = findModule(module, paths);
 		if (_file == null) {
-			throw new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
+			var err = new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
+			err.frame = frame;
+			throw err;
 		}
 
 		var path = _file.getPath();
@@ -137,14 +144,16 @@ public class ImportAst extends Ast {
 			if (fp.getName().endsWith(".pics")) {
 				var code = readFile(fp);
 				if (code == null) {
-					throw new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
+					var err =	new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
+					err.frame = frame;
+					throw err;
 				}
 				var program = (StatementList) _import(fp.getAbsolutePath(), code);
 				var noImports = program.nodes
 								.stream()
 								.filter((value) -> {
 									if (value instanceof ImportAst) {
-										value.execute();
+										value.execute(frame);
 									}
 									return !(value instanceof ImportAst);
 								})

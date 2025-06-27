@@ -32,7 +32,7 @@ public class ModuleAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		if (Context.modules.containsKey(name)) {
 			var mod = Context.modules.get(name);
 			mod.nodes.addAll(nodes);

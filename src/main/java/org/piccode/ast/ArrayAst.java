@@ -34,10 +34,10 @@ public class ArrayAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		var list = new ArrayList<PiccodeValue>();
 		for (var node: nodes) {
-			list.add(node.execute());
+			list.add(node.execute(frame));
 		}
 		return new PiccodeArray(list);
 	}

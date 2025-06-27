@@ -31,9 +31,9 @@ public class BinOpAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var left = lhs.execute();
-		var right = rhs.execute();
+	public PiccodeValue execute(Integer frame) {
+		var left = lhs.execute(frame);
+		var right = rhs.execute(frame);
 
 		if (left instanceof PiccodeNumber lf && right instanceof PiccodeNumber rh) {
 			double result = 0;
@@ -107,9 +107,12 @@ public class BinOpAst extends Ast {
 			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
 		}
 
-		throw new PiccodeException(file, line, column,"Operator `" + Chalk.on(op).blue() + "`  cannot be used with types " 
+		var err =  new PiccodeException(file, line, column,"Operator `" + Chalk.on(op).blue() + "`  cannot be used with types " 
 			+ Chalk.on(left.type()).red()
 			+ " and " + Chalk.on(right.type()).red());
+
+		err.frame = frame;
+		throw err;
 	}
 
 	@Override

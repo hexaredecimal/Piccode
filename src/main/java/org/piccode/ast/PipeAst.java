@@ -26,18 +26,22 @@ public class PipeAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst) && !(rhs instanceof DotOperationAst)) {
-			throw new PiccodeException(file, line, column, "Invalid expression at the right side of |> " + rhs.toString());
+			var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> " + rhs.toString());
+			err.frame = frame;
+			throw err;
 		}
 
 		if (rhs instanceof IdentifierAst id) {
-			var res = id.execute();
+			var res = id.execute(frame);
 			if (res instanceof PiccodeClosure closure) {
-				var left = lhs.execute();
+				var left = lhs.execute(frame);
 				return closure.call(left);
 			} else {
-				throw new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + id.text);
+				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + id.text);
+				err.frame = frame;
+				throw err;
 			}
 		}
 
@@ -47,25 +51,29 @@ public class PipeAst extends Ast {
           call.nodes = new ArrayList<>();
         }
 				call.nodes.addFirst(lhs);
-				return rhs.execute();
+				return rhs.execute(frame);
 			}
 
 			if (dot.rhs instanceof IdentifierAst id) {
-				var res = id.execute();
+				var res = id.execute(frame);
 				if (res instanceof PiccodeClosure closure) {
-					var left = lhs.execute();
+					var left = lhs.execute(frame);
 					return closure.call(left);
 				} else {
-					throw new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + id.text);
+					var err = new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + id.text);
+					err.frame = frame;
+					throw err;
 				}
 			}
 
-			throw new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + dot.rhs);
+			var err = new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + dot.rhs);
+			err.frame = frame;
+			throw err;
 		}
 
 		var call = (CallAst) rhs;
 		call.nodes.addFirst(lhs);
-		return call.execute();
+		return call.execute(frame);
 	}
 
 	@Override

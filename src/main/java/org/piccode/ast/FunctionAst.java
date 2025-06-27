@@ -29,9 +29,8 @@ public class FunctionAst extends Ast {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb
-						.append("function ")
 						.append(name)
-						.append("(");
+						.append(" :: (");
 		if (arg != null) {
 			sb.append(formatArgs());
 		}
@@ -53,10 +52,11 @@ public class FunctionAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
 		cl.creator = this;
+		cl.frame = frame;
 		cl.callSite = new Ast.Location(line, column);
 		cl.callSiteFile = file;
 		cl.file = file;

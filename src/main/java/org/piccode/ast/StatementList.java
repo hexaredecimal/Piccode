@@ -28,9 +28,9 @@ public class StatementList extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		for (var stmt: nodes) {
-			stmt.execute();
+			stmt.execute(frame);
 		}
 		return new PiccodeBoolean("true");
 	}

@@ -20,15 +20,21 @@ public class VarDecl extends Ast {
 
 	@Override
 	public String toString() {
-		return "let " + name + " = " + value;
+		return name + " := " + value;
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		Context.top.pushStackFrame(this);
-		var _value = value.execute();
-		Context.top.dropStackFrame();
-		Context.top.putLocal(name, _value);
+	public PiccodeValue execute(Integer frame) {
+		
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+
+		
+		ctx.pushStackFrame(this);
+		var _value = value.execute(frame);
+		ctx.dropStackFrame();
+		ctx.putLocal(name, _value);
 		return _value;
 	}
 

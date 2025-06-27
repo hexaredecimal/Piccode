@@ -25,19 +25,23 @@ public class UnaryAst extends Ast{
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var result = expr.execute();
+	public PiccodeValue execute(Integer frame) {
+		var result = expr.execute(frame);
 
 		if (op.equals("-")) {
 			if (!(result instanceof PiccodeNumber)) {
-				throw new PiccodeException(file, line, column,"Cannot use `-` with a value that is not a number. expression: " + expr + " results to value " + result);
+				var err = new PiccodeException(file, line, column,"Cannot use `-` with a value that is not a number. expression: " + expr + " results to value " + result);
+				err.frame = frame;
+				throw err;
 			}
 			return new PiccodeNumber("-" + result.toString());
 		}
 
 		if (op.equals("~")) {
 			if (!(result instanceof PiccodeNumber)) {
-				throw new PiccodeException(file, line, column,"Cannot use `~` with a value that is not a number. expression: " + expr + " results to value " + result);
+				var err = new PiccodeException(file, line, column,"Cannot use `~` with a value that is not a number. expression: " + expr + " results to value " + result);
+				err.frame = frame;
+				throw err;
 			}
 			var num = (int) (double) result.raw();
 			return new PiccodeNumber("" + (~num));
@@ -45,13 +49,17 @@ public class UnaryAst extends Ast{
 
 		if (op.equals("!")) {
 			if (!(result instanceof PiccodeBoolean)) {
-				throw new PiccodeException(file, line, column,"Cannot use `~` with a value that is not a boolean. expression: " + expr + " results to value " + result);
+				var err = new PiccodeException(file, line, column,"Cannot use `~` with a value that is not a boolean. expression: " + expr + " results to value " + result);
+				err.frame = frame;
+				throw err;
 			}
 			var bool = (boolean) result.raw();
 			return new PiccodeBoolean(String.valueOf(!bool));
 		}
 		
-		throw new PiccodeException(file, line, column,"Not supported yet: " + op);
+		var err = new PiccodeException(file, line, column,"Not supported yet: " + op);
+		err.frame = frame;
+		throw err;
 	}
 
 	@Override

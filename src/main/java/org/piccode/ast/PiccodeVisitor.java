@@ -148,7 +148,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		var tok = ctx.getStart();
-		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+		err.frame = null;
+		throw err;
 	}
 
 	@Override
@@ -166,7 +168,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		var tok = ctx.getStart();
-		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+		err.frame = null;
+		throw err;
 	}
 
 	@Override
@@ -205,7 +209,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return finalizeAstNode(new ImportAst(path), tok);
 		}
 
-		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid token in import");
+		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid token in import");
+		err.frame = null;
+		throw err;
 	}
 
 	public List<Ast> visitSymbollift(Symbol_liftContext ctx) {
@@ -253,7 +259,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 		var tok = stmt.getStart();
 
-		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid statement");
+		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid statement");
+		err.frame = null;
+		throw err;
 	}
 
 	@Override
@@ -478,7 +486,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		var start = expr.getStart();
-		throw new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid token encountered");
+		var err = new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid token encountered");
+		err.frame = null;
+		throw err;
 	}
 
 	@Override
@@ -544,7 +554,9 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 
 		var start = ctx.getStart();
-		throw new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid unary expression");
+		var err = new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid unary expression");
+		err.frame = null;
+		throw err;
 	}
 
 	public Ast visitCall(ExprContext expr, Call_expr_listContext exprList) {

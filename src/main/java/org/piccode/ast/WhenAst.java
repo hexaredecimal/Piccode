@@ -37,19 +37,19 @@ public class WhenAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var cond_value = cond.execute();
+	public PiccodeValue execute(Integer frame) {
+		var cond_value = cond.execute(frame);
 
 		for (var match_case : cases) {
 			var tempSymtable = new HashMap<String, PiccodeValue>();
-			if (isMatching(match_case.match, cond_value, tempSymtable)) {
+			if (isMatching(match_case.match, cond_value, tempSymtable, frame)) {
 				if (!tempSymtable.isEmpty()) {
 					Context.top.pushScope();
 					for (var entry : tempSymtable.entrySet()) {
 						Context.top.putLocal(entry.getKey(), entry.getValue());
 					}
 				}
-				var result = match_case.value.execute();
+				var result = match_case.value.execute(frame);
 				if (!tempSymtable.isEmpty()) {
 					Context.top.dropScope();
 				}
@@ -58,22 +58,24 @@ public class WhenAst extends Ast {
 		}
 
 		if (else_case == null) {
-			throw new PiccodeException(file, line, column,"Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+			var err = new PiccodeException(file, line, column,"Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+			err.frame = frame;
+			throw err;
 		}
 
-		return else_case.execute();
+		return else_case.execute(frame);
 	}
 
-	private boolean isMatching(List<Ast> patterns, PiccodeValue cond_value, Map<String, PiccodeValue> temp) {
+	private boolean isMatching(List<Ast> patterns, PiccodeValue cond_value, Map<String, PiccodeValue> temp, Integer frame) {
 		for (Ast pattern : patterns) {
-			if (matchPattern(pattern, cond_value, temp)) {
+			if (matchPattern(pattern, cond_value, temp, frame)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean matchPattern(Ast pattern, PiccodeValue value, Map<String, PiccodeValue> temp) {
+	private boolean matchPattern(Ast pattern, PiccodeValue value, Map<String, PiccodeValue> temp, Integer frame) {
 		if (pattern instanceof IdentifierAst id) {
 			if (id.text.equals("true")){
         var result = value instanceof PiccodeBoolean bool && ((boolean)bool.raw()) == true;
@@ -90,12 +92,12 @@ public class WhenAst extends Ast {
 		}
 
 		if (pattern instanceof NumberAst lit) {
-			var litVal = lit.execute();
+			var litVal = lit.execute(frame);
 			return litVal.equals(value);
 		}
 
 		if (pattern instanceof StringAst lit) {
-			var litVal = lit.execute();
+			var litVal = lit.execute(frame);
 			return Objects.equals(litVal, value);
 		}
 
@@ -107,7 +109,7 @@ public class WhenAst extends Ast {
 			}
 
 			for (int i = 0; i < items.size(); i++) {
-				if (!matchPattern(items.get(i), vItems.get(i), temp)) {
+				if (!matchPattern(items.get(i), vItems.get(i), temp, frame)) {
 					return false;
 				}
 			}
@@ -121,7 +123,7 @@ public class WhenAst extends Ast {
 			}
 
 			for (int i = 0; i < patItems.size(); i++) {
-				if (!matchPattern(patItems.get(i), valItems.get(i), temp)) {
+				if (!matchPattern(patItems.get(i), valItems.get(i), temp, frame)) {
 					return false;
 				}
 			}
@@ -134,14 +136,14 @@ public class WhenAst extends Ast {
 			var head = listVal2.nodes.getFirst();
 			var tail = new PiccodeArray(listVal2.nodes.subList(1, listVal2.nodes.size()));
 
-			return matchPattern(cons.lhs, head, temp) && matchPattern(cons.rhs, tail, temp);
+			return matchPattern(cons.lhs, head, temp, frame) && matchPattern(cons.rhs, tail, temp, frame);
 		}
 		if (pattern instanceof ObjectAst objPat && value instanceof PiccodeObject objVal) {
 			for (var entry : objPat.objs.entrySet()) {
 				if (!objVal.obj.containsKey(entry.getKey())) {
 					return false;
 				}
-				if (!matchPattern(entry.getValue(), objVal.obj.get(entry.getKey()), temp)) {
+				if (!matchPattern(entry.getValue(), objVal.obj.get(entry.getKey()), temp, frame)) {
 					return false;
 				}
 			}

@@ -32,13 +32,13 @@ public class IfExpression extends Ast{
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var _cond = cond.execute().raw().toString();
+	public PiccodeValue execute(Integer frame) {
+		var _cond = cond.execute(frame).raw().toString();
 		if (_cond.equals("true")) {
-			return then.execute();
+			return then.execute(frame);
 		} 
 
-		return elze.execute();
+		return elze.execute(frame);
 	}
 
 	@Override

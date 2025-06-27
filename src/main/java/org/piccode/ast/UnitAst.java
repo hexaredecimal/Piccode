@@ -15,7 +15,7 @@ public class UnitAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		return new PiccodeUnit();
 	}
 

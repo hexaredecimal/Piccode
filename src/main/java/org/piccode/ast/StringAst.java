@@ -21,9 +21,10 @@ public class StringAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
+	public PiccodeValue execute(Integer frame) {
 		return new PiccodeString(unescapeString(text));
 	}
+	
 	public String unescapeString(String str) {
 		StringBuilder sb = new StringBuilder();
 		boolean isEscaping = false;

@@ -43,19 +43,33 @@ public class CallAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute() {
-		var expr_val = expr.execute();
+	public PiccodeValue execute(Integer frame) {
+		var expr_val = expr.execute(frame);
 		if (!(expr_val instanceof PiccodeClosure) && !(expr_val instanceof NativeFunction)) {
-			throw new PiccodeException(file, line, column, "Attempt to call a non-callable expression. Issue is: " + expr + " = " + expr_val);
+			var err = new PiccodeException(file, line, column, "Attempt to call a non-callable expression. Issue is: " + expr + " = " + expr_val);
+			err.frame = frame;
+			throw err;
 		}
 		lastCall = expr;
 
 		if (expr_val instanceof NativeFunction nat) {
+			nat.frame = frame;
+			nat.file = file;
+			nat.line = line;
+			nat.column = column;
 			for (var node : nodes) {
 				if (node instanceof NamedCallArg named) {
-					nat = (NativeFunction) nat.callNamed(named.name, named.value.execute());
+					nat = (NativeFunction) nat.callNamed(named.name, named.value.execute(frame));
+					nat.frame = frame;
+					nat.file = file;
+					nat.line = line;
+					nat.column = column;
 				} else {
-					nat = (NativeFunction) nat.call(node.execute());
+					nat = (NativeFunction) nat.call(node.execute(frame));
+					nat.frame = frame;
+					nat.file = file;
+					nat.line = line;
+					nat.column = column;
 				}
 			}
 
@@ -66,16 +80,19 @@ public class CallAst extends Ast {
 		var closure = (PiccodeClosure) expr_val;
 		closure.callSite = new Ast.Location(line, column);
 		closure.callSiteFile = file;
+		closure.frame = frame;
 		
 		for (var node : nodes) {
 			if (node instanceof NamedCallArg named) {
-				closure = (PiccodeClosure) closure.callNamed(named.name, named.value.execute());
+				closure = (PiccodeClosure) closure.callNamed(named.name, named.value.execute(frame));
 				closure.callSite = new Ast.Location(line, column);
 				closure.callSiteFile = file;
+				closure.frame = frame;
 			} else {
-				closure = (PiccodeClosure) closure.call(node.execute());
+				closure = (PiccodeClosure) closure.call(node.execute(frame));
 				closure.callSite = new Ast.Location(line, column);
 				closure.callSiteFile = file;
+				closure.frame = frame;
 			}
 		}
 
