@@ -20,7 +20,7 @@ public class Runtime {
 		var func = ast.nodes.getFirst();
 	
 		assertFalse(!(func instanceof FunctionAst));
-		var node = func.execute();
+		var node = func.execute(null);
 		assertTrue(node instanceof PiccodeClosure);
 	}
 
@@ -35,7 +35,7 @@ public class Runtime {
 		assertFalse(!(let instanceof VarDecl));
 		
 		Context.top.pushStackFrame(ast);
-		var node = let.execute();
+		var node = let.execute(null);
 		Context.top.dropStackFrame();
 		assertTrue(node instanceof PiccodeNumber num && num.toString().equals("1"));
 	}
@@ -47,7 +47,7 @@ public class Runtime {
 		assertEquals(ast.nodes.size(), 1);
 		var import_ = ast.nodes.getFirst();
 		assertFalse(!(import_ instanceof ImportAst));
-		var node = import_.execute();
+		var node = import_.execute(null);
 		assertTrue(node instanceof PiccodeBoolean bool && bool.toString().equals("true"));
 	}
 
