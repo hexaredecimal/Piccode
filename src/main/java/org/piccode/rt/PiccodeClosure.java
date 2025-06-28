@@ -11,7 +11,7 @@ import org.piccode.ast.Ast;
  * @author hexaredecimal
  */
 public class PiccodeClosure implements PiccodeValue {
-
+	
 	List<Arg> params; // Full list of args (with name and default val)
 	Map<String, PiccodeValue> appliedArgs; // Applied named args
 	int positionalIndex; // How many positional args have been applied so far

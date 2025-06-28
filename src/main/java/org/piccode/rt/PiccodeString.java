@@ -8,6 +8,7 @@ import java.util.Objects;
  * @author hexaredecimal
  */
 public class PiccodeString implements PiccodeValue {
+	public static final Type TYPE = Type.STRING;
 	private String string;
 
 	public PiccodeString(String str) {

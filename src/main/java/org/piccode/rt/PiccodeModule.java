@@ -10,6 +10,7 @@ import org.piccode.ast.Ast;
  * @author hexaredecimal
  */
 public class PiccodeModule implements PiccodeValue{
+	
 	public String name; 
 	public List<Ast> nodes; 
 

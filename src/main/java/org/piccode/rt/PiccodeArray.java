@@ -15,6 +15,7 @@ public class PiccodeArray implements PiccodeValue {
 		this.nodes = nodes;
 	}
 
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
