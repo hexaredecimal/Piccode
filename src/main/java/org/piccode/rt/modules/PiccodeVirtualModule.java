@@ -1,19 +1,12 @@
 package org.piccode.rt.modules;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.text.AbstractDocument;
-import org.piccode.ast.IdentifierAst;
 import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeException;
-import org.piccode.rt.PiccodeNumber;
 import org.piccode.rt.PiccodeObject;
 import org.piccode.rt.PiccodeString;
-import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 import org.piccode.rt.PiccodeValue.Type;
