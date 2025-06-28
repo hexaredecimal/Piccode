@@ -43,7 +43,12 @@ public interface PiccodeValue {
 			if (value instanceof PiccodeBoolean) return BOOLEAN;
 			if (value instanceof PiccodeObject ) return OBJECT;
 			if (value instanceof PiccodeTuple  ) return TYPLE;
+			if (value instanceof PiccodeArray  ) return ARRAY;
 			if (value instanceof PiccodeClosure) return CLOSURE;
+			if (value instanceof PiccodeUnit   ) return UNIT;
+			if (value instanceof NativeFunction) return NATIVEFUNCTION;
+
+			System.out.println(value + " : " + value.getClass());
 			return VALUE;
 		}
 	}
