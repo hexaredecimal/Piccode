@@ -94,11 +94,14 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			}
 		}
 
-		var top = Context.top;
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+
 		if (frame != null) {
-			top = Context.getContextAt(frame);
+			ctx = Context.getContextAt(frame);
 		}
-		var stack = top.getCallStack();
+		var stack = ctx.getCallStack();
 
 		var list = List.of(stack.toArray(StackFrame[]::new)).reversed();
 

@@ -133,9 +133,9 @@ public class ImportAst extends Ast {
 			throw err;
 		}
 
-		var path = _file.getPath();
-		if (Context.top.isImportCached(path)) {
-			return Context.top.getCached(path);
+		var path_ = _file.getPath();
+		if (Context.isImportCached(path_)) {
+			return Context.getCached(path_);
 		}
 
 		var files = _file.listFiles();
@@ -161,8 +161,8 @@ public class ImportAst extends Ast {
 				nodes.addAll(noImports);
 			}
 		}
-		if (!Context.top.isImportCached(path)) {
-			Context.top.cacheImport(path, lifted);
+		if (!Context.isImportCached(path)) {
+			Context.cacheImport(path, lifted);
 		}
 		return nodes;
 	}

@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import com.github.tomaslanger.chalk.Chalk;
 import java.util.concurrent.ExecutionException;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
@@ -71,21 +72,23 @@ public class DotOperationAst extends Ast {
 		String key = null;
 		if (rhs instanceof IdentifierAst id
 						&& id.text.equals("await")
-						&& obj.obj.containsKey("uuid")
-						&& obj.obj.containsKey("future")) {
+						&& obj.obj.containsKey("uuid")) {
 			var uuid = obj.obj.get("uuid").raw().toString();
 
-			var ctx = frame == null ? 
-				Context.top
-				: Context.getContextAt(frame);
-			var future = ctx.getFuture(uuid);
-			Context.top.removeFuture(uuid);
+			var future = Context.getFuture(uuid);
+			if (future == null) {
+				var err = new PiccodeException(file, line, column, "Invalid reference to a future: " + Chalk.on(uuid).red());
+				err.frame = frame;
+				throw err;
+			}
+			
 			try {
 				var result = future.get();
 				return result;
 			} catch (InterruptedException | ExecutionException ex) {
 				var cause = ex.getCause();
 				if (cause instanceof PiccodeException pex) {
+					pex.message += ". Thread id: " + frame;
 					throw pex;
 				}
 				var err = new PiccodeException(file, line, column, "Internal error: " + ex.getMessage());
@@ -110,6 +113,10 @@ public class DotOperationAst extends Ast {
 	}
 
 	private PiccodeValue process(IdentifierAst id, PiccodeModule mod, Integer frame) {
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+		
 		if (rhs instanceof IdentifierAst _id) {
 			for (var node : mod.nodes) {
 				if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
@@ -117,11 +124,11 @@ public class DotOperationAst extends Ast {
 				}
 				if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
 					node.execute(frame);
-					var result = Context.top.getValue(_id.text);
+					var result = ctx.getValue(_id.text);
 					if (result == null) {
 						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + _id.text + "` is not defined");
 						err.frame = frame;
-						var nm = Context.top.getSimilarName(_id.text);
+						var nm = ctx.getSimilarName(_id.text);
 						if (nm != null && !nm.isEmpty()) {
 							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + nm + "`");
 							err.addNote(note);

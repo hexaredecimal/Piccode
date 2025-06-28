@@ -55,7 +55,6 @@ public class Compiler {
 
 			if (has_main) {
 				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
-				Context.top.dropStackFrame();
 				return _result;
 			}
 			

@@ -50,6 +50,10 @@ public class CCOperationAst extends Ast {
 	}
 
 	private PiccodeValue process(IdentifierAst id, PiccodeModule mod, Integer frame) {
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+		
 		if (rhs instanceof IdentifierAst _id) {
 			for (var node : mod.nodes) {
 				if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
@@ -57,11 +61,11 @@ public class CCOperationAst extends Ast {
 				}
 				if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
 					node.execute(frame);
-					var result = Context.top.getValue(_id.text);
+					var result = ctx.getValue(_id.text);
 					if (result == null) {
 						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + _id.text + "` is not defined");
 						err.frame = frame;
-						var nm = Context.top.getSimilarName(_id.text);
+						var nm = ctx.getSimilarName(_id.text);
 						if (nm != null && !nm.isEmpty()) {
 							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + nm + "`");
 							err.addNote(note);

@@ -105,27 +105,26 @@ public class PiccodeClosure implements PiccodeValue {
 			}
 		}
 
-		var top = Context.top;
-		if (frame != null) {
-			top = Context.getContextAt(frame);
-		}
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
 		// All required args satisfied (either by user or by default), run
-		top.pushStackFrame(creator);
+		ctx.pushStackFrame(creator);
 		for (Arg param : params) {
 			PiccodeValue val = appliedArgs.getOrDefault(
 							param.name,
 							param.def_val != null ? param.def_val.execute(frame) : null
 			);
-			top.putLocal(param.name, val);
+			ctx.putLocal(param.name, val);
 		}
 
 		try {
 			var result = body.execute(frame);
-			top.dropStackFrame();
+			ctx.dropStackFrame();
 			
 			return result;
 		} catch (StackOverflowError se) {
-			top.dropStackFrame();
+			ctx.dropStackFrame();
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Stack overflow");
 			err.frame = frame;
 			var note = new PiccodeException(file, line, column, "Stack overflow error most likely occured when you called the function below. ");

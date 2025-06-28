@@ -39,19 +39,23 @@ public class WhenAst extends Ast {
 	@Override
 	public PiccodeValue execute(Integer frame) {
 		var cond_value = cond.execute(frame);
+		
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
 
 		for (var match_case : cases) {
 			var tempSymtable = new HashMap<String, PiccodeValue>();
 			if (isMatching(match_case.match, cond_value, tempSymtable, frame)) {
 				if (!tempSymtable.isEmpty()) {
-					Context.top.pushScope();
+					ctx.pushScope();
 					for (var entry : tempSymtable.entrySet()) {
-						Context.top.putLocal(entry.getKey(), entry.getValue());
+						ctx.putLocal(entry.getKey(), entry.getValue());
 					}
 				}
 				var result = match_case.value.execute(frame);
 				if (!tempSymtable.isEmpty()) {
-					Context.top.dropScope();
+					ctx.dropScope();
 				}
 				return result;
 			}

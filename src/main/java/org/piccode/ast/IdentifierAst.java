@@ -27,16 +27,13 @@ public class IdentifierAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		var top = Context.top;
-		if (frame != null) {
-			top = Context.getContextAt(frame);
-		}
-		
-		var value = top.getValue(text);
-		if (value == null && frame == null) {
-			value = Context.top.getValue(text);
-		}
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
 
+		
+		var value = ctx.getValue(text);
+		
 		if (value == null) {
 			var err = new PiccodeException(file, line, column, "Unknown variable `" + Chalk.on(text).red() + "` ");
 			err.frame = frame;
@@ -46,7 +43,7 @@ public class IdentifierAst extends Ast {
 				err.addNote(note);
 			}
 			
-			var stack = top.getTopFrame().toMap();
+			var stack = ctx.getTopFrame().toMap();
 			var sb = new StringBuilder();
 			var entrySet = stack.entrySet();
 			var size = entrySet.size();
@@ -64,7 +61,7 @@ public class IdentifierAst extends Ast {
 				index++;
 			}
 			
-			var note = new PiccodeSimpleNote("Track size: " + top.getFramesCount());
+			var note = new PiccodeSimpleNote("Track size: " + ctx.getFramesCount());
 			err.addNote(note);
 			
 			note = new PiccodeSimpleNote("Symbol table dump: " + sb.toString());

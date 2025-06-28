@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.antlr.v4.runtime.misc.Pair;
 import org.piccode.ast.Ast;
 import org.piccode.backend.Compiler;
 
@@ -22,29 +23,26 @@ import org.piccode.backend.Compiler;
  */
 public class Context {
 
-	private static HashMap<String, PiccodeValue> global_scope = new HashMap<>();
-	private static MessageDigest hash = null;
+	private static final HashMap<String, PiccodeValue> global_scope = new HashMap<>();
 
 	private Stack<StackFrame> call_frames;
 	public StackFrame bottom = null;
 
-	public static Context top = new Context();
-	public static ConcurrentHashMap<String, PiccodeModule> modules = new ConcurrentHashMap<>();
-	private static List<Context> threadContexts = new ArrayList<>();
-	private ConcurrentHashMap<String, List<Ast>> import_cache = new ConcurrentHashMap<>();
-	private static ExecutorService threadPool = Executors.newVirtualThreadPerTaskExecutor();
-	private static ConcurrentMap<String, Future<PiccodeValue>> futureMap = new ConcurrentHashMap<>();
+	public static final Context top = new Context();
+	public static final ConcurrentHashMap<String, PiccodeModule> modules = new ConcurrentHashMap<>();
+	private static final List<Context> threadContexts = new ArrayList<>();
+	private static final ConcurrentHashMap<String, List<Ast>> import_cache = new ConcurrentHashMap<>();
+	private static final ExecutorService threadPool = Executors.newVirtualThreadPerTaskExecutor();
+	public static final ConcurrentMap<String, Future<PiccodeValue>> futureMap = new ConcurrentHashMap<>();
 
 	public Context() {
 		call_frames = new Stack<>();
-		import_cache = new ConcurrentHashMap<>();
 	}
 
 	public static int makeThreadContext(Context base) {
 		int index = threadContexts.size();
 		var context = new Context();
 		context.call_frames.addAll(base.call_frames);
-		context.futureMap.putAll(base.futureMap);
 		threadContexts.add(context);
 		return index;
 	}
@@ -67,15 +65,17 @@ public class Context {
 
 	public static String makeThread(PiccodeClosure node) {
 		synchronized (Context.class) {
+			var ctx = node.frame == null ? top : threadContexts.get(node.frame);
+			var frame = makeThreadContext(ctx);
 			var future = threadPool.submit(() -> {
 				synchronized (node) {
-					var ctx = node.frame == null ? top : threadContexts.get(node.frame);
-					var frame = makeThreadContext(ctx);
+					node.frame = frame;
 					var call = (PiccodeClosure) node.call(new PiccodeUnit());
 					call.frame = frame;
 					return call.evaluateIfReady();
 				}
 			});
+
 			var size = futureMap.size();
 			var name = String.format("Thread@%d", size);
 			var id = name + UUID.randomUUID().toString();
@@ -102,15 +102,15 @@ public class Context {
 		global_scope.put(name, value);
 	}
 
-	public boolean isImportCached(String path) {
+	public static boolean isImportCached(String path) {
 		return import_cache.containsKey(path);
 	}
 
-	public void cacheImport(String path, List<Ast> nodes) {
+	public static void cacheImport(String path, List<Ast> nodes) {
 		import_cache.put(path, nodes);
 	}
 
-	public List<Ast> getCached(String path) {
+	public static List<Ast> getCached(String path) {
 		return import_cache.get(path);
 	}
 

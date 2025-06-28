@@ -25,11 +25,9 @@ public class VarDecl extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		
 		var ctx = frame == null
 			? Context.top
 			: Context.getContextAt(frame);
-
 		
 		ctx.pushStackFrame(this);
 		var _value = value.execute(frame);

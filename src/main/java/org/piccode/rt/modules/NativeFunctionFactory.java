@@ -2,9 +2,7 @@ package org.piccode.rt.modules;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import org.piccode.ast.FunctionAst;
 import org.piccode.ast.IdentifierAst;
 import org.piccode.rt.Context;
 import org.piccode.rt.NativeFunction;
@@ -25,7 +23,17 @@ public class NativeFunctionFactory {
 						Context.top
 						: Context.getContextAt(frame);
 				
-				ctx.pushStackFrame(new IdentifierAst("<NativeFunc: " + name + ">")); 
+				var parent = ctx.getTopFrame().caller;
+
+				if (parent instanceof FunctionAst func) {
+					parent = func.body;
+				}
+
+				var id = new IdentifierAst("<NativeFunc: " + name + ">");
+				id.file = parent.file;
+				id.line = parent.line;
+				id.column = parent.column;
+				ctx.pushStackFrame(id); 
 				var result = fx.apply(args, namedArgs, frame);
 				ctx.dropStackFrame();
 				return result;

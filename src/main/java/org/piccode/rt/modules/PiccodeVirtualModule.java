@@ -44,15 +44,17 @@ public class PiccodeVirtualModule {
 						: Context.getContextAt(closure.frame).getTopFrame();
 				
 				var id = Context.makeThread(closure);
-				var future = Context.getFuture(id);
 				var obj = new HashMap<String, PiccodeValue>();
 				obj.put("uuid", new PiccodeString(id));
-				obj.put("future", new PiccodeNumber(future.hashCode()));
 				return new PiccodeObject(obj);
 		}, null);
 		
 		NativeFunctionFactory.create("sleep", List.of("ms"), (args, namedArgs, frame) -> {
-				var scope = Context.top.getTopFrame();
+				var ctx = frame == null ? 
+						Context.top
+						: Context.getContextAt(frame);
+
+				var scope = ctx.getTopFrame();
 				var ms = namedArgs.get("ms");
 			
 				if (!(ms instanceof PiccodeNumber)) {
