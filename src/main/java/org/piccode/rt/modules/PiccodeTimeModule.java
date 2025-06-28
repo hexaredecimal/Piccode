@@ -8,12 +8,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import org.piccode.ast.CallAst;
+import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;
 import org.piccode.rt.PiccodeObject;
 import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeValue;
+import org.piccode.rt.PiccodeValue.Type;
 
 /**
  *
@@ -52,17 +54,33 @@ public class PiccodeTimeModule {
 		}, null);
 
 		NativeFunctionFactory.create("from", List.of("year", "month", "day", "hour", "minute"), (args, namedArgs, frame) -> {
+				var ctx = frame == null ? 
+						Context.top
+						: Context.getContextAt(frame);
+				var caller = ctx.getTopFrame().caller;
+				
+				var yr  = namedArgs.get("year");
+				var mn  = namedArgs.get("month");
+				var dy  = namedArgs.get("day");
+				var hr  = namedArgs.get("hour");
+				var min = namedArgs.get("minute");
+
+				PiccodeValue.verifyType(caller, yr, Type.NUMBER);
+				PiccodeValue.verifyType(caller, mn, Type.NUMBER);
+				PiccodeValue.verifyType(caller, dy, Type.NUMBER);
+				PiccodeValue.verifyType(caller, hr, Type.NUMBER);
+				PiccodeValue.verifyType(caller, min, Type.NUMBER);
 			try {
-				var year = (int) (double) namedArgs.get("year").raw();
-				var month = (int) (double) namedArgs.get("month").raw();
-				var day = (int) (double) namedArgs.get("day").raw();
-				var hour = (int) (double) namedArgs.get("hour").raw();
-				var minute = (int) (double) namedArgs.get("minute").raw();
+				var year = (int) (double) yr.raw();
+				var month = (int) (double) mn.raw();
+				var day = (int) (double) dy.raw();
+				var hour = (int) (double) hr.raw();
+				var minute = (int) (double) min.raw();
 
 				var time = LocalDateTime.of(year, month, day, hour, minute);
 				return makeTime(time);
 			} catch (RuntimeException e) {
-				var last = CallAst.lastCall;
+				var last = ctx.getTopFrame().caller;
 				if (last == null) {
 					var err = new PiccodeException("repl", 0, 0, e.getMessage());
 					throw err;

@@ -2,8 +2,11 @@ package org.piccode.rt.modules;
 
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
+import org.piccode.rt.PiccodeValue;
+import org.piccode.rt.PiccodeValue.Type;
 
 /**
  *
@@ -19,7 +22,14 @@ public class PiccodeIOModule {
 		}, null);
 		
 		NativeFunctionFactory.create("read", List.of("msg"), (args, namedArgs, frame) -> {
+			var ctx = frame == null ? 
+					Context.top
+					: Context.getContextAt(frame);
+			var caller = ctx.getTopFrame().caller;
+			
 			var value = namedArgs.get("msg");
+			PiccodeValue.verifyType(caller, value, Type.STRING);
+
 			var result = JOptionPane.showInputDialog(value);
 			if (result == null) {
 				return new PiccodeString("No input provided");

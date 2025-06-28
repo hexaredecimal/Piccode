@@ -16,6 +16,7 @@ import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
+import org.piccode.rt.PiccodeValue.Type;
 
 
 /**
@@ -33,10 +34,7 @@ public class PiccodeVirtualModule {
 				var scope = ctx.getTopFrame();
 				
 				var fx = namedArgs.get("fx");
-				if (!(fx instanceof PiccodeClosure)) {
-					var node = scope.caller;
-					throw new PiccodeException(node.file, node.line, node.column, "Invalid value passed. Expected a closure but found " + fx);
-				}
+				PiccodeValue.verifyType(scope.caller, fx, Type.CLOSURE);
 
 				var closure = (PiccodeClosure) fx;
 				scope = closure.frame == null ? 
@@ -56,11 +54,7 @@ public class PiccodeVirtualModule {
 
 				var scope = ctx.getTopFrame();
 				var ms = namedArgs.get("ms");
-			
-				if (!(ms instanceof PiccodeNumber)) {
-					var node = scope.caller;
-					throw new PiccodeException(node.file, node.line, node.column, "Invalid value passed. Expected a number but found " + ms.type());
-				}
+				PiccodeValue.verifyType(scope.caller, ms, Type.NUMBER);
 
 			try {
 				var millisec = (long) (double) ms.raw();
