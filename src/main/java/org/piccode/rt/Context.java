@@ -34,7 +34,7 @@ public class Context {
 	private static final ConcurrentHashMap<String, List<Ast>> import_cache = new ConcurrentHashMap<>();
 	private static final ExecutorService threadPool = Executors.newVirtualThreadPerTaskExecutor();
 	public static final ConcurrentMap<String, Future<PiccodeValue>> futureMap = new ConcurrentHashMap<>();
-	public static final ConcurrentMap<String, Object> objectPool = new ConcurrentHashMap<>();
+	public static final ConcurrentMap<Integer, Object> objectPool = new ConcurrentHashMap<>();
 
 	public Context() {
 		call_frames = new Stack<>();
@@ -95,11 +95,11 @@ public class Context {
 		futureMap.remove(uuid);
 	}
 
-	public static String allocate(Object obj) {
+	public static int allocate(Object obj) {
 		synchronized (Context.class) {
+			var id = obj.hashCode();
 			var size = objectPool.size();
 			var name = String.format("Thread@%d", size);
-			var id = name + UUID.randomUUID().toString();
 			objectPool.put(id, obj);
 			return id;
 		}
