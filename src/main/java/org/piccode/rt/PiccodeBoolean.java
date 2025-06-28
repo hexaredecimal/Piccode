@@ -10,8 +10,12 @@ import java.util.Objects;
 public class PiccodeBoolean implements PiccodeValue {
 	private String value;
 
-	public PiccodeBoolean(String number) {
-		this.value = number;
+	public PiccodeBoolean(String value) {
+		this.value = value;
+	}
+	
+	public PiccodeBoolean(boolean value) {
+		this.value = String.valueOf(value);
 	}
 	
 	@Override
