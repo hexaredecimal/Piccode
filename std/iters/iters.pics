@@ -1,5 +1,7 @@
 import std.unit
 
+import std.sys
+
 // Module: Iterators
 // Provides generic iteration utilities for traversing and executing functions over collections
 Iterators :: module {
@@ -19,7 +21,7 @@ Iterators :: module {
   //   like printing, logging, or mutating external state.
   forEach :: (array=[], fx) = 
     when array {
-      is [] -> Unit.UNIT
+      is [] -> Unit::UNIT
       is [x] -> do {
         fx(x)
         Unit::UNIT
@@ -27,9 +29,9 @@ Iterators :: module {
       is h:t -> do {
         fx(h)
         forEach(t, fx)
-        Unit::UNIT
       }
     }
 
+    forever :: (fx) = System::todo("TODO")
 }
 

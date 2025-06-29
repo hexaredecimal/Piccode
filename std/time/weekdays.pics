@@ -1,33 +1,33 @@
 
 WeekDays :: module {
-  MONDAY 				:= "Monday"
-  TUESDAY 			:= "Tuesday"
-  WEDNESDAY 		:= "Wednesday"
-  THURSDAY  		:= "Thursday"
-  FRIDAY 				:= "Friday"
-  SATURDAY			:= "Saturday"
-  SUNDAY				:= "Sunday" 
+  MONDAY 				   := "Monday"
+  TUESDAY 			    := "Tuesday"
+  WEDNESDAY 		    := "Wednesday"
+  THURSDAY  		    := "Thursday"
+  FRIDAY 				   := "Friday"
+  SATURDAY			    := "Saturday"
+  SUNDAY				    := "Sunday" 
   
   getWeekDay :: (day = 0) = 
     when day {
-      is 0 -> WeekDays.MONDAY
-      is 1 -> WeekDays.TUESDAY
-      is 2 -> WeekDays.WEDNESDAY
-      is 3 -> WeekDays.THURSDAY
-      is 4 -> WeekDays.FRIDAY
-      is 5 -> WeekDays.SATURDAY
-      is 6 -> WeekDays.SUNDAY
+      is 0    -> WeekDays.MONDAY
+      is 1    -> WeekDays.TUESDAY
+      is 2    -> WeekDays.WEDNESDAY
+      is 3    -> WeekDays.THURSDAY
+      is 4    -> WeekDays.FRIDAY
+      is 5    -> WeekDays.SATURDAY
+      is 6    -> WeekDays.SUNDAY
     }
 
 	toNumber :: (day) = 
 		when day {
 			is WeekDays.MONDAY 			-> 0
-			is WeekDays.TUESDAY 		-> 0
-			is WeekDays.WEDNESDAY		-> 0
-			is WeekDays.THURSDAY 		-> 0
-			is WeekDays.FRIDAY 			-> 0
-			is WeekDays.SATURDAY	  -> 0
-			is WeekDays.SUNDAY			-> 0
+			is WeekDays.TUESDAY 		 -> 1
+			is WeekDays.WEDNESDAY		-> 2
+			is WeekDays.THURSDAY 		-> 3
+			is WeekDays.FRIDAY 			-> 4
+			is WeekDays.SATURDAY	   -> 5
+			is WeekDays.SUNDAY			 -> 6
 		}
 }
 

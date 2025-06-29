@@ -25,7 +25,7 @@ Option :: module {
 
   // Variable: NONE
   // Predefined constant for the `none` value
-  NONE := Option.none()
+  NONE := Option::none()
 
 
   // Function: unwrap
@@ -42,8 +42,8 @@ Option :: module {
   unwrap :: (result) = 
     when result {
       is {tag: "some", value: value} -> value
-      is {tag: "none"} -> System.panic("Unwrapped none value")
-      else -> System.panic("Failed to match case")
+      is {tag: "none"} -> System::panic("Unwrapped none value")
+      else -> System::panic("Failed to match case")
     }
 
 

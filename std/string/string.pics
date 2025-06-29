@@ -98,7 +98,7 @@ String :: module {
   // Returns:
   //   A new string padded on the left to reach `total` length
   padLeft :: (str="", total=0, char=" ") = do {
-    let padCount = total - String.length(str)
+    let padCount = total - String::length(str)
     if padCount <= 0 { str }
     else { repeat(char, padCount) + str }
   }
@@ -115,7 +115,7 @@ String :: module {
   // Returns:
   //   A new string padded on the right to reach `total` length
   padRight :: (str="", total=0, char=" ") = do {
-    let padCount = total - String.length(str)
+    let padCount = total - String::length(str)
     if padCount <= 0 { str }
     else { str + repeat(char, padCount) }
   }

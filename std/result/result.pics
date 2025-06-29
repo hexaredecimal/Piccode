@@ -43,8 +43,8 @@ Result :: module {
   unwrap :: (result) = 
     when result {
       is {tag: "ok", value: value} -> value
-      is {tag: "err", message: msg} -> System.panic(msg)
-      else -> System.panic("Failed to match case")
+      is {tag: "err", message: msg} -> System::panic(msg)
+      else -> System::panic("Failed to match case")
     }
 
 
@@ -137,7 +137,7 @@ Result :: module {
   //   A new Result with the transformed error or the original `ok`
   mapErr :: (result, fx) = 
     when result {
-      is {tag: "err", message: msg} -> Result.err(fx(msg))
+      is {tag: "err", message: msg} -> Result::err(fx(msg))
       else -> result
     }
 

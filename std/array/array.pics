@@ -130,7 +130,7 @@ Array :: module {
   // Returns:
   //   A new array with elements in reverse order
   reverse :: (xs=[]) =
-    Array.reduce(xs, |acc, x| -> x : acc, [])
+    Array::reduce(xs, |acc, x| -> x : acc, [])
 
   // Function: flatMap
   // Maps a over an array and flattens the result
@@ -142,7 +142,7 @@ Array :: module {
   // Returns:
   //   A flat array of concatenated results
   flatMap :: (xs=[], f) =
-    Array.reduce(xs, |acc, x| -> Array.concat(acc, f(x)), [])
+    Array::reduce(xs, |acc, x| -> Array::concat(acc, f(x)), [])
 
   // Function: take
   // Takes the first N elements from the array

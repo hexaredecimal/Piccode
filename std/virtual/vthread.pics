@@ -30,11 +30,11 @@ Virtual :: module {
   // Waits for the virtual thread to finish and gets the result
   //
   // Parameters:
-  //   task - The task handle
+  //   handle - The task handle
   //
   // Returns:
   //   The result of the thread. 
-  await :: (task) = task.await
+  await :: (handle) = handle.await
 }
 
 

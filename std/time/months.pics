@@ -1,18 +1,18 @@
 
 
 Months :: module {
-	JANUARY 		:= "January"
-	FEBRUARY 		:= "February"
-	MARCH 			:= "March"
-	APRIL				:= "April"
-	MAY 				:= "May"
-	JUNE				:= "June"
-	JULY				:= "July"
-	AUGUST			:= "August"
-	SEPTEMBER		:= "September"
-	OCTOBER			:= "October"
-	NOVEMBER		:= "November"
-	DECEMBER		:= "December"
+	JANUARY 				:= "January"
+	FEBRUARY 			 := "February"
+	MARCH 					:= "March"
+	APRIL					 := "April"
+	MAY 						:= "May"
+	JUNE						:= "June"
+	JULY						:= "July"
+	AUGUST					:= "August"
+	SEPTEMBER			 := "September"
+	OCTOBER				 := "October"
+	NOVEMBER				:= "November"
+	DECEMBER				:= "December"
 
   getMonth :: (month = 0) = 
     when month {
@@ -26,24 +26,24 @@ Months :: module {
 			is 7 		-> Months.AUGUST
 			is 8	 	-> Months.SEPTEMBER
 			is 9 		-> Months.OCTOBER
-			is 10 	-> Months.NOVEMBER
-			is 11 	-> Months.DECEMBER
+			is 10 	 -> Months.NOVEMBER
+			is 11 	 -> Months.DECEMBER
 		}
 	
   toNumber :: (month) = 
     when month {
-			is Months.JANUARYa -> 0
-			is Months.FEBRUARY -> 1
-			is Months.MARCH -> 2
-			is Months.APRIL -> 3
-			is Months.MAY -> 4
-			is Months.JUNE -> 5
-			is Months.JULY -> 6
-			is Months.AUGUST -> 7
-			is Months.SEPTEMBER -> 8
-			is Months.OCTOBER -> 9
-			is Months.NOVEMBER -> 10
-			is Months.DECEMBER -> 11
+			is Months.JANUARYa 		-> 0
+			is Months.FEBRUARY 		-> 1
+			is Months.MARCH 			 -> 2
+			is Months.APRIL 			 -> 3
+			is Months.MAY 				 -> 4
+			is Months.JUNE 				-> 5
+			is Months.JULY 				-> 6
+			is Months.AUGUST 			-> 7
+			is Months.SEPTEMBER 	 -> 8
+			is Months.OCTOBER 		 -> 9
+			is Months.NOVEMBER 		-> 10
+			is Months.DECEMBER 		-> 11
 		}
 }
 
