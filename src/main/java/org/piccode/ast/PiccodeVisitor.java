@@ -523,6 +523,15 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return result;
 		}
 
+
+		if (ctx.RETURN_TOK() != null) {
+			var tok = ctx.RETURN_TOK().getSymbol();
+			var result = finalizeAstNode(
+				new ReturnAst(visitExpr(ctx.expr())),
+				tok);
+			return result;
+		}
+
 		var start = ctx.getStart();
 		var err = new PiccodeException(fileName, start.getLine(), start.getCharPositionInLine(), "Invalid unary expression");
 		err.frame = null;
@@ -587,7 +596,20 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	private HashMap<String, Ast> visitKeyValuePairs(Key_val_pairsContext key_val_pairs) {
 		var obj = new HashMap<String, Ast>();
 		for (var kv : key_val_pairs.key_val_pair()) {
-			obj.put(kv.ID().getText(), visitExpr(kv.expr()));
+			var id = kv.ID();
+			if (id == null) {
+				var tok = key_val_pairs.getStart();
+				throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Missing a key in object literal");
+			}
+
+			var expr = kv.expr();
+
+			if (expr == null) {
+				var tok = key_val_pairs.getStart();
+				throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Missing expression in object literal");
+			}
+			
+			obj.put(id.getText(), visitExpr(expr));
 		}
 		return obj;
 	}
