@@ -28,7 +28,7 @@ symbol_lift
 symbol_entry
 : ID (symbol_lift)? ;
 
-declaration: ID CC (module | func);
+declaration: ID CC (module | func | import_module);
 	
 module: 
 	MODULE LBRACE module_stmts RBRACE;
@@ -102,11 +102,12 @@ closure_decl: BOR arg_list? BOR ARROW expr;
 unary: 
 	EXCLAIM expr
 	| SUB expr
+	| RETURN expr
 	| TILDE expr
 	| BAND expr;
 
 if_expr:
-	IF expr LBRACE expr* RBRACE (ELSE LBRACE expr* RBRACE)?;
+	IF expr LBRACE expr RBRACE (ELSE LBRACE expr RBRACE)?;
 
 when_expr: 
  WHEN expr LBRACE when_cases else_case? RBRACE;
