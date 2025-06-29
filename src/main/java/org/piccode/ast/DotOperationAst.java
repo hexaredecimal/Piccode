@@ -36,7 +36,7 @@ public class DotOperationAst extends Ast {
 	@Override
 	public PiccodeValue execute(Integer frame) {
 
-		if (lhs instanceof IdentifierAst id && Context.modules.containsKey(id.text)) {
+		if (lhs instanceof IdentifierAst id && Context.top.getValue(id.text) != null && Context.top.getValue(id.text) instanceof PiccodeModule) {
 			var err = new PiccodeException(file, line, column, "Cannot access the module `" + id.text + "` using dot. Please use `::` instead");
 			err.frame = frame;
 			throw err;
@@ -54,10 +54,6 @@ public class DotOperationAst extends Ast {
 			return processArrayIndexing(arr.array(), rhs.execute(frame), frame);
 		} else if (left instanceof PiccodeTuple tupl) {
 			return processArrayIndexing(tupl.array(), rhs.execute(frame), frame);
-		}
-
-		if (left instanceof PiccodeModule mod) {
-			return process(new IdentifierAst(mod.name), mod, frame);
 		}
 
 		if (!(left instanceof PiccodeObject)) {
@@ -112,70 +108,6 @@ public class DotOperationAst extends Ast {
 		return value;
 	}
 
-	private PiccodeValue process(IdentifierAst id, PiccodeModule mod, Integer frame) {
-		var ctx = frame == null
-			? Context.top
-			: Context.getContextAt(frame);
-		
-		if (rhs instanceof IdentifierAst _id) {
-			for (var node : mod.nodes) {
-				if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
-					return node.execute(frame);
-				}
-				if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-					node.execute(frame);
-					var result = ctx.getValue(_id.text);
-					if (result == null) {
-						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + _id.text + "` is not defined");
-						err.frame = frame;
-						var nm = ctx.getSimilarName(_id.text);
-						if (nm != null && !nm.isEmpty()) {
-							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + nm + "`");
-							err.addNote(note);
-						}
-						throw err;
-					}
-					return result;
-				}
-				if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
-					node.execute(frame);
-					return Context.modules.get(_id.text);
-				}
-			}
-
-			var err = new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
-			err.frame = frame;
-			throw err;
-		}
-
-		var call = (CallAst) rhs;
-
-		if (!(call.expr instanceof IdentifierAst)) {
-			var err = new PiccodeException(file, line, column, "Invalid function reference in module access module " + id.text + ": " + call.expr);
-			err.frame = frame;
-			throw err;
-		}
-
-		var _id = (IdentifierAst) call.expr;
-		for (var node : mod.nodes) {
-			if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
-				return node.execute(frame);
-			}
-			if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-				node.execute(frame);
-				//return Context.top.getValue(_id.text);
-				return call.execute(frame);
-			}
-			if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
-				node.execute(frame);
-				return Context.modules.get(_id.text);
-			}
-		}
-
-		var err = new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
-		err.frame = frame;
-		throw err;
-	}
 
 	private PiccodeValue processArrayIndexing(PiccodeValue[] arr, PiccodeValue execute, Integer frame) {
 		if (!(execute instanceof PiccodeNumber)) {

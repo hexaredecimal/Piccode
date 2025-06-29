@@ -64,7 +64,7 @@ public class IdentifierAst extends Ast {
 			var note = new PiccodeSimpleNote("Track size: " + ctx.getFramesCount());
 			err.addNote(note);
 			
-			note = new PiccodeSimpleNote("Symbol table dump: " + sb.toString());
+			note = new PiccodeSimpleNote("Symbol table dump: \n" + sb.toString());
 			err.addNote(note);
 			throw err;
 		}

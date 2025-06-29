@@ -1,6 +1,9 @@
 package org.piccode.ast;
 
+import java.util.function.Consumer;
+import org.piccode.backend.Compiler;
 import org.piccode.piccodescript.TargetEnvironment;
+import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeValue;
 
@@ -22,7 +25,14 @@ public class StringAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		return new PiccodeString(unescapeString(text));
+		StringBuilder finalString = new StringBuilder();
+		parseInterpolatedString(text, expr -> {
+			var result = Compiler.program(file, expr).execute(frame).toString();
+			finalString.append(result);
+		}, finalString);
+		
+		var str = unescapeString(finalString.toString());
+		return new PiccodeString(str);
 	}
 	
 	public String unescapeString(String str) {
@@ -81,4 +91,55 @@ public class StringAst extends Ast {
 	public String codeGen(TargetEnvironment target) {
 		return String.format("\"%s\"", text);
 	}
+	public void parseInterpolatedString(String input, Consumer<String> expressionHandler, StringBuilder outputBuilder) {
+		int length = input.length();
+		int i = 0;
+
+		while (i < length) {
+			char c = input.charAt(i);
+			if (c == '{') {
+				if (i + 1 < length && input.charAt(i + 1) == '{') {
+					outputBuilder.append('{');
+					i += 2;
+					continue;
+				}
+
+				
+				int startExpr = i + 1;
+				int braceDepth = 1;
+				i++; 
+
+				while (i < length && braceDepth > 0) {
+					if (input.charAt(i) == '{') {
+						braceDepth++;
+					} else if (input.charAt(i) == '}') {
+						braceDepth--;
+						if (braceDepth == 0) {
+							break;
+						}
+					}
+					i++;
+				}
+
+				if (braceDepth == 0) {
+					String expr = input.substring(startExpr, i).trim();
+					expressionHandler.accept(expr); 
+					i++;
+				} else {
+					throw new PiccodeException(file, line, column, "Unmatched '{' in input string.");
+				}
+			} 
+			else if (c == '}') {
+				if (i + 1 < length && input.charAt(i + 1) == '}') {
+					outputBuilder.append('}');
+					i += 2;
+					continue;
+				}
+			} else {
+				outputBuilder.append(c);
+				i++;
+			}
+		}
+	}
+	
 }

@@ -122,7 +122,7 @@ public class ImportAst extends Ast {
 		}
 	}
 
-	private List<Ast> loadModuleFromStdLib(String module, Integer frame) {
+	public List<Ast> loadModuleFromStdLib(String module, Integer frame) {
 		var storage = getAppStorage();
 		var paths = List.of(storage, "./");
 		var nodes = new ArrayList<Ast>();

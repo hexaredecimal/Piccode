@@ -112,45 +112,15 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var tok = ctx.ID().getSymbol();
 		var name = ctx.ID().getText();
 		if (ctx.ASSIGN() != null) {
-			var value = visitLiteral_expr(ctx.literal_expr());
+			var value = visitExpr(ctx.expr());
 			var result = new Arg(name, value);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
-			return result;
+			result.export = ctx.USE() != null;
+			return finalizeAstNode(result, tok);
 		}
 
 		var result = new Arg(name);
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
-		result.file = fileName;
-		return result;
-	}
-
-	@Override
-	public Ast visitLiteral_expr(Literal_exprContext ctx) {
-		if (ctx.NUMBER() != null) {
-			return visitNumber(ctx.NUMBER());
-		}
-
-		if (ctx.STRING() != null) {
-			return visitString(ctx.STRING());
-		}
-
-		if (ctx.array() != null) {
-			return visitArray(ctx.array());
-		}
-		if (ctx.tuple() != null) {
-			return visitTuple(ctx.tuple());
-		}
-		if (ctx.object() != null) {
-			return visitObject(ctx.object());
-		}
-
-		var tok = ctx.getStart();
-		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
-		err.frame = null;
-		throw err;
+		result.export = ctx.USE() != null;
+		return finalizeAstNode(result, tok);
 	}
 
 	@Override

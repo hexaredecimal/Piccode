@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import com.github.tomaslanger.chalk.Chalk;
 import java.util.concurrent.ExecutionException;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
@@ -34,18 +35,37 @@ public class CCOperationAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		if (lhs instanceof IdentifierAst id && Context.modules.containsKey(id.text)) {
-			var mod = Context.modules.get(id.text);
-
+		if (lhs instanceof CCOperationAst op) {
+			var mod = (PiccodeModule) op.execute(frame);
+			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
+				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + mod.name);
+			}
+			
+			var id = new IdentifierAst(mod.name);
+			id.file = file;
+			id.line = line;
+			id.column = column;
+			return process(id, mod, frame);
+		}
+		
+		if (lhs instanceof IdentifierAst id && Context.top.getValue(id.text) != null) {
+			var mod = Context.top.getValue(id.text);
 			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
 				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + id.text);
 			}
-
-			return process(id, mod, frame);
+			return process(id, (PiccodeModule)mod, frame);
 		}
 
-		var err = new PiccodeException(file, line, column, "Invalid use of `::`. Expected a module on the lhs");
+		var err = new PiccodeException(file, line, column, "Invalid use of `::`. Expected a module on the lhs, but found " + Chalk.on(lhs.toString()).red());
 		err.frame = frame;
+
+		if (lhs instanceof IdentifierAst id) {
+			var nm = Context.top.getSimilarName(id.text);
+			if (nm != null && !nm.isEmpty()) {
+				var note = new PiccodeSimpleNote("Did you mean `" + Chalk.on(nm).green() + "` instead of `" + Chalk.on(id.text).red() + "` ?");
+				err.addNote(note);
+			}
+		}
 		throw err;
 	}
 
@@ -75,8 +95,7 @@ public class CCOperationAst extends Ast {
 					return result;
 				}
 				if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
-					node.execute(frame);
-					return Context.modules.get(_id.text);
+					return node.execute(frame);
 				}
 			}
 
@@ -105,7 +124,7 @@ public class CCOperationAst extends Ast {
 			}
 			if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
 				node.execute(frame);
-				return Context.modules.get(_id.text);
+				return ctx.getValue(_id.text);
 			}
 		}
 
