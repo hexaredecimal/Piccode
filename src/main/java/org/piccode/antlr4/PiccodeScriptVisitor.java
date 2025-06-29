@@ -97,12 +97,6 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArg(PiccodeScriptParser.ArgContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PiccodeScriptParser#literal_expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteral_expr(PiccodeScriptParser.Literal_exprContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#expr_stmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

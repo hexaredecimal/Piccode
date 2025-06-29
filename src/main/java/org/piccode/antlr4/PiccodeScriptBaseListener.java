@@ -186,18 +186,6 @@ public class PiccodeScriptBaseListener implements PiccodeScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLiteral_expr(PiccodeScriptParser.Literal_exprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLiteral_expr(PiccodeScriptParser.Literal_exprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterExpr_stmt(PiccodeScriptParser.Expr_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
