@@ -20,6 +20,7 @@ import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 import org.piccode.rt.modules.PiccodeArrayModule;
+import org.piccode.rt.modules.PiccodeFileModule;
 import org.piccode.rt.modules.PiccodeIOModule;
 import org.piccode.rt.modules.PiccodeMathModule;
 import org.piccode.rt.modules.PiccodeStringModule;
@@ -130,6 +131,7 @@ public class Compiler {
 		PiccodeTimeModule.addFunctions();
 		PiccodeTypesModule.addFunctions();
 		PiccodeVirtualModule.addFunctions();
+		PiccodeFileModule.addFunctions();
 	}
 
 }
