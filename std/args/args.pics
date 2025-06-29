@@ -9,8 +9,8 @@ Args :: module {
   //
   // Example:
   // --- Code
-  //   let args = Args.get()
-  //   IO.println(Array.toString(args))
+  //   args := Args.get()
+  //   IO::println(Array::toString(args))
   // --- Code
   get :: () = _pic_nat_user_args
 

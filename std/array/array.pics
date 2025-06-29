@@ -88,9 +88,9 @@ Array :: module {
     when xs {
       is [] -> []
       is x:rest ->
-        if pred(x) {
+        if pred(x) do {
           x : filter(rest, pred)
-        } else {
+        } else do {
           filter(rest, pred)
         }
     }
@@ -154,9 +154,9 @@ Array :: module {
   // Returns:
   //   A new array with at most N elements
   take :: (xs=[], n=0) =
-    if n <= 0 {
+    if n <= 0 do {
       []
-    } else {
+    } else do {
       when xs {
         is [] -> []
         is x:rest -> x : take(rest, n - 1)
@@ -173,9 +173,9 @@ Array :: module {
   // Returns:
   //   A new array without the first N elements
   drop :: (xs=[], n=0) =
-    if n <= 0 {
+    if n <= 0 do {
       xs
-    } else {
+    } else do {
       when xs {
         is [] -> []
         is _:rest -> drop(rest, n - 1)
@@ -194,7 +194,7 @@ Array :: module {
   contains :: (xs=[], value) =
     when xs {
       is [] -> false
-      is x:rest -> if x == value { true } else { contains(rest, value) }
+      is x:rest -> if x == value do { true } else do { contains(rest, value) }
     }
 
   // Function: indexOf
@@ -210,7 +210,7 @@ Array :: module {
   indexOf :: (xs=[], value, i=0) =
     when xs {
       is [] -> -1
-      is x:rest -> if x == value { i } else { indexOf(rest, value, i + 1) }
+      is x:rest -> if x == value do { i } else do { indexOf(rest, value, i + 1) }
     }
 
   // Function: fromRange
@@ -223,12 +223,12 @@ Array :: module {
   // Returns:
   //   An array representing the range [start, ..., end]
   fromRange :: (start, end) = 
-    if start == end {
+    if start == end do {
       [end]
-    } else {
-      if start < end {
+    } else do {
+      if start < end do {
         start : fromRange(start + 1, end)
-      } else {
+      } else do {
         start : fromRange(start - 1, end)
       }
     }

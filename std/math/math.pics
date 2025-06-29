@@ -158,10 +158,10 @@ Math :: module {
   // Returns:
   //   The clamped value, either `a`, `low`, or `high`
   clamp :: (a=0, low=-1, high=1) = 
-     if a < low { low }
-     else { 
-       if a > high { high }
-       else { a }
+     if a < low do { low }
+     else do { 
+       if a > high do { high }
+       else do { a }
      }
 
 
@@ -174,7 +174,7 @@ Math :: module {
   //
   // Returns:
   //   The maximum between `a` and `b`
-  max :: (a=0, b=0) = if a > b { a } else { b }
+  max :: (a=0, b=0) = if a > b do { a } else do { b }
 
 
   // Function: min
@@ -186,7 +186,7 @@ Math :: module {
   //
   // Returns:
   //   The minimum between `a` and `b`
-  min :: (a=0, b=0) = if a < b { a } else { b }
+  min :: (a=0, b=0) = if a < b do { a } else do { b }
 
 
   // Function: degToRad
@@ -220,8 +220,8 @@ Math :: module {
   // Returns:
   //   The factorial of `n`
   factorial :: (n=0) =
-    if n <= 1 { 1 }
-    else { n * factorial(n - 1) } 
+    if n <= 1 do { 1 }
+    else do { n * factorial(n - 1) } 
 
   // Variable: E
   // The double value that is closer than any other to e, the base of the natural logarithms.

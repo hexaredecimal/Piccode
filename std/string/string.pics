@@ -83,8 +83,8 @@ String :: module {
   // Returns:
   //   A new string consisting of `str` repeated `n` times
   repeat :: (str="", n=0) =
-    if n <= 0 { "" }
-    else { str + repeat(str, n - 1) }
+    if n <= 0 do { "" }
+    else do { str + repeat(str, n - 1) }
 
 
   // Function: padLeft
@@ -98,9 +98,9 @@ String :: module {
   // Returns:
   //   A new string padded on the left to reach `total` length
   padLeft :: (str="", total=0, char=" ") = do {
-    let padCount = total - String::length(str)
-    if padCount <= 0 { str }
-    else { repeat(char, padCount) + str }
+    padCount := total - String::length(str)
+    if padCount <= 0 do { str }
+    else do { repeat(char, padCount) + str }
   }
 
 
@@ -115,9 +115,9 @@ String :: module {
   // Returns:
   //   A new string padded on the right to reach `total` length
   padRight :: (str="", total=0, char=" ") = do {
-    let padCount = total - String::length(str)
-    if padCount <= 0 { str }
-    else { str + repeat(char, padCount) }
+    padCount := total - String::length(str)
+    if padCount <= 0 do { str }
+    else do { str + repeat(char, padCount) }
   }
 
   // Variable: EMPTY
