@@ -46,24 +46,15 @@ func_args: '(' arg_list? ')' ;
 
 arg_list: arg (',' arg)* ;
 
-arg: ID (ASSIGN literal_expr)? ; // only allow literals in default values
-
-
-literal_expr :
-	NUMBER                           
-	| STRING                           
-	|array
-	| tuple
-	| object
-	;
+arg: (USE?) ID (ASSIGN expr)? ; // only allow literals in default values
 
 expr_stmt: expr;
 	// parser rules
 expr
-	: expr CC expr
-	| expr LPAREN call_expr_list? RPAREN
+	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
+	| expr CC expr
 	| expr DOT expr
 	| expr MUL expr         
 	| expr DIV expr         
@@ -86,9 +77,9 @@ expr
 	| expr BAND expr         
 	| expr COLON expr
 	| LPAREN expr? RPAREN
-	| unary
 	| if_expr
 	| when_expr
+	| unary
 	| do_expr
 	| array
 	| tuple
@@ -102,12 +93,12 @@ closure_decl: BOR arg_list? BOR ARROW expr;
 unary: 
 	EXCLAIM expr
 	| SUB expr
-	| RETURN expr
+	| RETURN_TOK expr
 	| TILDE expr
 	| BAND expr;
 
 if_expr:
-	IF expr LBRACE expr RBRACE (ELSE LBRACE expr RBRACE)?;
+	IF expr expr (ELSE expr)?;
 
 when_expr: 
  WHEN expr LBRACE when_cases else_case? RBRACE;
@@ -182,6 +173,8 @@ IF: 'if';
 ELSE: 'else';
 MODULE: 'module';
 DO: 'do';
+USE: 'use';
+RETURN_TOK: 'return';
 
 NUMBER
     :   HEX_LITERAL
