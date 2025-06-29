@@ -18,6 +18,7 @@ import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeInfo;
+import org.piccode.rt.PiccodeModule;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 
@@ -25,58 +26,89 @@ import org.piccode.rt.PiccodeValue;
  *
  * @author hexaredecimal
  */
-public class ImportAst extends Ast {
+public class ImportModuleCreateAst extends Ast {
 
-	public String path;
-	public List<Ast> lifted;
+	public String name;
+	public ImportAst import_;
+	private String path;
 
-	public ImportAst(String path) {
-		this.path = path;
-		this.lifted = new ArrayList<>();
-	}
-
-	public ImportAst(String path, List<Ast> lifted) {
-		this.path = path;
-		this.lifted = lifted;
-	}
-
-	@Override
-	public String toString() {
-		return "import " + path;
+	public ImportModuleCreateAst(String name, ImportAst import_) {
+		this.name = name;
+		this.import_ = import_;
+		this.path = import_.path;
 	}
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		var nodes = loadModuleFromStdLib(path, frame);
+		var nodes = import_.loadModuleFromStdLib(path, frame);
+
+		var final_nodes = new ArrayList<Ast>();
+		var lifted = import_.lifted;
 
 		if (lifted.isEmpty()) {
-			nodes.forEach(node -> node.execute(frame));
-			return new PiccodeUnit();
+			nodes.forEach(node -> {
+				if (node instanceof ModuleAst mod && mod.name.equals(name)) {
+					final_nodes.addAll(mod.nodes);
+				} else {
+					final_nodes.add(node);
+				}
+			});
+
+			var top = Context.top.getValue(name);
+			if (top != null && top instanceof PiccodeModule module) {
+				final_nodes.addAll(module.nodes);
+				var mod = new ModuleAst(name, final_nodes);
+				var result = mod.execute(frame);
+				Context.top.putLocal(name, result);
+				return result;
+			} else {
+				var mod = new ModuleAst(name, final_nodes);
+				var result = mod.execute(frame);
+				return result;
+			}
 		}
 
 		for (var liftedNode : lifted) {
-			executeLifted(nodes, liftedNode, frame);
+			executeLifted(nodes, liftedNode, frame, final_nodes);
 		}
 
-		return new PiccodeUnit();
+		var top = Context.top.getValue(name);
+		if (top != null && top instanceof PiccodeModule module) {
+			final_nodes.addAll(module.nodes);
+			var mod = new ModuleAst(name, final_nodes);
+			var result = mod.execute(frame);
+			Context.top.putLocal(name, result);
+			return result;
+		} else {
+			var mod = new ModuleAst(name, final_nodes);
+			var result = mod.execute(frame);
+			return result;
+		}
+
 	}
 
-	private void executeLifted(List<Ast> moduleNodes, Ast liftedNode, Integer frame) {
+	private void executeLifted(List<Ast> moduleNodes, Ast liftedNode, Integer frame, List<Ast> final_nodes) {
 		if (liftedNode instanceof ImportId id) {
 			for (var node : moduleNodes) {
 				if (node instanceof ImportAst imp) {
 					imp.execute(frame);
 				}
 				if (node instanceof StatementList sts) {
-					executeLifted(sts.nodes, id, frame);
+					executeLifted(sts.nodes, id, frame, final_nodes);
 					return;
 				}
 				if (node instanceof FunctionAst func && func.name.equals(id.text)) {
-					func.execute(frame);
+					final_nodes.add(node);
 					return;
 				}
 				if (node instanceof ModuleAst mod && mod.name.equals(id.text)) {
-					mod.execute(frame);
+					if (id.text.equals(name)) {
+						final_nodes.addAll(mod.nodes);
+						return;
+					}
+
+					mod.createSymbol = false;
+					final_nodes.add(node);
 					return;
 				}
 			}
@@ -91,12 +123,12 @@ public class ImportAst extends Ast {
 					imp.execute(frame);
 				}
 				if (node instanceof StatementList sts) {
-					executeLifted(sts.nodes, lift, frame);
+					executeLifted(sts.nodes, lift, frame, final_nodes);
 					return;
 				}
 				if (node instanceof ModuleAst mod && mod.name.equals(lift.text)) {
 					// Recursively execute lifted symbols from inside the module
-					executeLifted(mod.nodes, lift.nodes, frame);
+					executeLifted(mod.nodes, lift.nodes, frame, final_nodes);
 					return;
 				}
 				if (node instanceof FunctionAst func && func.name.equals(lift.text)) {
@@ -116,103 +148,14 @@ public class ImportAst extends Ast {
 		}
 	}
 
-	private void executeLifted(List<Ast> moduleNodes, List<Ast> nestedLifted, Integer frame) {
+	private void executeLifted(List<Ast> moduleNodes, List<Ast> nestedLifted, Integer frame, List<Ast> final_nodes) {
 		for (var lifted : nestedLifted) {
-			executeLifted(moduleNodes, lifted, frame);
-		}
-	}
-
-	private List<Ast> loadModuleFromStdLib(String module, Integer frame) {
-		var storage = getAppStorage();
-		var paths = List.of(storage, "./");
-		var nodes = new ArrayList<Ast>();
-		var _file = findModule(module, paths);
-		if (_file == null) {
-			var err = new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
-			err.frame = frame;
-			throw err;
-		}
-
-		var path_ = _file.getPath();
-		if (Context.isImportCached(path_)) {
-			return Context.getCached(path_);
-		}
-
-		var files = _file.listFiles();
-
-		for (var fp : files) {
-			if (fp.getName().endsWith(".pics")) {
-				var code = readFile(fp);
-				if (code == null) {
-					var err =	new PiccodeException(file, line, column, "Invalid module " + module.replaceAll("/", "."));
-					err.frame = frame;
-					throw err;
-				}
-				var program = (StatementList) _import(fp.getAbsolutePath(), code);
-				var noImports = program.nodes
-								.stream()
-								.filter((value) -> {
-									if (value instanceof ImportAst) {
-										value.execute(frame);
-									}
-									return !(value instanceof ImportAst);
-								})
-								.toList();
-				nodes.addAll(noImports);
-			}
-		}
-		if (!Context.isImportCached(path)) {
-			Context.cacheImport(path, lifted);
-		}
-		return nodes;
-	}
-
-	private Ast _import(String file, String code) {
-		Context.top.putLocal("true", new PiccodeBoolean("true"));
-		Context.top.putLocal("false", new PiccodeBoolean("false"));
-
-		try {
-			return Compiler.program(file, code);
-		} catch (PiccodeException e) {
-			throw e;
-		}
-	}
-
-	private String readFile(File fp) {
-		StringBuilder sb = new StringBuilder();
-		Scanner sc;
-		try {
-			sc = new Scanner(fp);
-			while (sc.hasNext()) {
-				sb.append(sc.nextLine()).append("\n");
-			}
-			return sb.toString();
-		} catch (FileNotFoundException ex) {
-			return null;
+			executeLifted(moduleNodes, lifted, frame, final_nodes);
 		}
 	}
 
 	@Override
 	public String codeGen(TargetEnvironment target) {
-		return "";
-	}
-
-	private String getAppStorage() {
-		try {
-			String path = ImportAst.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-			return new File(path).getParentFile().getPath();
-		} catch (URISyntaxException ex) {
-			return "./";
-		}
-	}
-
-	private File findModule(String module, List<String> of) {
-		for (var dir : of) {
-			var fp = new File(dir + "/" + module);
-			if (fp.isDirectory()) {
-				return fp;
-			}
-		}
-		return null;
+		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 	}
 }

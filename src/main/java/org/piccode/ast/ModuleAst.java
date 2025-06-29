@@ -13,10 +13,12 @@ import org.piccode.rt.PiccodeValue;
 public class ModuleAst extends Ast {
 	public String name;
 	public List<Ast> nodes;
+	public boolean createSymbol;
 
 	public ModuleAst(String name, List<Ast> nodes) {
 		this.name = name;
 		this.nodes = nodes;
+		this.createSymbol = true;
 	}
 
 	@Override
@@ -33,15 +35,20 @@ public class ModuleAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		if (Context.modules.containsKey(name)) {
-			var mod = Context.modules.get(name);
-			mod.nodes.addAll(nodes);
+		var ctx = Context.top;
+		var module = ctx.getValue(name);
+
+		if ((module == null) || !(module instanceof PiccodeModule)) {
+			var mod = new PiccodeModule(name, nodes);
+			if (createSymbol) {
+				ctx.putLocal(name, mod);
+			}
 			return mod;
-		} else {
-			var module = new PiccodeModule(name, nodes);
-			Context.modules.put(name, module);
-			return module;
 		}
+
+		var mod = (PiccodeModule) module;
+		mod.nodes.addAll(nodes);
+		return mod;
 	}
 
 	@Override
