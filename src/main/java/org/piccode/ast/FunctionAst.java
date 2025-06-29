@@ -53,6 +53,10 @@ public class FunctionAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
+		var ctx = frame == null
+				? Context.top
+				: Context.getContextAt(frame);
+		
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
 		cl.creator = this;
@@ -62,7 +66,7 @@ public class FunctionAst extends Ast {
 		cl.file = file;
 		cl.column = column;
 		cl.line = line;
-		Context.addGlobal(name, cl);
+		ctx.putLocal(name, cl);
 		return cl;
 	}
 
