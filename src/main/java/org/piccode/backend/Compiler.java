@@ -2,8 +2,11 @@ package org.piccode.backend;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.piccode.antlr4.PiccodeScriptLexer;
 import org.piccode.antlr4.PiccodeScriptParser;
 import org.piccode.ast.Ast;
@@ -88,10 +91,16 @@ public class Compiler {
 			code = sanitizeSourceFile(code);
 		}
 		
+		var err = new SyntaxError(file);
+		
 		var lexer = new PiccodeScriptLexer(CharStreams.fromString(code));
-		var parser = new PiccodeScriptParser(new CommonTokenStream(lexer));
 		lexer.removeErrorListeners();
+		lexer.addErrorListener(err);
+		
+		
+		var parser = new PiccodeScriptParser(new CommonTokenStream(lexer));
 		parser.removeErrorListeners();
+		parser.addErrorListener(err);
 
 		var visitor = new PiccodeVisitor(file);
 
@@ -134,4 +143,19 @@ public class Compiler {
 		PiccodeFileModule.addFunctions();
 	}
 
+
+	private static class SyntaxError extends BaseErrorListener {
+
+		public String file;
+
+		public SyntaxError(String file) {
+			this.file = file;
+		}
+		
+		
+		@Override
+		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+			throw new PiccodeException(file, line, charPositionInLine, msg);
+		}
+	}
 }
