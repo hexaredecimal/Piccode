@@ -1,0 +1,29 @@
+
+import std.io
+import std.fs
+
+// Module: Foo
+// Contains functions for testing
+Foo :: module {
+  // Function: getFoo
+  // gets the value "Foo"
+  //
+  // Returns:
+  //  The string value "Foo"
+  getFoo :: () = "Foo"
+
+  // Function: getBar
+  // gets the value "Bar"
+  //
+  // Returns:
+  //  The string value "Bar"
+  getBar :: () = "Bar"
+}
+
+combine :: (foo, bar) = foo + " " + bar
+
+foo := Foo::getFoo()
+bar := Foo::getBar()
+foobar := combine(foo, bar)
+IO::println(foobar)
+
