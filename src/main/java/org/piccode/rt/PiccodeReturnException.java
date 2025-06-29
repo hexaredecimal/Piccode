@@ -5,22 +5,10 @@ package org.piccode.rt;
  *
  * @author hexaredecimal
  */
-public class PiccodeUnit implements PiccodeValue {
+public class PiccodeReturnException extends RuntimeException {
+	public PiccodeValue value;
 
-	@Override
-	public Object raw() {
-		return Void.TYPE;
+	public PiccodeReturnException(PiccodeValue value) {
+		this.value = value;
 	}
-
-	@Override
-	public String toString() {
-		return "()";
-	}
-
-	@Override
-	public String type() {
-		return "Unit";
-	}
-	
-	
 }
