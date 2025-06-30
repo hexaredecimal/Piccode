@@ -14,11 +14,13 @@ import org.piccode.ast.CallAst;
 import org.piccode.ast.FunctionAst;
 import org.piccode.ast.IdentifierAst;
 import org.piccode.ast.PiccodeVisitor;
+import org.piccode.ast.ReturnAst;
 import org.piccode.ast.StatementList;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
+import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
@@ -54,7 +56,18 @@ public class Compiler {
 				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
 					has_main = true;
 				}
-				res = stmt.execute(null);
+
+				if (stmt instanceof ReturnAst ret) {
+					res = ret.expr.execute(null);
+					break;
+				}
+				try {
+					res = stmt.execute(null);
+				} catch (PiccodeReturnException pre) {
+					res = pre.value;
+				} catch (Exception e) {
+					throw e;
+				}
 			}
 
 			if (has_main) {
@@ -64,6 +77,11 @@ public class Compiler {
 			
 			Context.top.dropStackFrame();
 			return res;
+		} catch (PiccodeReturnException ret) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			return ret.value;
 		} catch (PiccodeException e) {
 			if (Context.top.getFramesCount() > 0) {
 				Context.top.dropStackFrame();
