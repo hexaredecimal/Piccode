@@ -15,7 +15,7 @@ getProfile :: (id = 0) = Virtual::task(|_| -> do {
   profile
 })
 
-printProfile :: (kind, user) = IO::println(String::format("%s := {name: %s}", [kind, user.name]))
+printProfile :: (kind, user) = IO::println(String::format("%s := {{name: %s}}", [kind, user.name]))
 
 
 IO::println("Start")

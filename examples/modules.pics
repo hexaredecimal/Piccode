@@ -14,7 +14,7 @@ Foo::baz()
 
 Foo :: module {
 	Foo2 :: module {
-		function bar2() = IO::println("Foo::Foo2::bar2")
+		bar2 :: () = IO::println("Foo::Foo2::bar2")
 	}
 }
 
