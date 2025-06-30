@@ -150,11 +150,23 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			var func = (FunctionAst) visitFunc(ctx.func());
 			func.name = id;
 			return func;
+		} 
+
+		if (ctx.module() != null) {
+			var mod = (ModuleAst) visitModule(ctx.module());
+			mod.name = id;
+			return mod;
+		}
+
+		if (ctx.import_module() != null) {
+			var tok = ctx.import_module().getStart();
+			var mod = (ImportAst) visitImport_module(ctx.import_module());
+			var result = new ImportModuleCreateAst(id, mod);
+			return finalizeAstNode(result, tok);
 		}
 		
-		var mod = (ModuleAst) visitModule(ctx.module());
-		mod.name = id;
-		return mod;
+		var tok = ctx.getStart();
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid declaration node");
 	}
 
 	@Override
