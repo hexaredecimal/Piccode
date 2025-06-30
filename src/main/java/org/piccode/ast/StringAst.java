@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import org.piccode.backend.Compiler;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeException;
+import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeValue;
 
@@ -27,8 +28,14 @@ public class StringAst extends Ast {
 	public PiccodeValue execute(Integer frame) {
 		StringBuilder finalString = new StringBuilder();
 		parseInterpolatedString(text, expr -> {
-			var result = Compiler.program(file, expr).execute(frame).toString();
-			finalString.append(result);
+			try {
+				var result = Compiler.program(file, expr.trim()).execute(frame).toString();
+				finalString.append(result);
+			} catch (PiccodeReturnException rex) {
+				finalString.append(rex.value.toString());
+			} catch (PiccodeException ex) {
+				throw new PiccodeException(file, line, column, ex.getMessage());
+			}
 		}, finalString);
 		
 		var str = unescapeString(finalString.toString());

@@ -123,6 +123,9 @@ public class PiccodeClosure implements PiccodeValue {
 			ctx.dropStackFrame();
 			
 			return result;
+		} catch (PiccodeReturnException ret) {
+			ctx.dropStackFrame();
+			return ret.value;
 		} catch (StackOverflowError se) {
 			ctx.dropStackFrame();
 			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Stack overflow");
