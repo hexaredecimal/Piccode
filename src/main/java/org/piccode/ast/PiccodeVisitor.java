@@ -42,51 +42,43 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitStmts(StmtsContext ctx) {
+		var tok = ctx.getStart();
 		var stmts = new ArrayList<Ast>();
 		for (var stmt : ctx.stmt()) {
 			stmts.add(visitStmt(stmt));
 		}
 		var result = new StatementList(stmts);
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	@Override
 	public Ast visitClosure_decl(Closure_declContext ctx) {
+		var tok = ctx.getStart();
 		var args = visitArgs(ctx.arg_list());
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
 			var result = new ClosureAst(null, body);
-			result.file = fileName;
-			return result;
+			return finalizeAstNode(result, tok);
 		}
 
 		var result = new ClosureAst(args, body);
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	@Override
 	public Ast visitFunc(FuncContext ctx) {
 		var tok = ctx.getStart();
-		var name = tok.getText();
 		var args = visitFuncArgs(ctx.func_args());
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
 			var result = new FunctionAst(null, null, body);
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
-			return result;
+			return finalizeAstNode(result, tok);
 		}
 
 		var result = new FunctionAst(null, args, body);
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	public List<Arg> visitFuncArgs(Func_argsContext ctx) {
@@ -551,17 +543,16 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	public Ast visitCall(ExprContext expr, Call_expr_listContext exprList) {
+		var tok = exprList.getStart();
 		var value = visitExpr(expr);
 		if (exprList == null) {
-			var result = new CallAst(value, List.of());
-			result.file = fileName;
-			return result;
+			var result = new CallAst(value, new ArrayList<Ast>());
+			return finalizeAstNode(result, tok);
 		}
 
 		var args = visitCallExprList(exprList);
 		var result = new CallAst(value, args);
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	private List<Ast> visitCallExprList(Call_expr_listContext ctx) {
@@ -599,10 +590,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var tok = ctx.LBRACE().getSymbol();
 		var kvs = visitKeyValuePairs(ctx.key_val_pairs());
 		var result = new ObjectAst(kvs);
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	private HashMap<String, Ast> visitKeyValuePairs(Key_val_pairsContext key_val_pairs) {
@@ -632,17 +620,11 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var exprs = visitExprlist(ctx.expr_list());
 		if (exprs.size() == 1) {
 			var result = exprs.getFirst();
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
-			return result;
+			return finalizeAstNode(result, tok);
 		}
 
 		var result = new TupleAst(exprs);
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	@Override
@@ -650,16 +632,10 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var tok = ctx.LBRACKET().getSymbol();
 		if (ctx.expr_list() != null) {
 			var result = new ArrayAst(visitExprlist(ctx.expr_list()));
-			result.line = tok.getLine();
-			result.column = tok.getCharPositionInLine();
-			result.file = fileName;
-			return result;
+			return finalizeAstNode(result, tok);
 		}
 		var result = new ArrayAst(List.of());
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
-		result.file = fileName;
-		return result;
+		return finalizeAstNode(result, tok);
 	}
 
 	private List<Ast> visitExprlist(Expr_listContext ctx) {
@@ -672,22 +648,14 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	private Ast visitNumber(TerminalNode NUMBER) {
 		var number = new NumberAst(NUMBER.getText());
-		var line = NUMBER.getSymbol().getLine();
-		var col = NUMBER.getSymbol().getStartIndex();
-		number.line = line;
-		number.column = col;
-		number.file = fileName;
-		return number;
+		var tok = NUMBER.getSymbol();
+		return finalizeAstNode(number, tok);
 	}
 
 	private Ast visitString(TerminalNode STRING) {
 		var string = new StringAst(STRING.getText());
-		var line = STRING.getSymbol().getLine();
-		var col = STRING.getSymbol().getStartIndex();
-		string.line = line;
-		string.column = col;
-		string.file = fileName;
-		return string;
+		var tok = STRING.getSymbol();
+		return finalizeAstNode(string, tok);
 	}
 
 	private Ast visitBinOp(String op, ExprContext expr) {
@@ -712,10 +680,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var tok = ID.getSymbol();
 		String _id = ID.getText();
 		var id = new IdentifierAst(_id);
-		id.line = tok.getLine();
-		id.column = tok.getCharPositionInLine();
-		id.file = fileName;
-		return id;
+		return finalizeAstNode(id, tok);
 	}
 
 	private Ast visitPipeOp(ExprContext expr) {
