@@ -543,13 +543,14 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	public Ast visitCall(ExprContext expr, Call_expr_listContext exprList) {
-		var tok = exprList.getStart();
 		var value = visitExpr(expr);
 		if (exprList == null) {
+			var tok = expr.getStart();
 			var result = new CallAst(value, new ArrayList<Ast>());
 			return finalizeAstNode(result, tok);
 		}
 
+		var tok = exprList.getStart();
 		var args = visitCallExprList(exprList);
 		var result = new CallAst(value, args);
 		return finalizeAstNode(result, tok);
