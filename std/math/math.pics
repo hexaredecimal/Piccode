@@ -159,10 +159,12 @@ Math :: module {
   //   The clamped value, either `a`, `low`, or `high`
   clamp :: (a=0, low=-1, high=1) = 
      if a < low do { low }
-     else do { 
-       if a > high do { high }
-       else do { a }
+     else if a > high do { 
+      high 
+     } else do { 
+      a 
      }
+   
 
 
   // Function: max

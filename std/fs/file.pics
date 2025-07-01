@@ -1,8 +1,57 @@
-
-import std.sys { System { todo } }
-
+// Module: File
 File :: module {
-	new :: () = todo("Implement the file functions")
+
+	// Function: new
+	// Allocates a file pointer in the heap
+	//
+	// Parameters:
+  //   path - (String) The path to the file to allocate.
+  //
+  // Returns:
+  //   Object - A valid object that represents a file
+	new   :: (path=".") = pic_nat_filenew(path)
+
+	// Function: create
+	// Creates a new file on file system
+	//
+	// Parameters:
+  //   file - (Object) The object that represents a file
+  //
+  // Returns:
+  //   Object - A valid object that represents the new file
+	create :: (file=File::new("./tmp.txt")) = pic_nat_create(file)
+
+	// Function: delete
+	// Deletes a new file on file system
+	//
+	// Parameters:
+  //   file - (Object) The object that represents a file
+  //
+  // Returns:
+  //   Object - A valid object that represents the deleted file
+	delete :: (file) = pic_nat_delete(file)
+
+	// Function: listFiles
+	// Gets all files under this directory as valid file objects
+	//
+	// Parameters:
+  //   file - (Object) The object that represents a file
+  //
+  // Returns:
+  //   An array of file objects
+	listFiles :: (file) = pic_nat_listfiles(file)
+	
+	// Function: listPaths
+	// Gets all files under this directory as strings
+	//
+	// Parameters:
+  //   file - (Object) The object that represents a file
+  //
+  // Returns:
+  //   An array of strings of file paths
+	listPaths :: (file) = pic_nat_listpaths(file)
+	
+
 }
 
 

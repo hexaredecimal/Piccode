@@ -156,12 +156,11 @@ Array :: module {
   take :: (xs=[], n=0) =
     if n <= 0 do {
       []
-    } else do {
-      when xs {
+    } else when xs {
         is [] -> []
         is x:rest -> x : take(rest, n - 1)
       }
-    }
+
 
   // Function: drop
   // Drops the first N elements from the array
@@ -175,11 +174,9 @@ Array :: module {
   drop :: (xs=[], n=0) =
     if n <= 0 do {
       xs
-    } else do {
-      when xs {
-        is [] -> []
-        is _:rest -> drop(rest, n - 1)
-      }
+    } else when xs {
+      is [] -> []
+      is _:rest -> drop(rest, n - 1)
     }
 
   // Function: contains
@@ -225,12 +222,10 @@ Array :: module {
   fromRange :: (start, end) = 
     if start == end do {
       [end]
+    } else if start < end do {
+      start : fromRange(start + 1, end)
     } else do {
-      if start < end do {
-        start : fromRange(start + 1, end)
-      } else do {
-        start : fromRange(start - 1, end)
-      }
+      start : fromRange(start - 1, end)
     }
 }
 
