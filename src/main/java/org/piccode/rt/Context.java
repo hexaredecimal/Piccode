@@ -98,21 +98,19 @@ public class Context {
 	public static int allocate(Object obj) {
 		synchronized (Context.class) {
 			var id = obj.hashCode();
-			var size = objectPool.size();
-			var name = String.format("Thread@%d", size);
 			objectPool.put(id, obj);
 			return id;
 		}
 	}
 
-	public static Object getObject(String id) {
+	public static Object getObject(int id) {
 		synchronized (Context.class) {
 			return objectPool.get(id);
 		}
 	}
 	
-	public static void removeObject(String uuid) {
-		objectPool.remove(uuid);
+	public static void removeObject(int id) {
+		objectPool.remove(id);
 	}
 
 	public StackFrame getTopFrame() {
