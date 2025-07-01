@@ -1,5 +1,6 @@
 package org.piccode.rt;
 
+import com.github.tomaslanger.chalk.Chalk;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,18 @@ public class PiccodeClosure implements PiccodeValue {
 							param.name,
 							param.def_val != null ? param.def_val.execute(frame) : null
 			);
-			ctx.putLocal(param.name, val);
+			
+			if (param.export && !(val instanceof PiccodeObject)) {
+				throw new PiccodeException(param.file, param.line , param.column, "Cannot export fields of a value that is not an object. Found type " + Chalk.on(val.type()).red());
+			} else if (param.export && val instanceof PiccodeObject obj) {
+				for (var kv : obj.obj.entrySet()) {
+					var name = kv.getKey();
+					var value = kv.getValue();
+					ctx.putLocal(name, value);
+				}
+			} else {
+				ctx.putLocal(param.name, val);
+			}
 		}
 
 		try {
