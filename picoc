@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+VERSION=1.0
+JVMOPTS="--enable-native-access=ALL-UNNAMED" 
+JAVA=java
+
+$JAVA $JVMOPTS -jar "$SCRIPT_DIR/PiccodeScript-$VERSION-jar-with-dependencies.jar" "$@"
+
+
