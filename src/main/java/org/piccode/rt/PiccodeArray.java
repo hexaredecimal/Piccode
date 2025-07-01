@@ -41,7 +41,7 @@ public class PiccodeArray implements PiccodeValue {
 	
 	@Override
 	public Object raw() {
-		return nodes.toArray();
+		return array();
 	}
 
 	@Override

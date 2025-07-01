@@ -301,6 +301,7 @@ public class Piccode {
 				Platforms.getArch());
 
 		var bands = Chalk.on("| ").yellow();
+		System.out.println();
 		System.out.println(bands);
 		System.out.println(bands + fmt);
 		System.out.println(bands);
