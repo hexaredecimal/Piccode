@@ -15,7 +15,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   apply(Result.ok(|x| -> x + 1), Result.ok(2)) == Result.ok(3)
+  //   apply(Result::ok(|x| -> x + 1), Result::ok(2)) == Result::ok(3)
   // ---
   apply :: (mf, ma) = 
     when mf {
@@ -33,7 +33,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   map2(Result.ok(2), Result.ok(3), |a, b| -> a + b) == Result.ok(5)
+  //   map2(Result::ok(2), Result::ok(3), |a, b| -> a + b) == Result::ok(5)
   // ---
   map2 :: (ma, mb, fx) = 
     Applicative.apply(Result.ok(|a| -> |b| -> fx(a, b)), ma) |> Applicative.apply(mb)
@@ -44,7 +44,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   thenIgnoreLeft(Result.ok(1), Result.ok(2)) == Result.ok(2)
+  //   thenIgnoreLeft(Result::ok(1), Result::ok(2)) == Result::ok(2)
   // ---
   thenIgnoreLeft :: (fa, fb) =
     Applicative.map2(fa, fb, |_, b| -> b)
@@ -54,7 +54,7 @@ Applicative :: module {
   // This functions is mostly known as then `<*` operator
   // Example:
   // --- Code
-  //   thenIgnoreRight(Result.ok(1), Result.ok(2)) == Result.ok(1)
+  //   thenIgnoreRight(Result::ok(1), Result::ok(2)) == Result::ok(1)
   // ---
   thenIgnoreRight :: (fa, fb) =
     Applicative.map2(fa, fb, |a, _| -> a)
@@ -73,7 +73,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   lift2(|a, b| -> a + b, Result.ok(1), Result.ok(2)) == Result.ok(3)
+  //   lift2(|a, b| -> a + b, Result::ok(1), Result::ok(2)) == Result::ok(3)
   // ---
   lift2 :: (fx, a, b) = Applicative.map2(a, b, fx)
 
@@ -83,7 +83,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   sequence([Result.ok(1), Result.ok(2)]) == Result.ok([1, 2])
+  //   sequence([Result::ok(1), Result::ok(2)]) == Result::ok([1, 2])
   // ---
   sequence :: (results=[]) =
     when results {
@@ -98,7 +98,7 @@ Applicative :: module {
   //
   // Example:
   // --- Code
-  //   traverse([1, 2, 3], |x| -> Result.ok(x * 2)) == Result.ok([2, 4, 6])
+  //   traverse([1, 2, 3], |x| -> Result::ok(x * 2)) == Result::ok([2, 4, 6])
   // ---
   traverse :: (xs=[], fx) =
     when xs {
