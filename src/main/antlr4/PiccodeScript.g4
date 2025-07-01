@@ -54,7 +54,8 @@ expr
 	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
 	| closure_decl
-	| expr CC expr
+	| expr CC expr 	
+	| expr COLON expr
 	| expr DOT expr
 	| expr MUL expr         
 	| expr DIV expr         
@@ -75,7 +76,6 @@ expr
 	| expr SHR expr          
 	| expr BOR expr          
 	| expr BAND expr         
-	| expr COLON expr
 	| LPAREN expr? RPAREN
 	| if_expr
 	| when_expr
