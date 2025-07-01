@@ -2,17 +2,14 @@
 
 set -Eeuo pipefail
 
-MODULES=java.base,java.logging
-OUTPUT=jpicoc
-VERSION=0.3
-JARNAME=PiccodeScript-$VERSION-jar-with-dependencies.jar
-JARDIR=target/
+JARDIR=target
+VERSION=1.0
+JARNAME=$JARDIR/PiccodeScript-$VERSION-jar-with-dependencies.jar
 
-INSTALL=$HOME/.local/
-INPUT=picoc
+INSTALL=$HOME/.local/bin
+RUNNER=picoc
 STDLIB=std
 
-APP_NAME=picoc
 
 log() {
   printf "[INFO] %s\n" "$1"
@@ -24,6 +21,9 @@ splash() {
   log "▙▌▌▛▘▛▘▛▌▛▌█▌▚ ▛▘▛▘▌▛▌▜▘"
   log "▌ ▌▙▖▙▖▙▌▙▌▙▖▄▌▙▖▌ ▌▙▌▐▖"
   log "                    ▌   "
+  log "                        "
+  log "          $VERSION      "
+  log "                        "
   log "         =====          "
   log "       BUILD AND        "
   log "   INSTALLATION SCRIPT  "
@@ -31,15 +31,6 @@ splash() {
   log "                        "
   log "   (c) Hexaredecimal    "
   log "                        "
-}
-
-checkAndClean() {
-  if [ -d "$OUTPUT" ]; then
-    log "Cleaning up from previous packaging"
-    rm -rf $OUTPUT $APP_NAME
-  else
-    log "Nothing to clean"
-  fi
 }
 
 checkJarAndBuild() {
@@ -53,22 +44,6 @@ checkJarAndBuild() {
   fi
 }
 
-buildImage() {
-  log "Creating custom jdk runtime-image"
-  jlink --add-modules $MODULES --output $OUTPUT
-  log "Packaging app into native-image"
-  jpackage --type app-image -n $APP_NAME --main-jar $JARNAME --runtime-image $OUTPUT -i target
-}
-
-checkDir() {
-  if [ -d "$OUTPUT" ]; then
-    log "Adding the $OUTPUT directory"
-    mkdir -p $OUTPUT
-  else
-    log "$OUTPUT directory is already created"
-  fi
-}
-
 copyToDest() {
   log "copying $1 to $2"
   cp -r $1 $2
@@ -79,18 +54,34 @@ rootCopyToDest() {
   sudo cp -r $1 $2
 }
 
+rootMakeExec() {
+  log "root adding executable permissions to $1"
+  sudo chmod +x $1
+}
+
+
+checkDir() {
+  if [ -d "$INSTALL" ]; then
+    log "Making the $INSTALL directory"
+    mkdir -p $INSTALL
+  else
+    log "$INSTALL directory is already created"
+  fi
+}
+
 install() {
   checkDir
   log "Installation stated"
-  copyToDest $STDLIB $INPUT/lib/app
-  rootCopyToDest $INPUT/bin $INSTALL
-  rootCopyToDest $INPUT/lib $INSTALL
+  copyToDest $STDLIB $INSTALL
+  rootCopyToDest $RUNNER $INSTALL
+  rootCopyToDest $JARNAME $INSTALL
+  rootMakeExec $INSTALL/$RUNNER
   log "Installation is done"
 }
 
 finalCleanUp() {
   log "Final clean up"
-  rm -rf $OUTPUT $APP_NAME $JARDIR
+  rm -rf $JARDIR
   log "Final clean up completed"
 }
 
@@ -113,8 +104,6 @@ trap handle_error ERR
 main() {
   splash
   checkJarAndBuild
-  checkAndClean
-  buildImage
   install
   finalCleanUp
   finalMessage
