@@ -56,7 +56,7 @@ import org.piccode.rt.ReplState;
  */
 public class Piccode {
 
-	private static double VERSION = 0.3;
+	private static double VERSION = 1.0;
 
 	public static void main(String[] args) {
 		if (Platforms.isWindows()) {
@@ -301,7 +301,10 @@ public class Piccode {
 				Platforms.getArch());
 
 		var bands = Chalk.on("| ").yellow();
+		System.out.println(bands);
 		System.out.println(bands + fmt);
+		System.out.println(bands);
+		System.out.println();
 		// Create a terminal
 		try (Terminal terminal = TerminalBuilder.builder()
 						.system(true)
@@ -311,7 +314,7 @@ public class Piccode {
 			var piccodeScriptHighlighter = new Highlighter() {
 				// Pattern to match SQL keywords (case insensitive)
 				private final Pattern PICCODE_KEYWORDS = Pattern.compile(
-								"\\b(function|module|let|when|is|if|else|import)\\b");
+								"\\b(module|when|is|if|else|import)\\b");
 
 				@Override
 				public AttributedString highlight(LineReader reader, String buffer) {

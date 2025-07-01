@@ -1104,6 +1104,7 @@ public class PiccodeScriptParser extends Parser {
 		public TerminalNode NUMBER() { return getToken(PiccodeScriptParser.NUMBER, 0); }
 		public TerminalNode STRING() { return getToken(PiccodeScriptParser.STRING, 0); }
 		public TerminalNode CC() { return getToken(PiccodeScriptParser.CC, 0); }
+		public TerminalNode COLON() { return getToken(PiccodeScriptParser.COLON, 0); }
 		public TerminalNode DOT() { return getToken(PiccodeScriptParser.DOT, 0); }
 		public TerminalNode MUL() { return getToken(PiccodeScriptParser.MUL, 0); }
 		public TerminalNode DIV() { return getToken(PiccodeScriptParser.DIV, 0); }
@@ -1123,7 +1124,6 @@ public class PiccodeScriptParser extends Parser {
 		public TerminalNode SHR() { return getToken(PiccodeScriptParser.SHR, 0); }
 		public TerminalNode BOR() { return getToken(PiccodeScriptParser.BOR, 0); }
 		public TerminalNode BAND() { return getToken(PiccodeScriptParser.BAND, 0); }
-		public TerminalNode COLON() { return getToken(PiccodeScriptParser.COLON, 0); }
 		public Call_expr_listContext call_expr_list() {
 			return getRuleContext(Call_expr_listContext.class,0);
 		}
@@ -1281,7 +1281,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(181);
 						if (!(precpred(_ctx, 31))) throw new FailedPredicateException(this, "precpred(_ctx, 31)");
 						setState(182);
-						match(DOT);
+						match(COLON);
 						setState(183);
 						expr(32);
 						}
@@ -1293,7 +1293,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(184);
 						if (!(precpred(_ctx, 30))) throw new FailedPredicateException(this, "precpred(_ctx, 30)");
 						setState(185);
-						match(MUL);
+						match(DOT);
 						setState(186);
 						expr(31);
 						}
@@ -1305,7 +1305,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(187);
 						if (!(precpred(_ctx, 29))) throw new FailedPredicateException(this, "precpred(_ctx, 29)");
 						setState(188);
-						match(DIV);
+						match(MUL);
 						setState(189);
 						expr(30);
 						}
@@ -1317,7 +1317,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(190);
 						if (!(precpred(_ctx, 28))) throw new FailedPredicateException(this, "precpred(_ctx, 28)");
 						setState(191);
-						match(MOD);
+						match(DIV);
 						setState(192);
 						expr(29);
 						}
@@ -1329,7 +1329,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(193);
 						if (!(precpred(_ctx, 27))) throw new FailedPredicateException(this, "precpred(_ctx, 27)");
 						setState(194);
-						match(ADD);
+						match(MOD);
 						setState(195);
 						expr(28);
 						}
@@ -1341,7 +1341,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(196);
 						if (!(precpred(_ctx, 26))) throw new FailedPredicateException(this, "precpred(_ctx, 26)");
 						setState(197);
-						match(SUB);
+						match(ADD);
 						setState(198);
 						expr(27);
 						}
@@ -1353,7 +1353,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(199);
 						if (!(precpred(_ctx, 25))) throw new FailedPredicateException(this, "precpred(_ctx, 25)");
 						setState(200);
-						match(DOT);
+						match(SUB);
 						setState(201);
 						expr(26);
 						}
@@ -1365,7 +1365,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(202);
 						if (!(precpred(_ctx, 24))) throw new FailedPredicateException(this, "precpred(_ctx, 24)");
 						setState(203);
-						match(PIPE);
+						match(DOT);
 						setState(204);
 						expr(25);
 						}
@@ -1377,7 +1377,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(205);
 						if (!(precpred(_ctx, 23))) throw new FailedPredicateException(this, "precpred(_ctx, 23)");
 						setState(206);
-						match(OR);
+						match(PIPE);
 						setState(207);
 						expr(24);
 						}
@@ -1389,7 +1389,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(208);
 						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
 						setState(209);
-						match(AND);
+						match(OR);
 						setState(210);
 						expr(23);
 						}
@@ -1401,7 +1401,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(211);
 						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
 						setState(212);
-						match(EQ);
+						match(AND);
 						setState(213);
 						expr(22);
 						}
@@ -1413,7 +1413,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(214);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
 						setState(215);
-						match(NE);
+						match(EQ);
 						setState(216);
 						expr(21);
 						}
@@ -1425,7 +1425,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(217);
 						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
 						setState(218);
-						match(LT);
+						match(NE);
 						setState(219);
 						expr(20);
 						}
@@ -1437,7 +1437,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(220);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
 						setState(221);
-						match(LE);
+						match(LT);
 						setState(222);
 						expr(19);
 						}
@@ -1449,7 +1449,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(223);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(224);
-						match(GT);
+						match(LE);
 						setState(225);
 						expr(18);
 						}
@@ -1461,7 +1461,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(226);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
 						setState(227);
-						match(GE);
+						match(GT);
 						setState(228);
 						expr(17);
 						}
@@ -1473,7 +1473,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(229);
 						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
 						setState(230);
-						match(SHL);
+						match(GE);
 						setState(231);
 						expr(16);
 						}
@@ -1485,7 +1485,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(232);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
 						setState(233);
-						match(SHR);
+						match(SHL);
 						setState(234);
 						expr(15);
 						}
@@ -1497,7 +1497,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(235);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
 						setState(236);
-						match(BOR);
+						match(SHR);
 						setState(237);
 						expr(14);
 						}
@@ -1509,7 +1509,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(238);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
 						setState(239);
-						match(BAND);
+						match(BOR);
 						setState(240);
 						expr(13);
 						}
@@ -1521,7 +1521,7 @@ public class PiccodeScriptParser extends Parser {
 						setState(241);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
 						setState(242);
-						match(COLON);
+						match(BAND);
 						setState(243);
 						expr(12);
 						}
@@ -2774,25 +2774,25 @@ public class PiccodeScriptParser extends Parser {
 		"\2\2\u00b2\u00ac\3\2\2\2\u00b2\u00ad\3\2\2\2\u00b2\u00ae\3\2\2\2\u00b2"+
 		"\u00af\3\2\2\2\u00b2\u00b0\3\2\2\2\u00b2\u00b1\3\2\2\2\u00b3\u00fe\3\2"+
 		"\2\2\u00b4\u00b5\f\"\2\2\u00b5\u00b6\7\26\2\2\u00b6\u00fd\5 \21#\u00b7"+
-		"\u00b8\f!\2\2\u00b8\u00b9\7/\2\2\u00b9\u00fd\5 \21\"\u00ba\u00bb\f \2"+
-		"\2\u00bb\u00bc\7\5\2\2\u00bc\u00fd\5 \21!\u00bd\u00be\f\37\2\2\u00be\u00bf"+
-		"\7\6\2\2\u00bf\u00fd\5 \21 \u00c0\u00c1\f\36\2\2\u00c1\u00c2\7\7\2\2\u00c2"+
-		"\u00fd\5 \21\37\u00c3\u00c4\f\35\2\2\u00c4\u00c5\7\3\2\2\u00c5\u00fd\5"+
-		" \21\36\u00c6\u00c7\f\34\2\2\u00c7\u00c8\7\4\2\2\u00c8\u00fd\5 \21\35"+
-		"\u00c9\u00ca\f\33\2\2\u00ca\u00cb\7/\2\2\u00cb\u00fd\5 \21\34\u00cc\u00cd"+
-		"\f\32\2\2\u00cd\u00ce\7\25\2\2\u00ce\u00fd\5 \21\33\u00cf\u00d0\f\31\2"+
-		"\2\u00d0\u00d1\7\17\2\2\u00d1\u00fd\5 \21\32\u00d2\u00d3\f\30\2\2\u00d3"+
-		"\u00d4\7\16\2\2\u00d4\u00fd\5 \21\31\u00d5\u00d6\f\27\2\2\u00d6\u00d7"+
-		"\7\f\2\2\u00d7\u00fd\5 \21\30\u00d8\u00d9\f\26\2\2\u00d9\u00da\7\r\2\2"+
-		"\u00da\u00fd\5 \21\27\u00db\u00dc\f\25\2\2\u00dc\u00dd\7\n\2\2\u00dd\u00fd"+
-		"\5 \21\26\u00de\u00df\f\24\2\2\u00df\u00e0\7\13\2\2\u00e0\u00fd\5 \21"+
-		"\25\u00e1\u00e2\f\23\2\2\u00e2\u00e3\7\b\2\2\u00e3\u00fd\5 \21\24\u00e4"+
-		"\u00e5\f\22\2\2\u00e5\u00e6\7\t\2\2\u00e6\u00fd\5 \21\23\u00e7\u00e8\f"+
-		"\21\2\2\u00e8\u00e9\7\20\2\2\u00e9\u00fd\5 \21\22\u00ea\u00eb\f\20\2\2"+
-		"\u00eb\u00ec\7\21\2\2\u00ec\u00fd\5 \21\21\u00ed\u00ee\f\17\2\2\u00ee"+
-		"\u00ef\7\23\2\2\u00ef\u00fd\5 \21\20\u00f0\u00f1\f\16\2\2\u00f1\u00f2"+
-		"\7\22\2\2\u00f2\u00fd\5 \21\17\u00f3\u00f4\f\r\2\2\u00f4\u00f5\7\35\2"+
-		"\2\u00f5\u00fd\5 \21\16\u00f6\u00f7\f%\2\2\u00f7\u00f9\7\31\2\2\u00f8"+
+		"\u00b8\f!\2\2\u00b8\u00b9\7\35\2\2\u00b9\u00fd\5 \21\"\u00ba\u00bb\f "+
+		"\2\2\u00bb\u00bc\7/\2\2\u00bc\u00fd\5 \21!\u00bd\u00be\f\37\2\2\u00be"+
+		"\u00bf\7\5\2\2\u00bf\u00fd\5 \21 \u00c0\u00c1\f\36\2\2\u00c1\u00c2\7\6"+
+		"\2\2\u00c2\u00fd\5 \21\37\u00c3\u00c4\f\35\2\2\u00c4\u00c5\7\7\2\2\u00c5"+
+		"\u00fd\5 \21\36\u00c6\u00c7\f\34\2\2\u00c7\u00c8\7\3\2\2\u00c8\u00fd\5"+
+		" \21\35\u00c9\u00ca\f\33\2\2\u00ca\u00cb\7\4\2\2\u00cb\u00fd\5 \21\34"+
+		"\u00cc\u00cd\f\32\2\2\u00cd\u00ce\7/\2\2\u00ce\u00fd\5 \21\33\u00cf\u00d0"+
+		"\f\31\2\2\u00d0\u00d1\7\25\2\2\u00d1\u00fd\5 \21\32\u00d2\u00d3\f\30\2"+
+		"\2\u00d3\u00d4\7\17\2\2\u00d4\u00fd\5 \21\31\u00d5\u00d6\f\27\2\2\u00d6"+
+		"\u00d7\7\16\2\2\u00d7\u00fd\5 \21\30\u00d8\u00d9\f\26\2\2\u00d9\u00da"+
+		"\7\f\2\2\u00da\u00fd\5 \21\27\u00db\u00dc\f\25\2\2\u00dc\u00dd\7\r\2\2"+
+		"\u00dd\u00fd\5 \21\26\u00de\u00df\f\24\2\2\u00df\u00e0\7\n\2\2\u00e0\u00fd"+
+		"\5 \21\25\u00e1\u00e2\f\23\2\2\u00e2\u00e3\7\13\2\2\u00e3\u00fd\5 \21"+
+		"\24\u00e4\u00e5\f\22\2\2\u00e5\u00e6\7\b\2\2\u00e6\u00fd\5 \21\23\u00e7"+
+		"\u00e8\f\21\2\2\u00e8\u00e9\7\t\2\2\u00e9\u00fd\5 \21\22\u00ea\u00eb\f"+
+		"\20\2\2\u00eb\u00ec\7\20\2\2\u00ec\u00fd\5 \21\21\u00ed\u00ee\f\17\2\2"+
+		"\u00ee\u00ef\7\21\2\2\u00ef\u00fd\5 \21\20\u00f0\u00f1\f\16\2\2\u00f1"+
+		"\u00f2\7\23\2\2\u00f2\u00fd\5 \21\17\u00f3\u00f4\f\r\2\2\u00f4\u00f5\7"+
+		"\22\2\2\u00f5\u00fd\5 \21\16\u00f6\u00f7\f%\2\2\u00f7\u00f9\7\31\2\2\u00f8"+
 		"\u00fa\5:\36\2\u00f9\u00f8\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa\u00fb\3\2"+
 		"\2\2\u00fb\u00fd\7\32\2\2\u00fc\u00b4\3\2\2\2\u00fc\u00b7\3\2\2\2\u00fc"+
 		"\u00ba\3\2\2\2\u00fc\u00bd\3\2\2\2\u00fc\u00c0\3\2\2\2\u00fc\u00c3\3\2"+
