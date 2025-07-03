@@ -3,6 +3,7 @@ package org.piccode.ast;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeReturnException;
+import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeValue;
 
 /**
@@ -34,12 +35,16 @@ public class VarDecl extends Ast {
 		PiccodeValue _value = null;
 		try {
 			_value = value.execute(frame);
+			ctx.dropStackFrame();
+			ctx.putLocal(name, _value);
+			return _value;
 		} catch (PiccodeReturnException ret) {
-			_value = ret.value;
+			ctx.dropStackFrame();
+			throw ret;
+		} catch (PiccodeException err) {
+			ctx.dropStackFrame();
+			throw err;
 		}
-		ctx.dropStackFrame();
-		ctx.putLocal(name, _value);
-		return _value;
 	}
 
 	@Override
