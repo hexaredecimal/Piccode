@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "piccodescript",
+  "scopeName": "source.pics",
+  "fileTypes": ["pics"],
+  "patterns": [
+    { "include": "#main" },
+    { "include": "#main__1" },
+    { "include": "#main__2" },
+    { "include": "#main__3" },
+    { "include": "#multi_line_comment" },
+    { "include": "#multi_line_comment__1" }
+  ],
+  "repository": {
+    "main": {
+      "patterns": [
+        {
+          "match": "\\b(if|else|import|module|do|when|is|return|catch)\\b",
+          "name": "keyword.piccodescript"
+        },
+        {
+          "match": "\\b[a-zA-Z][a-zA-Z0-9]*\\b",
+          "name": "identifier.piccodescript"
+        },
+        { "include": "#numeric" },
+        {
+          "begin": "(\\{)",
+          "beginCaptures": { "1": { "name": "punctuation.brace.piccodescript" } },
+          "patterns": [ { "include": "#main__1" } ],
+          "end": "(\\})",
+          "endCaptures": { "1": { "name": "punctuation.brace.piccodescript" } }
+        },
+        {
+          "match": "(;|\\.|:|::|\\}|\\{|-|<|>|=|,)",
+          "name": "punctuation.separator.piccodescript"
+        },
+        {
+          "begin": "(\")",
+          "beginCaptures": { "1": { "name": "punctuation.definition.string.begin.piccodescript" } },
+          "contentName": "string.quoted.double.piccodescript",
+          "end": "(\")",
+          "endCaptures": { "1": { "name": "punctuation.definition.string.end.piccodescript" } }
+        },
+        {
+          "begin": "(\\()",
+          "beginCaptures": { "1": { "name": "punctuation.parenthesis.open.piccodescript" } },
+          "patterns": [ { "include": "#main__3" } ],
+          "end": "(\\))",
+          "endCaptures": { "1": { "name": "punctuation.parenthesis.close.piccodescript" } }
+        },
+        { "include": "#multi_line_comment" },
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.piccodescript"
+        },
+        {
+          "match": "[^\\s]",
+          "name": "invalid.illegal.piccodescript"
+        }
+      ]
+    },
+    "main__1": {
+      "patterns": [ { "include": "#main" } ]
+    },
+    "main__2": { "patterns": [] },
+    "main__3": {
+      "patterns": [
+        { "include": "#numeric" },
+        {
+          "match": ",",
+          "name": "punctuation.separator.comma.piccodescript"
+        }
+      ]
+    },
+    "multi_line_comment": {
+      "patterns": [
+        {
+          "begin": "/\\*",
+          "beginCaptures": { "0": { "name": "comment.block.piccodescript" } },
+          "end": "\\*/",
+          "endCaptures": { "0": { "name": "comment.block.piccodescript" } }
+        }
+      ]
+    },
+    "multi_line_comment__1": { "patterns": [] },
+    "numeric": {
+      "patterns": [
+        {
+          "match": "\\b\\d+\\b",
+          "name": "constant.numeric.piccodescript"
+        }
+      ]
+    }
+  }
+}
+
