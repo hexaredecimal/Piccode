@@ -38,7 +38,7 @@ syn region picsComment start="\/\/" end="$" contains=picsComment,picsTodo,@Spell
 " syn region   picsComment start="\%%" contains=picsComment,picsTodo,@Spell
 syn keyword  picsTodo contained TODO FIXME
 
-syn keyword  picsKeyword  module function let when is if else import
+syn keyword  picsKeyword  module when is if else import do catch return
 
 syn keyword  picsBoolean      true false
 syn match    picsConstructor  "(\s*)"
