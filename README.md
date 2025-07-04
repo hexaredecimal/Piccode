@@ -100,7 +100,9 @@ To use the language in your project simply add it your `pom.xml` file as a depen
  and then add the following code to your solution:
 
 ```java
-Compiler.compile("function zero() = 0")
+Compiler
+	.compile("zero :: () = 0")
+	.execute(null);
 ```
 
 If you want to get a list of AST nodes do this:
@@ -124,12 +126,10 @@ Compiler.compile("hello + 20"); // concate hello, world and 20
 ```
 
 ## Inspired by
-- Lua  - The simplicity
-- Rust - The flexibility
-- SML  - Functional programming concepts
-
-
-
+- [Lua](https://www.lua.org/) - The simplicity
+- [Rust](https://www.rust-lang.org/) - The flexibility
+- [SML](https://www.smlnj.org/sml.html) - Functional programming concepts
+- [Java](https://www.java.com/en/) - Threading model
 
 
 
