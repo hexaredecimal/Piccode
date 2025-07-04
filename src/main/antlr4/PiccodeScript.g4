@@ -57,6 +57,7 @@ expr
 	| expr CC expr 	
 	| expr COLON expr
 	| expr DOT expr
+	| expr CATCH_TOK expr 	
 	| expr MUL expr         
 	| expr DIV expr         
 	| expr MOD expr         
@@ -175,6 +176,7 @@ MODULE: 'module';
 DO: 'do';
 USE: 'use';
 RETURN_TOK: 'return';
+CATCH_TOK: 'catch';
 
 NUMBER
     :   HEX_LITERAL
