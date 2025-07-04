@@ -1,122 +1,105 @@
 package org.piccode.ast;
 
 import com.github.tomaslanger.chalk.Chalk;
-import org.piccode.piccodescript.Piccode;
+import java.util.ArrayList;
+import java.util.function.Function;
 import org.piccode.piccodescript.TargetEnvironment;
+import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;
+import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeString;
+import org.piccode.rt.PiccodeTuple;
+import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 
 /**
  *
  * @author hexaredecimal
  */
-public class BinOpAst extends Ast {
+public class CatchAst extends Ast {
 
 	public Ast lhs;
-	public String op;
 	public Ast rhs;
 
-	public BinOpAst(Ast lhs, String op, Ast rhs) {
+	public CatchAst(Ast lhs, Ast rhs) {
 		this.lhs = lhs;
-		this.op = op;
 		this.rhs = rhs;
 	}
 
 	@Override
 	public String toString() {
-		return lhs + " " + op + " " + rhs;
+		return lhs + " catch " + rhs;
 	}
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		var left = lhs.execute(frame);
-		var right = rhs.execute(frame);
+		var ctx = frame == null
+						? Context.top
+						: Context.getContextAt(frame);
 
-		if (left instanceof PiccodeNumber lf && right instanceof PiccodeNumber rh) {
-			double result = 0;
-			if (op.equals("+")) {
-				result = (double) lf.raw() + (double) rh.raw();
-				return new PiccodeNumber(String.valueOf(result));
-			}
-			if (op.equals("-")) {
-				result = (double) lf.raw() - (double) rh.raw();
-				return new PiccodeNumber(String.valueOf(result));
-			}
-			if (op.equals("*")) {
-				result = (double) lf.raw() * (double) rh.raw();
-				return new PiccodeNumber(String.valueOf(result));
-			}
-			if (op.equals("/")) {
-				result = (double) lf.raw() / (double) rh.raw();
-				return new PiccodeNumber(String.valueOf(result));
-			}
-			if (op.equals("%")) {
-				result = (double) lf.raw() % (double) rh.raw();
-				return new PiccodeNumber(String.valueOf(result));
+		return executeOnElse(frame, lhs, (node) -> {
+			try {
+				var result = node.execute(frame);
+				ctx.dropScope();
+				return result;
+			} catch (PiccodeReturnException ret) {
+				ctx.dropScope();
+				return ret.value;
+			} catch (Exception e1) {
+				ctx.dropScope();
+				throw e1;
 			}
 
-			if (op.equals(">")) {
-				return new PiccodeBoolean((double) lf.raw() > (double) rh.raw() ? "true" : "false");
+		});
+	}
+
+	private PiccodeValue executeOnElse(Integer frame, Ast node, Function<Ast, PiccodeValue> other) {
+		try {
+			var result = node.execute(frame);
+			if (result instanceof PiccodeTuple tupl) {
+				var last = tupl.nodes.getLast();
+				if (!(last instanceof PiccodeUnit)) {
+					var ctx = frame == null
+									? Context.top
+									: Context.getContextAt(frame);
+					ctx.pushScope();
+					ctx.putLocal("err", last);
+					result = other.apply(rhs);
+					return result;
+				} else {
+					var nodes = new ArrayList<PiccodeValue>();
+					var size = tupl.nodes.size();
+					for (var index = 0; index < size - 1; index++) {
+						var _node = tupl.nodes.get(index);
+						nodes.add(_node);
+					}
+					
+					return nodes.size() > 1 ?
+								new PiccodeTuple(nodes)
+								: nodes.getLast();
+				}
 			}
 
-			if (op.equals("<")) {
-				return new PiccodeBoolean((double) lf.raw() < (double) rh.raw() ? "true" : "false");
-			}
-
-			if (op.equals(">=")) {
-				return new PiccodeBoolean((double) lf.raw() >= (double) rh.raw() ? "true" : "false");
-			}
-
-			if (op.equals("<=")) {
-				return new PiccodeBoolean((double) lf.raw() <= (double) rh.raw() ? "true" : "false");
-			}
-
-			if (op.equals("<<")) {
-				result = ((int) (double)lf.raw()) << ((int) (double)rh.raw());
-				return new PiccodeNumber(String.valueOf(result));
-			}
-			if (op.equals(">>")) {
-				result = ((int) (double)lf.raw()) >> ((int) (double)rh.raw());
-				return new PiccodeNumber(String.valueOf(result));
-			}
-
-			if (op.equals("|")) {
-				result = ((int) (double)lf.raw()) | ((int) (double)rh.raw());
-				return new PiccodeNumber(String.valueOf(result));
-			}
-
-			if (op.equals("&")) {
-				result = ((int) (double)lf.raw()) & ((int) (double)rh.raw());
-				return new PiccodeNumber(String.valueOf(result));
-			}
+			return result;
+		} catch (PiccodeReturnException ret) {
+			return ret.value;
+		} catch (PiccodeException e) {
+			throw e;
+		} catch (Exception e) {
+			var ctx = frame == null
+							? Context.top
+							: Context.getContextAt(frame);
+			ctx.pushScope();
+			ctx.putLocal("err", new PiccodeString(e.toString()));
+			var result = other.apply(rhs);
+			return result;
 		}
-
-		if (op.equals("+")) {
-			var result = String.format("%s%s", left.raw(), right.raw());
-			return new PiccodeString(result);
-		}
-
-		if (op.equals("==")) {
-			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
-		}
-
-		if (op.equals("!=")) {
-			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
-		}
-
-		var err =  new PiccodeException(file, line, column,"Operator `" + Chalk.on(op).blue() + "`  cannot be used with types " 
-			+ Chalk.on(left.type()).red()
-			+ " and " + Chalk.on(right.type()).red());
-
-		err.frame = frame;
-		throw err;
 	}
 
 	@Override
 	public String codeGen(TargetEnvironment target) {
-		return String.format("%s %s %s", lhs, op, rhs);
+		return String.format("%s %s", lhs, rhs);
 	}
 }

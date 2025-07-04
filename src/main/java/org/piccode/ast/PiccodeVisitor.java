@@ -281,6 +281,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitString(expr.STRING());
 		}
 
+		if (expr.CATCH_TOK() != null) {
+			var tok = expr.CATCH_TOK().getSymbol();
+			var result = finalizeAstNode(visitCatch(expr), tok);
+			return result;
+		}
+		
 		if (expr.ADD() != null) {
 			var tok = expr.ADD().getSymbol();
 			var result = finalizeAstNode(visitBinOp("+", expr), tok);
@@ -696,10 +702,17 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		return new ListConstAst(lhs, rhs);
 	}
 
+	private Ast visitCatch(ExprContext expr) {
+		var lhs = visitExpr(expr.expr().getFirst());
+		var rhs = visitExpr(expr.expr().getLast());
+		return new CatchAst(lhs, rhs);
+	}
+
 	private Ast finalizeAstNode(Ast result, Token tok) {
 		result.line = tok.getLine();
 		result.column = tok.getCharPositionInLine();
 		result.file = fileName;
 		return result;
 	}
+
 }
