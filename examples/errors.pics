@@ -1,0 +1,18 @@
+
+IO :: import std.io
+Error :: import std.errors { Error { new, getValueOr } }
+
+safeDiv :: (x, y) =
+  when (x, y) {
+    is (_, 0) -> Error::new("Divide by zero")
+    else -> Error::success(x / y)
+  }
+
+result := Error::getValueOr(
+  safeDiv(50, 0),
+  |err| -> -1
+)
+
+IO::println(result)
+
+
