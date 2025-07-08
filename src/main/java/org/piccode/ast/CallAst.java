@@ -21,9 +21,6 @@ public class CallAst extends Ast {
 	public CallAst(Ast expr, List<Ast> nodes) {
 		this.expr = expr;
 		this.nodes = nodes;
-		var loc = Ast.getLocation(expr);
-		this.line = loc.line;
-		this.column = loc.col;
 	}
 
 	@Override
