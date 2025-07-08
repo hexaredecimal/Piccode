@@ -7,7 +7,7 @@ VERSION=1.0
 EDITOR=VSCode
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-VSCODE_EXTENSION_DIR="$HOME/.vscode/extensions/cspydr"
+VSCODE_EXTENSION_DIR="$HOME/.vscode/extensions/piccodescript"
 
 log() {
     printf "[INFO] %s\n" "$1"

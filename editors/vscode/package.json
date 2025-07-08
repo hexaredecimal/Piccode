@@ -1,31 +1,30 @@
 {
-    "name": "piccodescript-syntax-highlighting",
-    "displayName": "PiccodeScript Syntax Highlighting",
-    "description": "VSCode Syntax highlighting support for the PiccodeScript programming language",
-    "license": "MIT",
-    "version": "0.0.1",
-    "publisher": "Hexaredecimal",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Glimmr-Lang/PiccodeScript"
-    },
-    "engines": {
-        "vscode": "^1.56.0"
-    },
-    "categories": [
-        "Programming Languages"
-    ],
-    "contributes": {
-        "languages": [{
-            "id": "picoc",
-            "aliases": ["PiccodeScript", "picoc", "pic"],
-            "extensions": [".pics"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "piccodescript",
-            "scopeName": "source.pics",
-            "path": "./syntaxes/piccodescript.tmLanguage.json"
-        }]
-    }
+  "name": "piccodescript",
+  "displayName": "piccodescript",
+  "description": "VSCode support for piccodescript",
+  "version": "0.0.1",
+  "publisher": "Hexaredecimal",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/Glimmr-Lang/PiccodeScript"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "picoc",
+      "aliases": ["PiccodeScript", "picoc"],
+      "extensions": [".pics"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "picoc",
+      "scopeName": "source.pics",
+      "path": "./syntaxes/picoc.tmLanguage.json"
+    }]
+  }
 }
