@@ -1,5 +1,6 @@
 package org.piccode.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeClosure;
+import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeValue;
 
 /**
@@ -16,10 +18,11 @@ import org.piccode.rt.PiccodeValue;
 public class FunctionAst extends Ast {
 
 	public String name;
-	public List<Arg> arg;
+	public List<Ast> arg;
 	public Ast body;
+	public List<ClauseAst> clauses = new ArrayList<>();
 
-	public FunctionAst(String name, List<Arg> arg, Ast body) {
+	public FunctionAst(String name, List<Ast> arg, Ast body) {
 		this.name = name;
 		this.arg = arg;
 		this.body = body;
@@ -34,7 +37,7 @@ public class FunctionAst extends Ast {
 		if (arg != null) {
 			sb.append(formatArgs());
 		}
-		sb.append(") = ..."); 
+		sb.append(") = ...");
 		return sb.toString();
 	}
 
@@ -54,9 +57,9 @@ public class FunctionAst extends Ast {
 	@Override
 	public PiccodeValue execute(Integer frame) {
 		var ctx = frame == null
-				? Context.top
-				: Context.getContextAt(frame);
-		
+						? Context.top
+						: Context.getContextAt(frame);
+
 		Map<String, PiccodeValue> newArgs = new HashMap<>();
 		var cl = new PiccodeClosure(arg, newArgs, 0, body);
 		cl.creator = this;
@@ -66,8 +69,32 @@ public class FunctionAst extends Ast {
 		cl.file = file;
 		cl.column = column;
 		cl.line = line;
-		ctx.putLocal(name, cl);
-		return cl;
+		var value = ctx.getValue(name);
+		if (value == null) {
+			if (!clauses.isEmpty()) {
+				for (var clause : clauses) {
+					cl.clauses.add(clause);
+				}
+				clauses.clear();
+			}
+			ctx.putLocal(name, cl);
+			return cl;
+		} else if (!(value instanceof PiccodeClosure)) {
+			throw new PiccodeException(file, line, column, "Symbol `" + name + "` already exists. ");
+		}
+		var closure = (PiccodeClosure) value;
+		if (closure.params.size() != arg.size()) {
+			var exprected = closure.params.size();
+			throw new PiccodeException(file, line, column, "Clause declaration for `" + name + "` has too many parameteres. Only " + exprected + " parameters expected");
+		}
+		if (!clauses.isEmpty()) {
+			for (var clause : clauses) {
+				cl.clauses.add(clause);
+			}
+			clauses.clear();
+		}
+		closure.clauses.add(new ClauseAst(arg, body));
+		return closure;
 	}
 
 	@Override
@@ -81,46 +108,7 @@ public class FunctionAst extends Ast {
 	}
 
 	private String codeGenJSFunction(TargetEnvironment env) {
-		var sb = new StringBuilder()
-						.append("function ");
-
-		if (arg.isEmpty()) {
-			sb
-							.append(name)
-							.append("() { \n")
-							.append("return ")
-							.append(body.codeGen(env))
-							.append(";\n}");
-			return sb.toString();
-		}
-
-		sb
-						.append(name);
-
-		for (int i = 0; i < arg.size(); i++) {
-			var ar = arg.get(i);
-			if (i == 0) {
-				sb
-								.append("(")
-								.append(ar.name)
-								.append(") { \n return ");
-				continue;
-			}
-			var fn = String.format("inner_%sl%dc%d", name, ar.line, ar.column);
-			sb
-							.append("function ")
-							.append(fn)
-							.append("(")
-							.append(ar.name)
-							.append(") { \n return ");
-		}
-
-		var done = "}".repeat(arg.size());
-		sb
-						.append(body.codeGen(env).indent(4))
-						.append(done)
-						.append("\n");
-		return sb.toString();
+		return "";
 	}
 
 }

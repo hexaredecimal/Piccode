@@ -80,16 +80,19 @@ public class CallAst extends Ast {
 		closure.frame = frame;
 		
 		for (var node : nodes) {
+			var clauses = closure.clauses;
 			if (node instanceof NamedCallArg named) {
 				closure = (PiccodeClosure) closure.callNamed(named.name, named.value.execute(frame));
 				closure.callSite = new Ast.Location(line, column);
 				closure.callSiteFile = file;
 				closure.frame = frame;
+				closure.clauses = clauses;
 			} else {
 				closure = (PiccodeClosure) closure.call(node.execute(frame));
 				closure.callSite = new Ast.Location(line, column);
 				closure.callSiteFile = file;
 				closure.frame = frame;
+				closure.clauses = clauses;
 			}
 		}
 
