@@ -46,7 +46,8 @@ func_args: '(' arg_list? ')' ;
 
 arg_list: arg (',' arg)* ;
 
-arg: (USE?) ID (ASSIGN expr)? ; // only allow literals in default values
+arg: (USE?) ID (ASSIGN expr)? 
+ | expr; // only allow literals in default values
 
 expr_stmt: expr;
 	// parser rules
