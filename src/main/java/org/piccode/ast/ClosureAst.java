@@ -14,10 +14,10 @@ import org.piccode.rt.PiccodeValue;
  * @author hexaredecimal
  */
 public class ClosureAst extends Ast {
-	public List<Arg> args;
+	public List<Ast> args;
 	public Ast body;
 
-	public ClosureAst(List<Arg> args, Ast body) {
+	public ClosureAst(List<Ast> args, Ast body) {
 		this.args = args;
 		this.body = body;
 		if (args == null || args.isEmpty()) {
@@ -80,26 +80,6 @@ public class ClosureAst extends Ast {
 	}
 
 	private String codeGenJsClosure(TargetEnvironment env) {
-		var sb = new StringBuilder();
-		if (args.isEmpty()) {
-			sb
-				.append("(")
-				.append(") => {\n")
-				.append(body.codeGen(env).indent(4))
-				.append("};\n");
-			return sb.toString();
-		}
-
-		args.forEach(arg -> {
-			sb
-				.append("(")
-				.append(arg.name)
-				.append(") => ");
-		});
-
-		sb.append("{\n")
-			.append(body.codeGen(env).indent(4))
-			.append("};\n");
-		return sb.toString();
+		return "";
 	}
 }
