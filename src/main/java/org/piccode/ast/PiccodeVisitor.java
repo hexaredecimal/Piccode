@@ -81,8 +81,8 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		return finalizeAstNode(result, tok);
 	}
 
-	public List<Arg> visitFuncArgs(Func_argsContext ctx) {
-		var args = new ArrayList<Arg>();
+	public List<Ast> visitFuncArgs(Func_argsContext ctx) {
+		var args = new ArrayList<Ast>();
 		if (ctx.arg_list() == null) {
 			return args;
 		}
@@ -90,10 +90,10 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		return visitArgs(ctx.arg_list());
 	}
 
-	public List<Arg> visitArgs(Arg_listContext ctx) {
-		var args = new ArrayList<Arg>();
+	public List<Ast> visitArgs(Arg_listContext ctx) {
+		var args = new ArrayList<Ast>();
 		for (var arg : ctx.arg()) {
-			var _arg = (Arg) visitArg(arg);
+			var _arg = visitArg(arg);
 			args.add(_arg);
 		}
 		return args;
@@ -101,7 +101,11 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitArg(ArgContext ctx) {
-		var tok = ctx.ID().getSymbol();
+		var tok = ctx.getStart();
+		if (ctx.ID() == null && ctx.expr() != null) {
+			return finalizeAstNode(visitExpr(ctx.expr()), tok);
+		}
+
 		var name = ctx.ID().getText();
 		if (ctx.ASSIGN() != null) {
 			var value = visitExpr(ctx.expr());
