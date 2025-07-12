@@ -54,6 +54,7 @@ expr_stmt: expr;
 expr
 	: expr LPAREN call_expr_list? RPAREN
 	| var_decl
+	| let_decl
 	| closure_decl
 	| expr CC expr 	
 	| expr COLON expr
@@ -112,6 +113,8 @@ when_case: IS expr_list ARROW expr;
 else_case: ELSE ARROW expr;
 
 var_decl: ID (DASSIGN expr)?;
+let_decl: LET var_decl (var_decl)* IN expr;
+
 tuple: LPAREN expr_list RPAREN;
 array: LBRACKET expr_list? RBRACKET;
 object: LBRACE key_val_pairs RBRACE;
@@ -178,6 +181,8 @@ DO: 'do';
 USE: 'use';
 RETURN_TOK: 'return';
 CATCH_TOK: 'catch';
+LET: 'let';
+IN: 'in';
 
 NUMBER
     :   HEX_LITERAL
