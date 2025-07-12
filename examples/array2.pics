@@ -11,9 +11,9 @@ IO::println(Array::join(numbers, "::"))
 
 reduce :: (xs=[], f, acc) =
   when xs {
-		is [] -> acc
-		is x:rest -> reduce(rest, f, f(acc, x))
-	}
+    is [] -> acc
+    is x:rest -> reduce(rest, f, f(acc, x))
+  }
 
 result := reduce(mapped, |acc, x| -> acc + x, 0) 
 

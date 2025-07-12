@@ -1,0 +1,26 @@
+
+IO :: import std.io
+Error :: import std.errors
+Array :: import std.array
+
+zero :: (f, x) = x
+succ :: (n, f, x) = f(n(f, x))
+
+one := succ(zero)
+two := succ(one)
+three := succ(two)
+
+add :: (m, n, f, x) = m(f, n(f, x))
+mul :: (m, n, f, x) = m(n(f), x)
+
+toInt :: (n) = n(|x| -> x + 1, 0)
+
+four := add(two, two)
+nine := mul(three, three)
+eight := add(four, four)
+
+IO::println(toInt(four))
+IO::println(toInt(nine))
+IO::println(toInt(eight))  
+
+

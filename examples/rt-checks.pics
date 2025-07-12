@@ -4,13 +4,13 @@ import std.type
 import std.result { Result }
 
 saferDiv :: (x, y) = 
-	when (Type::isNumber(x), Type::isNumber(y), x, y) {
-		is (false, false, _, _) -> Result::err("both arguments are not numbers")
-		is (false, _, _, _) -> Result::err("1st argument is not a number")
-		is (_, false, _, _) -> Result::err("2nd argument is not a number")
-		is (_, _, _, 0) -> Result::err("Divide by zero error")
-		else -> Result::ok(x / y)
-	}
+  when (Type::isNumber(x), Type::isNumber(y), x, y) {
+    is (false, false, _, _) -> Result::err("both arguments are not numbers")
+    is (false, _, _, _) -> Result::err("1st argument is not a number")
+    is (_, false, _, _) -> Result::err("2nd argument is not a number")
+    is (_, _, _, 0) -> Result::err("Divide by zero error")
+    else -> Result::ok(x / y)
+  }
 
 res := saferDiv(50, 2)
 error := saferDiv(50, [1])
