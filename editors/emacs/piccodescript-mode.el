@@ -16,7 +16,7 @@
   '("true" "false" "await"))
 
 (defun piccode-keywords ()
-  '("import" "module" "if" "else" "when" "is" "do" "catch" "return"))
+  '("import" "module" "if" "else" "when" "is" "do" "catch" "return" "let" "in"))
 
 (defun piccode-font-lock-keywords ()
   (list

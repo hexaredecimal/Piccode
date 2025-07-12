@@ -26,6 +26,8 @@ syntax.add {
     ["is"]             = "keyword",
     ["return"]         = "keyword",
     ["catch"]          = "keyword",
+    ["let"]          	 = "keyword",
+    ["in"]             = "keyword",
     ["await"]          = "keyword",
     ["true"]           = "literal",
     ["false"]          = "literal",
