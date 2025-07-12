@@ -1,0 +1,52 @@
+
+// Module: Error
+// Functions for creating and handling error
+Error :: module {
+
+    // Function: error
+    // Creates a new error from the value provided
+    //
+    // Parameters:
+    //   err - (Any) The value that represents an error
+    //
+    // Returns:
+    //    Tuple - A tuple of Unit and the value provided
+    //
+    // Example:
+    //   --Code:
+    //  err := Error::error("This is an error")
+    //   --
+    //
+    error :: (err) = ((), err)
+
+
+    // Function: success
+    // Creates a new success value from the value provided
+    //
+    // Parameters:
+    //   value - (Any) The value that represents an error
+    //
+    // Returns:
+    //    Tuple - A tuple of the value provided and Unit
+    //
+    // Example:
+    //   --Code:
+    //  success := Error::success("This is a correct value")
+    //   --
+    //
+    success :: (value) = (value, ())
+
+    // Function: getValueOr
+    // Gets the value of the if not an error and executes the function
+    // passed incase of an error
+    //
+    // Parameters:
+    //   error - (Tuple) The value you are not sure is valid
+    //   fx    - (Function) The function to execute
+    //
+    // Returns:
+    //    Any - The non-error value or the result of executing the function
+    //
+    getValueOr :: (error, fx) = error catch fx(err)
+}
+
