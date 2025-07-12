@@ -157,6 +157,12 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVar_decl(PiccodeScriptParser.Var_declContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#let_decl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLet_decl(PiccodeScriptParser.Let_declContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#tuple}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

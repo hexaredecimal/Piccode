@@ -306,6 +306,18 @@ public class PiccodeScriptBaseListener implements PiccodeScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLet_decl(PiccodeScriptParser.Let_declContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLet_decl(PiccodeScriptParser.Let_declContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTuple(PiccodeScriptParser.TupleContext ctx) { }
 	/**
 	 * {@inheritDoc}
