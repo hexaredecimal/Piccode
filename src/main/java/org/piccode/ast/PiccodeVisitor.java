@@ -24,6 +24,19 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	@Override
+	public Ast visitLet_decl(Let_declContext ctx) {
+		var tok = ctx.getStart();
+		List<Ast> vars = new ArrayList<>();
+		for (var decl: ctx.var_decl()) {
+			vars.add(visitVar_decl(decl));
+		}
+		var expr = visitExpr(ctx.expr());
+		var result = new LetInExprAst(vars, expr);
+		result.file = fileName;
+		return finalizeAstNode(result, tok);
+	}
+
+	@Override
 	public Ast visitVar_decl(Var_declContext var_decl) {
 		var tok = var_decl.ID().getSymbol();
 		var name = tok.getText();
@@ -267,6 +280,10 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitExpr(ExprContext expr) {
 		if (expr.var_decl() != null) {
 			return visitVar_decl(expr.var_decl());
+		}
+
+		if (expr.let_decl() != null) {
+			return visitLet_decl(expr.let_decl());
 		}
 
 		if (expr.closure_decl() != null) {
