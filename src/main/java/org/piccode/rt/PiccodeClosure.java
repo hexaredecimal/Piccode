@@ -8,10 +8,12 @@ import java.util.Map;
 import org.piccode.ast.Arg;
 import org.piccode.ast.Ast;
 import org.piccode.ast.ClauseAst;
+import org.piccode.ast.ErrorNodeExpr;
 import org.piccode.ast.FunctionAst;
 import org.piccode.ast.TupleAst;
 import org.piccode.ast.WhenAst;
 import org.piccode.ast.WhenCase;
+import org.piccode.ast.IdentifierAst;
 
 /**
  *
@@ -210,9 +212,20 @@ public class PiccodeClosure implements PiccodeValue {
 			cases.add(when);
 		}
 
+		
 		var args = clause.getArgs();
 		var cond = args.size() == 1 ? args.getFirst() : new TupleAst(args);
-		cases.add(new WhenCase(List.of(cond), clause.body));
+		
+		var errNode = new ErrorNodeExpr("Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+		errNode.file = file;
+		errNode.line = line;
+		errNode.column = column;
+		
+		var generalCaseBody = isMatched(clause.body, cases)
+						? errNode
+						: clause.body;
+
+		cases.add(new WhenCase(List.of(cond), generalCaseBody));
 		var match = new WhenAst(cond, cases, null);
 		// System.out.println("Expr: " + match + " " + clauses);
 		match.file = file;
@@ -255,21 +268,42 @@ public class PiccodeClosure implements PiccodeValue {
 				} else if (top instanceof Arg arg) {
 					newParams.add(index, arg);
 					index++;
+				} else {
+					var arg = new Arg("$_PLACEHOLDER_ID_" + index + "__$");
+					arg.file = file;
+					arg.line = line;
+					arg.column = column;
+					newParams.add(index, arg);
+					index++;
 				}
 			}
 		}
 
 		if (!clauses.isEmpty()) {
+			size = newParams.size();
 			if (newParams.size() < size) {
-				var err = new PiccodeException(file, line, column, "Cannot get a parameter list from clause declrations for the declared function. Only able to assemble " + newParams.size() + " args out of " + size);
-				
-			var note = new PiccodeException(file, line, column, "Clause list: " + clauses + " only results to expression " + newParams + " vs the parameters " + params);
-			err.addNote(note);
-				throw err;
+				for (int i = 0; i < size; i++) {
+					var arg = new Arg("$_PLACEHOLDER_ID_" + i + "__$");
+					arg.file = file;
+					arg.line = line;
+					arg.column = column;
+					newParams.addLast(arg);
+				}
+			}
+		} 
+
+		clauses.add(new ClauseAst(params, body));
+		params = newParams;
+	}
+
+	private boolean isMatched(Ast body, ArrayList<WhenCase> cases) {
+		for (var case_ : cases) {
+			if (case_.value == body || case_.value.equals(body)) {
+				return true;
 			}
 		}
-		clauses.add(new ClauseAst(newParams, body));
-		params = newParams;
+
+		return false;
 	}
 
 }
