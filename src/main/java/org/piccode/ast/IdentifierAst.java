@@ -52,6 +52,10 @@ public class IdentifierAst extends Ast {
 
 			for (var kv : entrySet) {
 				var key = kv.getKey();
+				// Skip built-in functions in the report
+				if(key.startsWith("pic_nat_")) {
+				  continue;
+				}
 				nms.append(key);
 				var val = kv.getValue().hashCode();
 				var fmt = String.format("0x%08X", val);
