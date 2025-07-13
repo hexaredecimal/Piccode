@@ -14,7 +14,7 @@
     "main": {
       "patterns": [
         {
-          "match": "\\b(if|else|import|module|do|when|is|return|catch|let|in)\\b",
+          "match": "\\b(if|else|import|module|do|when|is|return|catch|let|in|use)\\b",
           "name": "keyword.piccodescript"
         },
         {
