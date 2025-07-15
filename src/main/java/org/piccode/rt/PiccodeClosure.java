@@ -35,6 +35,8 @@ public class PiccodeClosure implements PiccodeValue {
 	public int line, column;
 	public Integer frame = null;
 
+	public List<String> annotations = new ArrayList<>();
+
 	public PiccodeClosure(List<Ast> params, Map<String, PiccodeValue> appliedArgs, int positionalIndex, Ast body) {
 		this.params = params == null ? new ArrayList<>() : params;
 		this.appliedArgs = appliedArgs;
@@ -61,6 +63,7 @@ public class PiccodeClosure implements PiccodeValue {
 		}
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.annotations = annotations;
 		result.creator = creator;
 		result.frame = frame;
 		result.callSite = callSite;
@@ -105,6 +108,7 @@ public class PiccodeClosure implements PiccodeValue {
 		newArgs.put(name, arg);
 
 		var result = new PiccodeClosure(params, newArgs, positionalIndex + 1, body);
+		result.annotations = annotations;
 		result.creator = creator;
 		result.frame = frame;
 		result.callSite = callSite;
@@ -125,48 +129,56 @@ public class PiccodeClosure implements PiccodeValue {
 				}
 			}
 		}
-		var ctx = frame == null
-						? Context.top
-						: Context.getContextAt(frame);
-		ctx.pushStackFrame(creator);
-		for (Ast param : params) {
-			PiccodeValue val = param instanceof Arg arg
-							? appliedArgs.getOrDefault(
-											arg.name,
-											arg.def_val != null ? arg.def_val.execute(frame) : null
-							) : param.execute(frame);
+		return Ast.safeExecute(frame, creator, ($_unused_$) -> {
+			for (Ast param : params) {
+				var ctx = frame == null
+								? Context.top
+								: Context.getContextAt(frame);
 
-			if (param instanceof Arg arg) {
-				if (arg.export && !(val instanceof PiccodeObject)) {
-					throw new PiccodeException(param.file, param.line, param.column, "Cannot export fields of a value that is not an object. Found type " + Chalk.on(val.type()).red());
-				} else if (arg.export && val instanceof PiccodeObject obj) {
-					for (var kv : obj.obj.entrySet()) {
-						var name = kv.getKey();
-						var value = kv.getValue();
-						ctx.putLocal(name, value);
+				
+				PiccodeValue val = param instanceof Arg arg
+								? appliedArgs.getOrDefault(
+												arg.name,
+												arg.def_val != null ? arg.def_val.execute(frame) : null
+								) : param.execute(frame);
+
+				if (param instanceof Arg arg) {
+					if (arg.export && !(val instanceof PiccodeObject)) {
+						throw new PiccodeException(param.file, param.line, param.column, "Cannot export fields of a value that is not an object. Found type " + Chalk.on(val.type()).red());
+					} else if (arg.export && val instanceof PiccodeObject obj) {
+						for (var kv : obj.obj.entrySet()) {
+							var name = kv.getKey();
+							var value = kv.getValue();
+							ctx.putLocal(name, value);
+						}
+					} else {
+						ctx.putLocal(arg.name, val);
 					}
-				} else {
-					ctx.putLocal(arg.name, val);
 				}
 			}
-		}
 
-		try {
-			var result = body.execute(frame);
-			ctx.dropStackFrame();
-
-			return result;
-		} catch (PiccodeReturnException ret) {
-			ctx.dropStackFrame();
-			return ret.value;
-		} catch (StackOverflowError se) {
-			ctx.dropStackFrame();
-			var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Stack overflow");
-			err.frame = frame;
-			var note = new PiccodeException(file, line, column, "Stack overflow error most likely occured when you called the function below. ");
-			err.addNote(note);
-			throw err;
-		}
+			
+			try {
+				if (!annotations.isEmpty()) {
+					for (var annotation: annotations) {
+						if (!Context.hasAnnotation(annotation)) {
+							throw new PiccodeException(file, line, column, "Annotation `" + Chalk.on(annotation).red() + "` does not exist.");
+						}
+						// TODO: Allow mutiple nested annotations
+						var fx = Context.getAnnotation(annotation);
+						return fx.apply(frame, body);
+					}
+				}
+				var result = body.execute(frame);
+				return result;
+			} catch (StackOverflowError se) {
+				var err = new PiccodeException(callSiteFile, callSite.line, callSite.col, "Stack overflow");
+				err.frame = frame;
+				var note = new PiccodeException(file, line, column, "Stack overflow error most likely occured when you called the function below. ");
+				err.addNote(note);
+				throw err;
+			}
+		});
 	}
 
 	@Override
@@ -212,15 +224,14 @@ public class PiccodeClosure implements PiccodeValue {
 			cases.add(when);
 		}
 
-		
 		var args = clause.getArgs();
 		var cond = args.size() == 1 ? args.getFirst() : new TupleAst(args);
-		
+
 		var errNode = new ErrorNodeExpr("Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
 		errNode.file = file;
 		errNode.line = line;
 		errNode.column = column;
-		
+
 		var generalCaseBody = isMatched(clause.body, cases)
 						? errNode
 						: clause.body;
@@ -290,7 +301,7 @@ public class PiccodeClosure implements PiccodeValue {
 					newParams.addLast(arg);
 				}
 			}
-		} 
+		}
 
 		clauses.add(new ClauseAst(params, body));
 		params = newParams;
