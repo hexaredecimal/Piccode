@@ -2,6 +2,7 @@ package org.piccode.ast;
 
 import com.github.tomaslanger.chalk.Chalk;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
@@ -9,6 +10,7 @@ import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeModule;
 import org.piccode.rt.PiccodeNumber;
 import org.piccode.rt.PiccodeObject;
+import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeSimpleNote;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeTuple;
@@ -118,9 +120,10 @@ public class CCOperationAst extends Ast {
 				return node.execute(frame);
 			}
 			if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-				node.execute(frame);
-				//return Context.top.getValue(_id.text);
-				return call.execute(frame);
+				return safeExecute(frame, func, (expr) -> {
+					node.execute(frame);
+					return call.execute(frame);
+				});
 			}
 			if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
 				node.execute(frame);
@@ -136,5 +139,19 @@ public class CCOperationAst extends Ast {
 	@Override
 	public String codeGen(TargetEnvironment target) {
 		return String.format("%s.%s", lhs, rhs);
+	}
+
+	private PiccodeValue safeExecute(Integer frame, Ast expr, Function<Ast, PiccodeValue> func) {
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+		
+		try {
+			ctx.pushStackFrame(expr);
+			return func.apply(expr);
+		} catch (PiccodeReturnException | PiccodeException exception) {
+			ctx.dropStackFrame();
+			throw exception;
+		}
 	}
 }
