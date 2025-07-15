@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.antlr.v4.runtime.misc.Pair;
 import org.piccode.ast.Ast;
 import org.piccode.backend.Compiler;
@@ -35,6 +37,7 @@ public class Context {
 	private static final ExecutorService threadPool = Executors.newVirtualThreadPerTaskExecutor();
 	public static final ConcurrentMap<String, Future<PiccodeValue>> futureMap = new ConcurrentHashMap<>();
 	public static final ConcurrentMap<Integer, Object> objectPool = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, BiFunction<Integer, Ast, PiccodeValue>> annotations = new ConcurrentHashMap<>();
 
 	public Context() {
 		call_frames = new Stack<>();
@@ -62,6 +65,18 @@ public class Context {
 
 	public int getFramesCount() {
 		return call_frames.size();
+	}
+
+	public static void addAnnotation(String name, BiFunction<Integer, Ast, PiccodeValue> fx) {
+		annotations.put(name, fx);
+	}
+
+	public static BiFunction<Integer, Ast, PiccodeValue> getAnnotation(String name) {
+		return annotations.get(name);
+	}
+
+	public static boolean hasAnnotation(String name) {
+		return annotations.containsKey(name);
 	}
 
 	public static String makeThread(PiccodeClosure node) {
