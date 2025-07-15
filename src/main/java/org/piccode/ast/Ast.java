@@ -1,6 +1,12 @@
 package org.piccode.ast;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+import org.antlr.v4.runtime.Token;
 import org.piccode.piccodescript.TargetEnvironment;
+import org.piccode.rt.Context;
+import org.piccode.rt.PiccodeException;
+import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeValue;
 
 /**
@@ -13,6 +19,58 @@ public abstract class Ast {
 	public abstract PiccodeValue execute(Integer frame);
 	public abstract String codeGen(TargetEnvironment target);
 
+
+	public static PiccodeValue safeExecute(Integer frame, Ast expr, Function<Ast, PiccodeValue> func) {
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+		
+		try {
+			ctx.pushStackFrame(expr);
+			var result = func.apply(expr);
+			ctx.dropStackFrame();
+			return result;
+		} catch (PiccodeReturnException ret) {
+			ctx.dropStackFrame();
+			return ret.value;
+		} catch (PiccodeException exception) {
+			throw exception;
+		}
+	}
+
+	public static PiccodeValue safeExecute(Integer frame, Supplier<PiccodeValue> fx) {
+		var ctx = frame == null
+						? Context.top
+						: Context.getContextAt(frame);
+		ctx.pushScope();
+		try {
+			var result = fx.get();
+			ctx.dropScope();
+			return result;
+		} 
+		catch (PiccodeReturnException ret) {
+			ctx.dropScope();
+			return ret.value;
+		} catch (PiccodeException exception) {
+			ctx.dropScope();
+			throw exception;
+		}
+	}
+
+	public static Ast finalizeNode(Ast node, Ast other) {
+		node.file = other.file;
+		node.line = other.line;
+		node.column = other.column;
+		return node;
+	}
+
+
+	public static Ast finalizeNode(Ast node, Token token) {
+		node.line = token.getLine();
+		node.column = token.getCharPositionInLine();
+		return node;
+	}
+	
 	public static class Location {
 		public int line;
 	  public int col;
@@ -23,6 +81,8 @@ public abstract class Ast {
 		}
 	}
 
+
+	
 	public static Location getLocation(Ast node) {
 		if (node instanceof IdentifierAst id) {
 			return new Location(id.line, id.column);
