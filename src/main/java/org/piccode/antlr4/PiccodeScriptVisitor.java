@@ -73,6 +73,12 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitModule_stmt(PiccodeScriptParser.Module_stmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#annotations}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAnnotations(PiccodeScriptParser.AnnotationsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#func}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

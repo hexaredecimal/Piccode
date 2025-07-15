@@ -138,6 +138,18 @@ public class PiccodeScriptBaseListener implements PiccodeScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAnnotations(PiccodeScriptParser.AnnotationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAnnotations(PiccodeScriptParser.AnnotationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunc(PiccodeScriptParser.FuncContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -28,7 +28,7 @@ symbol_lift
 symbol_entry
 : ID (symbol_lift)? ;
 
-declaration: ID CC (module | func | import_module);
+declaration: (annotations)? ID CC (module | func | import_module);
 	
 module: 
 	MODULE LBRACE module_stmts RBRACE;
@@ -39,6 +39,8 @@ module_stmts:
 module_stmt:
 	declaration
 	| var_decl;
+
+annotations: HASH LBRACKET ID (',' ID)* RBRACKET;
 
 func: func_args ASSIGN expr ;
 
@@ -166,7 +168,7 @@ COMMA: ',';
 SEMI: ';';
 ARROW: '->';
 TILDE: '~';
-
+HASH: '#';
 
 ASSIGN: '=';
 DASSIGN: ':=';
