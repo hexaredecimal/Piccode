@@ -154,10 +154,18 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	@Override
 	public Ast visitDeclaration(DeclarationContext ctx) {
+		var annotations = new ArrayList<String>();
+		if (ctx.annotations() != null) {
+			for (var id: ctx.annotations().ID()) {
+				annotations.add(id.getText());
+			}
+		}
+
 		var id = ctx.ID().getText();
 		if (ctx.func() != null) {
 			var func = (FunctionAst) visitFunc(ctx.func());
 			func.name = id;
+			func.annotations = annotations;
 			return func;
 		} 
 
@@ -730,10 +738,8 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	private Ast finalizeAstNode(Ast result, Token tok) {
-		result.line = tok.getLine();
-		result.column = tok.getCharPositionInLine();
 		result.file = fileName;
-		return result;
+		return Ast.finalizeNode(result, tok);
 	}
 
 }

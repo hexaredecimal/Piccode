@@ -27,53 +27,51 @@ public class PipeAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst) && !(rhs instanceof DotOperationAst)) {
-			var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> " + rhs.toString());
-			err.frame = frame;
-			throw err;
-		}
-
-		if (rhs instanceof IdentifierAst id) {
-			var res = id.execute(frame);
-			if (res instanceof PiccodeClosure closure) {
-				var left = lhs.execute(frame);
-				return closure.call(left);
-			} else {
-				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + id.text);
+		return Ast.safeExecute(frame, this, (expr) -> {
+			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst) && !(rhs instanceof CCOperationAst)) {
+				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + rhs.toString());
 				err.frame = frame;
 				throw err;
 			}
-		}
 
-		if (rhs instanceof DotOperationAst dot) {
-			if (dot.rhs instanceof CallAst call) {
-        if (call.nodes == null) {
-          call.nodes = new ArrayList<>();
-        }
-				call.nodes.addFirst(lhs);
-				return rhs.execute(frame);
-			}
-
-			if (dot.rhs instanceof IdentifierAst id) {
+			if (rhs instanceof IdentifierAst id) {
 				var res = id.execute(frame);
 				if (res instanceof PiccodeClosure closure) {
 					var left = lhs.execute(frame);
 					return closure.call(left);
 				} else {
-					var err = new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + id.text);
+					var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + id.text);
 					err.frame = frame;
 					throw err;
 				}
 			}
 
-			var err = new PiccodeException(file, line, column,"Invalid expression at the right side of |> : " + dot.rhs);
-			err.frame = frame;
-			throw err;
-		}
+			if (rhs instanceof CCOperationAst dot) {
+				if (dot.rhs instanceof CallAst call) {
+					if (call.nodes == null) {
+						call.nodes = new ArrayList<>();
+					}
+					call.nodes.addFirst(lhs);
+					return rhs.execute(frame);
+				}
 
-		var call = (CallAst) rhs;
-		call.nodes.addFirst(lhs);
-		return call.execute(frame);
+				if (dot.rhs instanceof IdentifierAst id) {
+					var args = new ArrayList<Ast>();
+					args.addFirst(lhs);
+					var call = new CallAst(id, args);
+					dot.rhs = Ast.finalizeNode(call, id);
+					return rhs.execute(frame);
+				}
+
+				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + dot.rhs);
+				err.frame = frame;
+				throw err;
+			}
+
+			var call = (CallAst) rhs;
+			call.nodes.addFirst(lhs);
+			return call.execute(frame);
+		});
 	}
 
 	@Override

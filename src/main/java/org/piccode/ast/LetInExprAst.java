@@ -39,26 +39,14 @@ public class LetInExprAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		return evaluate(frame, () -> {
+		return Ast.safeExecute(frame, this, (func) -> {
 			for (var decl : vars) {
 				decl.execute(frame);
 			}
-			return evaluate(frame, () -> expr.execute(frame));
+			return Ast.safeExecute(frame, () -> expr.execute(frame));
 		});
 	}
 
-	private PiccodeValue evaluate(Integer frame, Supplier<PiccodeValue> fx) {
-		var ctx = frame == null
-						? Context.top
-						: Context.getContextAt(frame);
-		ctx.pushScope();
-		try {
-			return fx.get();
-		} catch (PiccodeReturnException | PiccodeException e) {
-			ctx.dropScope();
-			throw e;
-		}
-	}
 	
 	@Override
 	public String codeGen(TargetEnvironment target) {

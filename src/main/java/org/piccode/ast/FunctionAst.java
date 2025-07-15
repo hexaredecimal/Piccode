@@ -21,6 +21,7 @@ public class FunctionAst extends Ast {
 	public List<Ast> arg;
 	public Ast body;
 	public List<ClauseAst> clauses = new ArrayList<>();
+	public List<String> annotations = new ArrayList<>();
 
 	public FunctionAst(String name, List<Ast> arg, Ast body) {
 		this.name = name;
@@ -69,6 +70,7 @@ public class FunctionAst extends Ast {
 		cl.file = file;
 		cl.column = column;
 		cl.line = line;
+		cl.annotations = annotations;
 		var value = ctx.getValue(name);
 		if (value == null) {
 			if (!clauses.isEmpty()) {
@@ -92,6 +94,15 @@ public class FunctionAst extends Ast {
 				cl.clauses.add(clause);
 			}
 			clauses.clear();
+		}
+		if (closure.annotations.isEmpty()) {
+			closure.annotations = annotations;
+		} else {
+			for (var anot: annotations) {
+				if (!closure.annotations.contains(anot)) {
+					closure.annotations.add(anot);
+				}
+			}
 		}
 		closure.clauses.add(new ClauseAst(arg, body));
 		return closure;

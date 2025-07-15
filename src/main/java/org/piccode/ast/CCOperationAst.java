@@ -37,45 +37,47 @@ public class CCOperationAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		if (lhs instanceof CCOperationAst op) {
-			var mod = (PiccodeModule) op.execute(frame);
-			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + mod.name);
-			}
-			
-			var id = new IdentifierAst(mod.name);
-			id.file = file;
-			id.line = line;
-			id.column = column;
-			return process(id, mod, frame);
-		}
-		
-		if (lhs instanceof IdentifierAst id && Context.top.getValue(id.text) != null) {
-			var mod = Context.top.getValue(id.text);
-			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-				throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + id.text);
-			}
-			return process(id, (PiccodeModule)mod, frame);
-		}
+		return Ast.safeExecute(frame, this, (expr) -> {
+			if (lhs instanceof CCOperationAst op) {
+				var mod = (PiccodeModule) op.execute(frame);
+				if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
+					throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + Chalk.on(mod.name).green());
+				}
 
-		var err = new PiccodeException(file, line, column, "Invalid use of `::`. Expected a module on the lhs, but found " + Chalk.on(lhs.toString()).red());
-		err.frame = frame;
-
-		if (lhs instanceof IdentifierAst id) {
-			var nm = Context.top.getSimilarName(id.text);
-			if (nm != null && !nm.isEmpty()) {
-				var note = new PiccodeSimpleNote("Did you mean `" + Chalk.on(nm).green() + "` instead of `" + Chalk.on(id.text).red() + "` ?");
-				err.addNote(note);
+				var id = new IdentifierAst(mod.name);
+				id.file = file;
+				id.line = line;
+				id.column = column;
+				return process(id, mod, frame);
 			}
-		}
-		throw err;
+
+			if (lhs instanceof IdentifierAst id && Context.top.getValue(id.text) != null) {
+				var mod = Context.top.getValue(id.text);
+				if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
+					throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + Chalk.on(id.text).green());
+				}
+				return process(id, (PiccodeModule) mod, frame);
+			}
+
+			var err = new PiccodeException(file, line, column, "Invalid use of `::`. Expected a module on the lhs, but found " + Chalk.on(lhs.toString()).red());
+			err.frame = frame;
+
+			if (lhs instanceof IdentifierAst id) {
+				var nm = Context.top.getSimilarName(id.text);
+				if (nm != null && !nm.isEmpty()) {
+					var note = new PiccodeSimpleNote("Did you mean `" + Chalk.on(nm).green() + "` instead of `" + Chalk.on(id.text).red() + "` ?");
+					err.addNote(note);
+				}
+			}
+			throw err;
+		});
 	}
 
 	private PiccodeValue process(IdentifierAst id, PiccodeModule mod, Integer frame) {
 		var ctx = frame == null
-			? Context.top
-			: Context.getContextAt(frame);
-		
+						? Context.top
+						: Context.getContextAt(frame);
+
 		if (rhs instanceof IdentifierAst _id) {
 			for (var node : mod.nodes) {
 				if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
@@ -85,11 +87,11 @@ public class CCOperationAst extends Ast {
 					node.execute(frame);
 					var result = ctx.getValue(_id.text);
 					if (result == null) {
-						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + _id.text + "` is not defined");
+						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + Chalk.on(_id.text).red() + "` is not defined");
 						err.frame = frame;
 						var nm = ctx.getSimilarName(_id.text);
 						if (nm != null && !nm.isEmpty()) {
-							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + nm + "`");
+							var note = new PiccodeException(func.file, func.line, func.column, "Maybe you meant `" + Chalk.on(nm).green() + "`");
 							err.addNote(note);
 						}
 						throw err;
@@ -101,7 +103,7 @@ public class CCOperationAst extends Ast {
 				}
 			}
 
-			var err = new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
+			var err = new PiccodeException(file, line, column, "No function or identifier " + Chalk.on(_id.text).red() + " found in module " + Chalk.on(id.text).green());
 			err.frame = frame;
 			throw err;
 		}
@@ -109,7 +111,7 @@ public class CCOperationAst extends Ast {
 		var call = (CallAst) rhs;
 
 		if (!(call.expr instanceof IdentifierAst)) {
-			var err = new PiccodeException(file, line, column, "Invalid function reference in module access module " + id.text + ": " + call.expr);
+			var err = new PiccodeException(file, line, column, "Invalid function reference in module access module " + Chalk.on(id.text).red() + ": " + call.expr);
 			err.frame = frame;
 			throw err;
 		}
@@ -120,7 +122,7 @@ public class CCOperationAst extends Ast {
 				return node.execute(frame);
 			}
 			if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-				return safeExecute(frame, func, (expr) -> {
+				return Ast.safeExecute(frame, func, (expr) -> {
 					node.execute(frame);
 					return call.execute(frame);
 				});
@@ -131,7 +133,7 @@ public class CCOperationAst extends Ast {
 			}
 		}
 
-		var err = new PiccodeException(file, line, column, "No function or identifier " + _id.text + " found in module " + id.text);
+		var err = new PiccodeException(file, line, column, "No function or identifier " + Chalk.on(_id.text).red() + " found in module " + Chalk.on(id.text).green());
 		err.frame = frame;
 		throw err;
 	}
@@ -141,17 +143,4 @@ public class CCOperationAst extends Ast {
 		return String.format("%s.%s", lhs, rhs);
 	}
 
-	private PiccodeValue safeExecute(Integer frame, Ast expr, Function<Ast, PiccodeValue> func) {
-		var ctx = frame == null
-			? Context.top
-			: Context.getContextAt(frame);
-		
-		try {
-			ctx.pushStackFrame(expr);
-			return func.apply(expr);
-		} catch (PiccodeReturnException | PiccodeException exception) {
-			ctx.dropStackFrame();
-			throw exception;
-		}
-	}
 }

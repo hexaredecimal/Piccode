@@ -31,20 +31,13 @@ public class VarDecl extends Ast {
 			? Context.top
 			: Context.getContextAt(frame);
 		
-		ctx.pushStackFrame(this);
-		PiccodeValue _value = null;
-		try {
-			_value = value.execute(frame);
-			ctx.dropStackFrame();
+		PiccodeValue val = Ast.safeExecute(frame, this, node -> {
+			var _value = value.execute(frame);
 			ctx.putLocal(name, _value);
 			return _value;
-		} catch (PiccodeReturnException ret) {
-			ctx.dropStackFrame();
-			throw ret;
-		} catch (PiccodeException err) {
-			ctx.dropStackFrame();
-			throw err;
-		}
+		});
+		ctx.putLocal(name, val);
+		return val;
 	}
 
 	@Override

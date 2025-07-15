@@ -20,15 +20,6 @@ public class ClosureAst extends Ast {
 	public ClosureAst(List<Ast> args, Ast body) {
 		this.args = args;
 		this.body = body;
-		if (args == null || args.isEmpty()) {
-			var loc = Ast.getLocation(body);
-			this.line = loc.line;
-			this.column = loc.col;
-		} else {
-			var arg = args.getFirst();
-			this.line = arg.line;
-			this.column = arg.column;
-		}
 	}
 
 

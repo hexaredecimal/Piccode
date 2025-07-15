@@ -90,8 +90,18 @@ public class IdentifierAst extends Ast {
 				index++;
 			}
 
-			var note = new PiccodeSimpleNote("Stack size: " + ctx.getFramesCount());
+			var sz = ctx.getFramesCount();
+			var note = new PiccodeSimpleNote("Stack size: " + sz);
 			err.addNote(note);
+
+			if (sz > 0) {
+				var _sb = new StringBuilder();
+				for (var _frame: ctx.getCallStack()) {
+					_sb.append(_frame.caller).append("\n");
+				}
+				note = new PiccodeSimpleNote("Stack dump: \n" + _sb.toString());
+				err.addNote(note);
+			}
 
 			note = new PiccodeSimpleNote("Symbol table dump: \n" + sb.toString());
 			err.addNote(note);
