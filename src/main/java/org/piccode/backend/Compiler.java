@@ -49,6 +49,7 @@ public class Compiler {
 		try {
 			var result = program(file, code);
 			prepareGlobalScope(file);
+			Context.top.putLocal("pic_nat_user_args", new PiccodeArray(args));
 
 			PiccodeValue res = new PiccodeUnit();
 			var has_main = false;
