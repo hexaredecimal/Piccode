@@ -35,15 +35,10 @@ public class PipeAst extends Ast {
 			}
 
 			if (rhs instanceof IdentifierAst id) {
-				var res = id.execute(frame);
-				if (res instanceof PiccodeClosure closure) {
-					var left = lhs.execute(frame);
-					return closure.call(left);
-				} else {
-					var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + id.text);
-					err.frame = frame;
-					throw err;
-				}
+				var call = new CallAst(id, new ArrayList<>());
+				call.nodes.addFirst(lhs);
+				var node = Ast.finalizeNode(call, id);
+				return node.execute(frame);
 			}
 
 			if (rhs instanceof CCOperationAst dot) {
