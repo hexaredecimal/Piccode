@@ -24,7 +24,7 @@
             <Keywords name="Folders in comment, open"></Keywords>
             <Keywords name="Folders in comment, middle"></Keywords>
             <Keywords name="Folders in comment, close"></Keywords>
-            <Keywords name="Keywords1">import&#x000D;&#x000A;let&#x000D;&#x000A;function&#x000D;&#x000A;when&#x000D;&#x000A;is&#x000D;&#x000A;do&#x000D;&#x000A;if&#x000D;&#x000A;else&#x000D;&#x000A;module</Keywords>
+            <Keywords name="Keywords1">import&#x000D;&#x000A;let&#x000D;&#x000A;in&#x000D;&#x000A;when&#x000D;&#x000A;is&#x000D;&#x000A;do&#x000D;&#x000A;if&#x000D;&#x000A;else&#x000D;&#x000A;module&#x000D;&#x000A;await&#x000D;&#x000A;use</Keywords>
             <Keywords name="Keywords2">true&#x000D;&#x000A;false</Keywords>
             <Keywords name="Keywords3"></Keywords>
             <Keywords name="Keywords4"></Keywords>
