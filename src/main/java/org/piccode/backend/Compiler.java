@@ -24,10 +24,13 @@ import org.piccode.rt.PiccodeReturnException;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
+import org.piccode.rt.PiccodeWarning;
 import org.piccode.rt.modules.PiccodeArrayModule;
 import org.piccode.rt.modules.PiccodeFileModule;
+import org.piccode.rt.modules.PiccodeFsModule;
 import org.piccode.rt.modules.PiccodeIOModule;
 import org.piccode.rt.modules.PiccodeMathModule;
+import org.piccode.rt.modules.PiccodeObjectModule;
 import org.piccode.rt.modules.PiccodeStringModule;
 import org.piccode.rt.modules.PiccodeSystemModule;
 import org.piccode.rt.modules.PiccodeTimeModule;
@@ -75,7 +78,7 @@ public class Compiler {
 				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
 				return _result;
 			}
-			
+
 			Context.top.dropStackFrame();
 			return res;
 		} catch (PiccodeReturnException ret) {
@@ -105,18 +108,17 @@ public class Compiler {
 	}
 
 	public static StatementList program(String file, String code) {
-		
+
 		if (code.startsWith("#!/")) {
 			code = sanitizeSourceFile(code);
 		}
-		
+
 		var err = new SyntaxError(file);
-		
+
 		var lexer = new PiccodeScriptLexer(CharStreams.fromString(code));
 		lexer.removeErrorListeners();
 		lexer.addErrorListener(err);
-		
-		
+
 		var parser = new PiccodeScriptParser(new CommonTokenStream(lexer));
 		parser.removeErrorListeners();
 		parser.addErrorListener(err);
@@ -144,10 +146,9 @@ public class Compiler {
 		scope_id.file = file;
 		Context.top.pushStackFrame(scope_id);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
-    Context.top.putLocal("false", new PiccodeBoolean("false"));
+		Context.top.putLocal("false", new PiccodeBoolean("false"));
 		addSystemFunctions();
 	}
-
 
 	private static void addSystemFunctions() {
 		PiccodeIOModule.addFunctions();
@@ -160,8 +161,15 @@ public class Compiler {
 		PiccodeTypesModule.addFunctions();
 		PiccodeVirtualModule.addFunctions();
 		PiccodeFileModule.addFunctions();
-	}
+		PiccodeFsModule.addFunctions();
+		PiccodeObjectModule.addFunctions();
 
+		Context.addAnnotation("Deprecated", (frame, node) -> {
+			var warning = new PiccodeWarning(node.file, node.line, node.column, "Invocation of a deprecated function");
+			warning.report();
+			return node.execute(frame);
+		});
+	}
 
 	private static class SyntaxError extends BaseErrorListener {
 
@@ -170,8 +178,7 @@ public class Compiler {
 		public SyntaxError(String file) {
 			this.file = file;
 		}
-		
-		
+
 		@Override
 		public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
 			throw new PiccodeException(file, line, charPositionInLine, msg);
