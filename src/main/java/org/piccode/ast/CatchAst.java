@@ -46,7 +46,7 @@ public class CatchAst extends Ast {
 				return result;
 			} catch (PiccodeReturnException ret) {
 				ctx.dropScope();
-				return ret.value;
+				throw ret;
 			} catch (Exception e1) {
 				ctx.dropScope();
 				throw e1;
@@ -84,7 +84,7 @@ public class CatchAst extends Ast {
 
 			return result;
 		} catch (PiccodeReturnException ret) {
-			return ret.value;
+			throw ret;
 		} catch (PiccodeException e) {
 			throw e;
 		} catch (Exception e) {
