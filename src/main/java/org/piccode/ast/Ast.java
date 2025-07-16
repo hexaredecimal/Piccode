@@ -57,6 +57,26 @@ public abstract class Ast {
 		}
 	}
 
+
+	public static PiccodeValue safeExecuteReturning(Integer frame, Ast expr, Function<Ast, PiccodeValue> func) {
+		var ctx = frame == null
+			? Context.top
+			: Context.getContextAt(frame);
+		
+		try {
+			ctx.pushStackFrame(expr);
+			var result = func.apply(expr);
+			ctx.dropStackFrame();
+			return result;
+		} catch (PiccodeReturnException ret) {
+			ctx.dropStackFrame();
+			throw ret;
+		} catch (PiccodeException exception) {
+			throw exception;
+		}
+	}
+
+
 	public static Ast finalizeNode(Ast node, Ast other) {
 		node.file = other.file;
 		node.line = other.line;
