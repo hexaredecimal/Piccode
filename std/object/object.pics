@@ -6,9 +6,44 @@ Object :: module {
   // Checks is the objects has the specified value as a key
 	//
 	// Parameters:
-	//   value - The value to check
+	//   object - The object to check
+	//   key   - The key to check for existence
 	//
 	// Returns:
 	// 	true if the object contains the key, false if not
-	haskey :: (value) = pic_nat_ishaskey(value)
+	hasKey :: (object, key) = pic_nat_haskey(object, key)
+
+
+	// Function: hasValue
+  // Checks is the objects has the specified value 
+	//
+	// Parameters:
+	//   object - The object to check
+	//   value  - The value to check for existence
+	//
+	// Returns:
+	// 	true if the object contains the key, false if not
+	hasValue :: (object, value) = pic_nat_hasvalue(object, value)
+
+	// Function: getKeys
+  // Gets the keys in the object
+	//
+	// Parameters:
+	//   object - The object to check
+	//
+	// Returns:
+	// 	(Array) - An array of keys in the object
+	getKeys :: (object) = pic_nat_getkeys(object)
+
+
+	// Function: getValues
+  // Gets the values in the object
+	//
+	// Parameters:
+	//   object - The object to check
+	//
+	// Returns:
+	// 	(Array) - An array of values in the object
+	getValues :: (object) = pic_nat_getvalues(object)
+
 }

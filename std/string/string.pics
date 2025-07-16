@@ -73,6 +73,17 @@ String :: module {
   split :: (value="", delim="") = pic_nat_stringsplit(value, delim)
 
 
+  // Function: from
+  // Returns the internal string representation of a value
+  //
+  // Parameters:
+  //   value - The value to create a string from
+  //
+  // Returns:
+  //   (String) - The String representation of the value passed
+  from :: (value="") = pic_nat_stringfrom(value)
+
+
   // Function: repeat
   // Repeats a string `n` times.
   //

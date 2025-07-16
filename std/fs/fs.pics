@@ -1,0 +1,238 @@
+
+
+// Module: Fs
+// Functions for interacting with the filesystem
+Fs :: module {
+
+    // Function: readToString
+    // Reads the path to a string
+    //
+    // Parameters:
+    //   path - (String) The path to read from
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    readToString :: (path) = pic_nat_readtostring(path)
+
+    // Function: readToFileString
+    // Reads the file to a string
+    //
+    // Parameters:
+    //   file - (Object) The path to read from
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    readFileToString :: (file) = pic_nat_readfiletostring(file)
+
+
+    // Function: writeLine
+    // Write the line to the file represented by the path
+    //
+    // Parameters:
+    //   path - (Object) The path to write to
+    //   line - (String) The line to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    writeLine :: (path, line) = pic_nat_writeline(path, line)
+
+
+    // Function: writeLines
+    // Write the line to the file represented by the path
+    //
+    // Parameters:
+    //   path - (Object) The path to write to
+    //   lines - (Array) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    writeLines :: (path, lines=[]) = pic_nat_writelines(path, lines)
+
+
+    // Function: appendLine
+    // Append the line to the file represented by the path
+    //
+    // Parameters:
+    //   path - (Object) The path to write to
+    //   line - (String) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    appendLine :: (path, line) = pic_nat_appendline(path, line)
+
+
+    // Function: appendLines
+    // Write the line to the file represented by the path
+    //
+    // Parameters:
+    //   path - (Object) The path to write to
+    //   lines - (Array) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    appendLines :: (path, lines=[]) = pic_nat_appendlines(path, lines)
+
+
+
+    // Function: writeLineToFile
+    // Write the line to the file object
+    //
+    // Parameters:
+    //   file - (File) The file to write to
+    //   line - (String) The line to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    writeLineToFile :: (file, line) = pic_nat_writelinetofile(file, line)
+
+
+    // Function: writeLinesToFile
+    // Write the line to the file object
+    //
+    // Parameters:
+    //   file - (File) The file to write to
+    //   lines - (Array) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    writeLinesToFile :: (file, lines) = pic_nat_writelinestofile(file, lines)
+
+
+
+    // Function: appendLineToFile
+    // Append the line to the file 
+    //
+    // Parameters:
+    //   file - (File) The file to write to
+    //   line - (String) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (true, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    appendLineToFile :: (file, line) = pic_nat_appendlinetofile(file, line)
+
+
+    // Function: appendLinesToFile
+    // Write the line to the file
+    //
+    // Parameters:
+    //   file - (File) The file to write to
+    //   lines - (Array) The lines to write
+    //
+    // Returns:
+    //    Tuple - The tuple representing a success or an error
+    // --Code:
+    // (str, ()) // Represents a success value
+    // ((), err) // Represents an error value
+    // --
+    //
+    appendLinesToFile :: (file, lines=[]) =  pic_nat_appendlinestofile(file, lines)
+
+
+    // Function: getContext
+    // Get the context for the filesystem
+    //
+    // Parameters:
+    //   path - (String) The path to create a context for
+    //
+    // Returns:
+    //    (Object) - The context as an object
+    //
+    getContext :: (path) = pic_nat_getcontext(path)
+
+
+    // Function: getFileContext
+    // Get the context for the filesystem from a file object
+    //
+    // Parameters:
+    //   file - (File) The file to create a context for
+    //
+    // Returns:
+    //    (Object) - The context as an object
+    //
+    getFileContext :: (file) =  pic_nat_getfilecontext(file)
+
+
+    // Function: cd
+    // Change the directory
+    //
+    // Parameters:
+    //   ctx - (Object) The context object
+    //   path - (String) The path to change to
+    //
+    // Returns:
+    //    (Object) - The context as an object
+    //
+    cd :: (ctx, path) = pic_nat_cd(ctx, path)
+
+
+    // Function: ls
+    // Change the directory
+    //
+    // Parameters:
+    //   ctx - (Object) The context object
+    //   path - (String) The path to change to
+    //
+    // Returns:
+    //    (Object) - The context as an object
+    //
+    ls :: (ctx, path=".") = pic_nat_ls(ctx, path)
+
+
+    // Function: getPwd
+    // Gets the current working directory
+    //
+    // Parameters:
+    //   ctx - (Object) The context object
+    //
+    // Returns:
+    //    (String) - The current working directory
+    //
+    getPwd :: (ctx) = pic_nat_pwd(ctx)
+}
+
+
