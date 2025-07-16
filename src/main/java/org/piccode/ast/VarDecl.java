@@ -30,8 +30,8 @@ public class VarDecl extends Ast {
 		var ctx = frame == null
 			? Context.top
 			: Context.getContextAt(frame);
-		
-		PiccodeValue val = Ast.safeExecute(frame, this, node -> {
+
+		PiccodeValue val = Ast.safeExecuteReturning(frame, this, node -> {
 			var _value = value.execute(frame);
 			ctx.putLocal(name, _value);
 			return _value;
