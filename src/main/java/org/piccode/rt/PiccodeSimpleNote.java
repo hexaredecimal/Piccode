@@ -14,7 +14,7 @@ public class PiccodeSimpleNote implements PiccodeInfo {
 	}
 	
 	@Override
-	public void reportError(boolean die, String kind) {
+	public void report(boolean die, String kind) {
 		System.out.println(Chalk.on("[NOTE]: ").bold().yellow() + message);
 	}
 }

@@ -13,9 +13,9 @@ public abstract class NativeFunction implements PiccodeValue {
 
 	private final String name;
 	
-	private final List<String> params;
-	private final Map<String, PiccodeValue> defaultArgs;
-	private final Map<String, PiccodeValue> boundArgs;
+	public List<String> params;
+	protected final Map<String, PiccodeValue> defaultArgs;
+	protected final Map<String, PiccodeValue> boundArgs;
 	public Integer frame;
 	public int line = 0;
 	public int column = 0;

@@ -34,11 +34,11 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	}
 
 	public void reportError() {
-		reportError(!ReplState.ACTIVE, "ERROR");
+		report(!ReplState.ACTIVE, "ERROR");
 	}
 
 	@Override
-	public void reportError(boolean die, String kind) {
+	public void report(boolean die, String kind) {
 		var fp = new File("");
 
 		String[] lines = new String[]{};
@@ -90,7 +90,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 		if (!notes.isEmpty()) {
 			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note : notes) {
-				note.reportError(false, "INFO");
+				note.report(false, "INFO");
 			}
 		}
 
