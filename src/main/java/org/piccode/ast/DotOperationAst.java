@@ -59,7 +59,7 @@ public class DotOperationAst extends Ast {
 		if (!(left instanceof PiccodeObject)) {
 			var err = new PiccodeException(file, line, column, "Invalid expression on the side of `.` : " + lhs + " has value " + left + " which is not an object");
 			err.frame = frame;
-			err.addNote(new PiccodeSimpleNote("Pehaphs consider adding a check to verify if " + lhs + " is indeed an object."));
+			err.addNote(new PiccodeSimpleNote("Please consider adding a check to verify if " + lhs + " is indeed an object."));
 			throw err;
 		}
 
