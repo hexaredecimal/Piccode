@@ -1,0 +1,36 @@
+
+IO    :: import std.io
+Args  :: import std.args
+Array :: import std.array
+Virtual :: import std.virtual
+
+#[Virtual]
+getUser :: (0) = 
+  let
+    userId := "Admin:{id}"
+  in do {
+    Virtual::sleep(100 * id)
+    {user: userId, id: id, root: true}
+  }
+
+#[Virtual]
+getUser :: (id) = 
+  let
+    userId := "User:{id}"
+  in do {
+    Virtual::sleep(100 * id)
+    {user: userId, id: id}
+  }
+
+getUsers :: (end=1) = 
+  let
+    startIndex := 0
+  in
+    startIndex
+    |> Array::fromRange(end)
+	  |> Array::map(|item| -> getUser(item).await)
+    |> Array::toString
+
+users := getUsers(10)
+users |> IO::println
+
