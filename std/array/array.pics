@@ -26,6 +26,7 @@ Array :: module {
   //
   // Returns:
   //   A string representation of the array
+  #[Deprecated]
   toString :: (arr=[]) = pic_nat_array_tostring(arr)
 
   // Function: join
