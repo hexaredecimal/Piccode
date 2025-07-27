@@ -28,7 +28,7 @@ getUsers :: (end=1) =
   in
     startIndex
     |> Array::fromRange(end)
-	  |> Array::map(|item| -> getUser(item).await)
+    |> Array::map(|item| -> getUser(item).await)
     |> Array::toString
 
 users := getUsers(10)
