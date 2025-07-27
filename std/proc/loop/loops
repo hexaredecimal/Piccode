@@ -1,0 +1,31 @@
+
+
+Procedural :: module {
+  // Function: forEach
+  // Executes a function on each element of the array
+  //
+  // Parameters:
+  //   array - The array to iterate over
+  //   fx - A function to call for each element in the array
+  //
+  // Returns:
+  //   (Unit) - Represents the absence of a meaningful return value
+  //
+  // Notes:
+  //   This function is intended for cases where `fx` performs side effects,
+  //   like printing, logging, or mutating external state.
+  forEach :: (arr, func) = pic_nat_foreach(arr, func)
+  
+
+
+  // Function: forever
+  // Executes a function forever
+  //
+  // Parameters:
+  //   fx - A function to call 
+  //
+  // Returns:
+  //   (Unit) - Represents the absence of a meaningful return value
+	forever :: (func) = pic_nat_forever(func)
+}
+
