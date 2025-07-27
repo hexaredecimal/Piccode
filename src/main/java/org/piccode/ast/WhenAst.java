@@ -38,36 +38,38 @@ public class WhenAst extends Ast {
 
 	@Override
 	public PiccodeValue execute(Integer frame) {
-		var cond_value = cond.execute(frame);
-		
-		var ctx = frame == null
-			? Context.top
-			: Context.getContextAt(frame);
+		var cond_value = Ast.safeExecute(frame, () -> {
+			return cond.execute(frame);
+		});
 
 		for (var match_case : cases) {
 			var tempSymtable = new HashMap<String, PiccodeValue>();
 			if (isMatching(match_case.match, cond_value, tempSymtable, frame)) {
-				if (!tempSymtable.isEmpty()) {
-					ctx.pushScope();
-					for (var entry : tempSymtable.entrySet()) {
-						ctx.putLocal(entry.getKey(), entry.getValue());
+				return Ast.safeExecute(frame, () -> {
+
+					var ctx = frame == null
+									? Context.top
+									: Context.getContextAt(frame);
+
+					if (!tempSymtable.isEmpty()) {
+						for (var entry : tempSymtable.entrySet()) {
+							ctx.putLocal(entry.getKey(), entry.getValue());
+						}
 					}
-				}
-				var result = match_case.value.execute(frame);
-				if (!tempSymtable.isEmpty()) {
-					ctx.dropScope();
-				}
-				return result;
+					var result = match_case.value.execute(frame);
+					return result;
+				});
 			}
 		}
 
 		if (else_case == null) {
-			var err = new PiccodeException(file, line, column,"Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+			var err = new PiccodeException(file, line, column, "Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
 			err.frame = frame;
 			throw err;
 		}
 
 		return else_case.execute(frame);
+
 	}
 
 	private boolean isMatching(List<Ast> patterns, PiccodeValue cond_value, Map<String, PiccodeValue> temp, Integer frame) {
@@ -81,14 +83,14 @@ public class WhenAst extends Ast {
 
 	private boolean matchPattern(Ast pattern, PiccodeValue value, Map<String, PiccodeValue> temp, Integer frame) {
 		if (pattern instanceof IdentifierAst id) {
-			if (id.text.equals("true")){
-        var result = value instanceof PiccodeBoolean bool && ((boolean)bool.raw()) == true;
-      	return result;
-			} 
-      if (id.text.equals("false")) {
-        var result = value instanceof PiccodeBoolean bool && ((boolean)bool.raw()) == false;
-      	return result;
-      }
+			if (id.text.equals("true")) {
+				var result = value instanceof PiccodeBoolean bool && ((boolean) bool.raw()) == true;
+				return result;
+			}
+			if (id.text.equals("false")) {
+				var result = value instanceof PiccodeBoolean bool && ((boolean) bool.raw()) == false;
+				return result;
+			}
 			if (!id.text.equals("_")) {
 				temp.put(id.text, value);
 			}
