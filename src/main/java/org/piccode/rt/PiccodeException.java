@@ -3,6 +3,7 @@ package org.piccode.rt;
 import com.github.tomaslanger.chalk.Chalk;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,6 +17,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	public String file;
 	public int line, col;
 	public String message;
+	public PrintStream out = System.out;
 
 	public Integer frame = null;
 
@@ -67,7 +69,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 		);
 
 		if (file == null) {
-			System.out.println("" + fmt);
+			out.println("" + fmt);
 			return;
 		}
 
@@ -76,19 +78,19 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			index = 0;
 		}
 		var code_line = lines[index].replaceAll("\t", " ".repeat(1));
-		System.out.println(gap2 + fmt);
-		System.out.println(line_fmt + " " + code_line);
+		out.println(gap2 + fmt);
+		out.println(line_fmt + " " + code_line);
 		var tick = "─".repeat(col + 1) + "╯";
 		var tick2 = " ".repeat(col + 1) + "^";
-		System.out.println(gap2 + "│" + tick2);
-		System.out.println(gap2 + "╰" + tick);
+		out.println(gap2 + "│" + tick2);
+		out.println(gap2 + "╰" + tick);
 		if (line + 1 < lines.length) {
 			line_fmt = String.format(" %d │", line + 1);
 			System.out.println(line_fmt);
 		}
 
 		if (!notes.isEmpty()) {
-			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
+			out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note : notes) {
 				note.report(false, "INFO");
 			}
@@ -107,7 +109,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 
 		if (!list.isEmpty()) {
 			var thread = frame == null ? "" : String.format(".THREAD[%s]", frame);
-			System.out.println("\n[STACK TRACE]" + thread);
+			out.println("\n[STACK TRACE]" + thread);
 			for (int i = 0; i < list.size(); i++) {
 				var _frame = list.get(i);
 				var callSite = _frame.caller;
@@ -118,7 +120,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 									? Chalk.on(callSite.toString()).red()
 									: callSite.toString());
 
-				System.out.println(_str);
+				out.println(_str);
 			}
 		}
 
