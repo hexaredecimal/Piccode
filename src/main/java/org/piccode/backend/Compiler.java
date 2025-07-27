@@ -1,5 +1,6 @@
 package org.piccode.backend;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -45,7 +46,7 @@ import org.piccode.rt.modules.PiccodeVirtualModule;
  * @author hexaredecimal
  */
 public class Compiler {
-
+	public static PrintStream out = System.out;
 	private static List<Runnable> nativeFunctions = new ArrayList<>();
 	
 	public static PiccodeValue compile(String file, String code) {
@@ -95,6 +96,7 @@ public class Compiler {
 				Context.top.dropStackFrame();
 			}
 			//Context.top.dropStackFrame();
+			e.out = out;
 			e.reportError();
 			//e.printStackTrace();
 			return new PiccodeUnit();
@@ -133,6 +135,7 @@ public class Compiler {
 			if (Context.top.getFramesCount() > 0) {
 				Context.top.dropStackFrame();
 			}
+			e.out = out;
 			e.reportError();
 			return nodes;
 		} catch (Exception rte) {
