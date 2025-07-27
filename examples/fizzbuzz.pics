@@ -1,11 +1,11 @@
 
 import std.io
-import std.array
-import std.iters
+import std.list
+import std.proc.loops 
 
-range := Array::fromRange(1, 50)
+range := List::fromRange(1, 50)
 
-Iterators::forEach(range, |i| -> do {
+Loops::forEach(range, |i| -> do {
 
   when ((i % 3) == 0, (i % 5) == 0) {
     is (true, false) -> IO::println("Fizz")

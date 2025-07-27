@@ -1,13 +1,13 @@
 
 import std.io
-import std.array
+import std.list
 
 numbers := [1,2,3]
 
-mapped := Array::map(numbers, |x| -> x * 2) 
+mapped := List::map(numbers, |x| -> x * 2) 
 
 IO::println(mapped)
-IO::println(Array::join(numbers, "::"))
+IO::println(List::join(numbers, "::"))
 
 reduce :: (xs=[], f, acc) =
   when xs {
@@ -17,6 +17,6 @@ reduce :: (xs=[], f, acc) =
 
 result := reduce(mapped, |acc, x| -> acc + x, 0) 
 
-IO::println(Array::contains(mapped, 2))
-IO::println(Array::indexOf(mapped, 4))
+IO::println(List::contains(mapped, 2))
+IO::println(List::indexOf(mapped, 4))
 

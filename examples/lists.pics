@@ -1,16 +1,16 @@
 
-import std.array
+import std.list
 import std.io
 
 numbers := [1,2,3]
 strings := ["A", "B", "C"]
 
-concat := Array::concat(numbers, strings)
+concat := List::concat(numbers, strings)
 
 IO::println(concat)
 IO::println(concat.len)
 
-collon_sep := Array::join(strings, ":")
+collon_sep := List::join(strings, ":")
 
 IO::println(collon_sep)
 

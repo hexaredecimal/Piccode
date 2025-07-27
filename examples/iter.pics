@@ -1,11 +1,11 @@
 
 import std.io
 import std.array
-import std.iters
+import std.proc.loops
 
 arr := Array::fromRange(1, 5)
 
-Iterators::forEach(arr, |item| -> do {
+Loops::forEach(arr, |item| -> do {
   IO::println(item)
 })
 

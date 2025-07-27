@@ -1,7 +1,7 @@
 
 IO    :: import std.io
 Args  :: import std.args
-Array :: import std.array
+List :: import std.list
 Virtual :: import std.virtual
 
 #[Virtual]
@@ -27,9 +27,9 @@ getUsers :: (end=1) =
     startIndex := 0
   in
     startIndex
-    |> Array::fromRange(end)
-    |> Array::map(|item| -> getUser(item).await)
-    |> Array::toString
+    |> List::fromRange(end)
+    |> List::map(|item| -> getUser(item).await)
+    |> List::toString
 
 users := getUsers(10)
 users |> IO::println

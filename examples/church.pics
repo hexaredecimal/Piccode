@@ -1,7 +1,7 @@
 
 IO :: import std.io
 Error :: import std.errors
-Array :: import std.array
+List :: import std.list
 
 zero :: (f, x) = x
 succ :: (n, f, x) = f(n(f, x))

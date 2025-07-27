@@ -2,7 +2,7 @@
 
 import std.io
 import std.virtual
-import std.array
+import std.list
 import std.iters
 
 
@@ -19,7 +19,7 @@ answer := add(10, 20)
 
 IO::println(10 + " + " + 20 + " = " + answer)
 
-arr := Array::fromRange(1, 15)
+arr := List::fromRange(1, 15)
 
 Iterators::forEach(arr, |value| -> do {
 	IO::println(value)
