@@ -13,6 +13,8 @@ import org.piccode.ast.Ast;
 import org.piccode.ast.CallAst;
 import org.piccode.ast.FunctionAst;
 import org.piccode.ast.IdentifierAst;
+import org.piccode.ast.ImportAst;
+import org.piccode.ast.ModuleAst;
 import org.piccode.ast.PiccodeVisitor;
 import org.piccode.ast.ReturnAst;
 import org.piccode.ast.StatementList;
@@ -105,6 +107,44 @@ public class Compiler {
 		}
 	}
 
+
+	public static List<Ast> compileDeclarationsAndGetExpressions(String file, String code, List<PiccodeValue> args) {
+		List<Ast> nodes = new ArrayList<>();
+		try {
+			var result = program(file, code);
+			prepareGlobalScope(file);
+
+			for (var stmt : result.nodes) {
+				if ((stmt instanceof ImportAst) || (stmt instanceof ModuleAst) || (stmt instanceof FunctionAst)) {
+					stmt.execute(null);
+				} else {
+					nodes.add(stmt);
+				}
+			}
+
+			Context.top.dropStackFrame();
+			return nodes;
+		} catch (PiccodeReturnException ret) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			return nodes;
+		} catch (PiccodeException e) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			e.reportError();
+			return nodes;
+		} catch (Exception rte) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			rte.printStackTrace();
+			return nodes;
+		}
+	}
+
+	
 	public static List<Ast> parse(String file, String code) {
 		return program(file, code).nodes;
 	}
