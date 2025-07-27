@@ -54,7 +54,7 @@ public class PiccodeClosure implements PiccodeValue {
 		}
 
 		computeStableClause();
-		if (!clauses.isEmpty()) {
+		if (!clauses.isEmpty() || hasPatternParam(params)) {
 			createWhenExpression(frame);
 		}
 		Map<String, PiccodeValue> newArgs = new HashMap<>(appliedArgs);
@@ -93,7 +93,7 @@ public class PiccodeClosure implements PiccodeValue {
 		}
 
 		computeStableClause();
-		if (!clauses.isEmpty()) {
+		if (!clauses.isEmpty() || hasPatternParam(params)) {
 			createWhenExpression(frame);
 		}
 		if (appliedArgs.containsKey(name)) {
@@ -135,7 +135,6 @@ public class PiccodeClosure implements PiccodeValue {
 								? Context.top
 								: Context.getContextAt(frame);
 
-				
 				PiccodeValue val = param instanceof Arg arg
 								? appliedArgs.getOrDefault(
 												arg.name,
@@ -157,10 +156,9 @@ public class PiccodeClosure implements PiccodeValue {
 				}
 			}
 
-			
 			try {
 				if (!annotations.isEmpty()) {
-					for (var annotation: annotations) {
+					for (var annotation : annotations) {
 						if (!Context.hasAnnotation(annotation)) {
 							throw new PiccodeException(file, line, column, "Annotation `" + Chalk.on(annotation).red() + "` does not exist.");
 						}
@@ -236,16 +234,23 @@ public class PiccodeClosure implements PiccodeValue {
 						? errNode
 						: clause.body;
 
-		cases.add(new WhenCase(List.of(cond), generalCaseBody));
+		if (hasPatternParam(args) && clauses.isEmpty()) {
+			//Note: Here we have a single function that matches a value directly in its header
+			// eg: getFoo("foo") = ..
+			var _args = getStableIds(args);
+			params = getStableArgs(args);
+			cond = _args.size() == 1 ? _args.getFirst() : new TupleAst(_args);
+			var match = args.size() == 1 ? args.getFirst() : new TupleAst(args);
+			cases.add(new WhenCase(List.of(match), generalCaseBody));
+		} else { // Process the clauses
+			cases.add(new WhenCase(List.of(cond), generalCaseBody));
+		}
 		var match = new WhenAst(cond, cases, null);
-		// System.out.println("Expr: " + match + " " + clauses);
+		//System.out.println(match + " and " + params + " " + appliedArgs);
 		match.file = file;
 		match.line = line;
 		match.column = column;
 		body = match;
-		if (creator instanceof FunctionAst func) {
-			ctx.putLocal(func.name, this);
-		}
 		clauses.clear();
 	}
 
@@ -317,4 +322,45 @@ public class PiccodeClosure implements PiccodeValue {
 		return false;
 	}
 
+	private boolean hasPatternParam(List<Ast> params) {
+		for (var param : params) {
+			if (!(param instanceof Arg)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<Ast> getStableArgs(List<Ast> params) {
+		var newList = new ArrayList<Ast>();
+		for (int i = 0; i < params.size(); i++) {
+			var param = params.get(i);
+			if (!(param instanceof Arg)) {
+					var arg = new Arg("$_PLACEHOLDER_ID_" + i + "__$");
+					arg.file = file;
+					arg.line = line;
+					arg.column = column;
+					newList.addLast(arg);
+			} else {
+				newList.add(param);
+			}
+		}
+		return newList;
+	}
+	private List<Ast> getStableIds(List<Ast> params) {
+		var newList = new ArrayList<Ast>();
+		for (int i = 0; i < params.size(); i++) {
+			var param = params.get(i);
+			if (!(param instanceof Arg)) {
+					var arg = new IdentifierAst("$_PLACEHOLDER_ID_" + i + "__$");
+					arg.file = file;
+					arg.line = line;
+					arg.column = column;
+					newList.addLast(arg);
+			} else {
+				newList.add(param);
+			}
+		}
+		return newList;
+	}
 }
