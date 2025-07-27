@@ -21,7 +21,6 @@ import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeReturnException;
-import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
 import org.piccode.rt.PiccodeValue;
 import org.piccode.rt.PiccodeWarning;
@@ -44,6 +43,8 @@ import org.piccode.rt.modules.PiccodeVirtualModule;
  */
 public class Compiler {
 
+	private static List<Runnable> nativeFunctions = new ArrayList<>();
+	
 	public static PiccodeValue compile(String file, String code) {
 		return compile(file, code, List.of());
 	}
@@ -150,19 +151,22 @@ public class Compiler {
 		addSystemFunctions();
 	}
 
+	public static void addNativeFunctions(Runnable funcs) {
+		funcs.run();
+	}
 	private static void addSystemFunctions() {
-		PiccodeIOModule.addFunctions();
-		PiccodeArrayModule.addFunctions();
-		PiccodeStringModule.addFunctions();
-		PiccodeTupleModule.addFunctions();
-		PiccodeMathModule.addFunctions();
-		PiccodeSystemModule.addFunctions();
-		PiccodeTimeModule.addFunctions();
-		PiccodeTypesModule.addFunctions();
-		PiccodeVirtualModule.addFunctions();
-		PiccodeFileModule.addFunctions();
-		PiccodeFsModule.addFunctions();
-		PiccodeObjectModule.addFunctions();
+		addNativeFunctions(PiccodeIOModule::addFunctions);
+		addNativeFunctions(PiccodeArrayModule::addFunctions);
+		addNativeFunctions(PiccodeStringModule::addFunctions);
+		addNativeFunctions(PiccodeTupleModule::addFunctions);
+		addNativeFunctions(PiccodeMathModule::addFunctions);
+		addNativeFunctions(PiccodeSystemModule::addFunctions);
+		addNativeFunctions(PiccodeTimeModule::addFunctions);
+		addNativeFunctions(PiccodeTypesModule::addFunctions);
+		addNativeFunctions(PiccodeVirtualModule::addFunctions);
+		addNativeFunctions(PiccodeFileModule::addFunctions);
+		addNativeFunctions(PiccodeFsModule::addFunctions);
+		addNativeFunctions(PiccodeObjectModule::addFunctions);
 
 		Context.addAnnotation("Deprecated", (frame, node) -> {
 			var warning = new PiccodeWarning(node.file, node.line, node.column, "Invocation of a deprecated function");
