@@ -28,7 +28,7 @@ public class PipeAst extends Ast {
 	@Override
 	public PiccodeValue execute(Integer frame) {
 		return Ast.safeExecute(frame, this, (expr) -> {
-			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst) && !(rhs instanceof CCOperationAst)) {
+			if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst) && !(rhs instanceof CCOperationAst)  && !(rhs instanceof ClosureAst)) {
 				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + rhs.toString());
 				err.frame = frame;
 				throw err;
@@ -38,6 +38,13 @@ public class PipeAst extends Ast {
 				var call = new CallAst(id, new ArrayList<>());
 				call.nodes.addFirst(lhs);
 				var node = Ast.finalizeNode(call, id);
+				return node.execute(frame);
+			}
+
+			if (rhs instanceof ClosureAst closure) {
+				var call = new CallAst(closure, new ArrayList<>());
+				call.nodes.addFirst(lhs);
+				var node = Ast.finalizeNode(call, closure);
 				return node.execute(frame);
 			}
 
