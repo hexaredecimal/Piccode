@@ -30,6 +30,7 @@ import org.piccode.rt.modules.PiccodeFsModule;
 import org.piccode.rt.modules.PiccodeIOModule;
 import org.piccode.rt.modules.PiccodeMathModule;
 import org.piccode.rt.modules.PiccodeObjectModule;
+import org.piccode.rt.modules.PiccodeProcModule;
 import org.piccode.rt.modules.PiccodeStringModule;
 import org.piccode.rt.modules.PiccodeSystemModule;
 import org.piccode.rt.modules.PiccodeTimeModule;
@@ -167,6 +168,7 @@ public class Compiler {
 		addNativeFunctions(PiccodeFileModule::addFunctions);
 		addNativeFunctions(PiccodeFsModule::addFunctions);
 		addNativeFunctions(PiccodeObjectModule::addFunctions);
+		addNativeFunctions(PiccodeProcModule::addFunctions);
 
 		Context.addAnnotation("Deprecated", (frame, node) -> {
 			var warning = new PiccodeWarning(node.file, node.line, node.column, "Invocation of a deprecated function");
