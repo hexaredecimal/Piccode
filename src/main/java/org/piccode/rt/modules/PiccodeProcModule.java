@@ -20,7 +20,7 @@ import org.piccode.rt.PiccodeValue.Type;
 public class PiccodeProcModule {
 	public static void addFunctions() {
 		
-		NativeFunctionFactory.create("forEach", List.of("array", "func"), (args, namedArgs, frame) -> {
+		NativeFunctionFactory.create("foreach", List.of("array", "func"), (args, namedArgs, frame) -> {
 				var ctx = frame == null ? 
 						Context.top
 						: Context.getContextAt(frame);
