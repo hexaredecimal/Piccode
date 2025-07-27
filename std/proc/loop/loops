@@ -1,5 +1,7 @@
 
 
+// Module: Procedural 
+// Provides utility functions for features supported by procedural languages
 Procedural :: module {
   // Function: forEach
   // Executes a function on each element of the array
