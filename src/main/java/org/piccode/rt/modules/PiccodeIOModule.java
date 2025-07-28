@@ -2,6 +2,7 @@ package org.piccode.rt.modules;
 
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.piccode.backend.Compiler;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeString;
 import org.piccode.rt.PiccodeUnit;
@@ -17,7 +18,7 @@ public class PiccodeIOModule {
 	public static void addFunctions() {
 		NativeFunctionFactory.create("print", List.of("value"), (args, namedArgs, frame) -> {
 			var value = namedArgs.get("value").toString();
-			System.out.print(value);
+			Compiler.out.print(value);
 			return new PiccodeUnit();
 		}, null);
 		
