@@ -32,8 +32,8 @@ public class PiccodeProcModule {
 				PiccodeValue.verifyType(caller, func, Type.CLOSURE);
 				var closure = (PiccodeClosure) func;
 				((PiccodeArray)array).nodes.forEach(value -> {
-					closure.call(value);
-					closure.evaluateIfReady();
+					var cl = (PiccodeClosure) closure.call(value);
+					cl.evaluateIfReady();
 				});
 				return new PiccodeUnit();
 		}, null);
@@ -48,8 +48,8 @@ public class PiccodeProcModule {
 				PiccodeValue.verifyType(caller, func, Type.CLOSURE);
 				var closure = (PiccodeClosure) func;
 				while (true) {
-					closure.call(new PiccodeUnit());
-					closure.evaluateIfReady();
+					var cl = (PiccodeClosure) closure.call(new PiccodeUnit());
+					cl.evaluateIfReady();
 				}
 		}, null);
 	}
