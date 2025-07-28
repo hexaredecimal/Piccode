@@ -47,6 +47,7 @@ import org.piccode.rt.modules.PiccodeVirtualModule;
  */
 public class Compiler {
 	public static PrintStream out = System.out;
+	public static boolean exitOnError = true;
 	private static List<Runnable> nativeFunctions = new ArrayList<>();
 	
 	public static PiccodeValue compile(String file, String code) {
@@ -97,7 +98,7 @@ public class Compiler {
 			}
 			//Context.top.dropStackFrame();
 			e.out = out;
-			e.reportError();
+			e.reportError(exitOnError);
 			//e.printStackTrace();
 			return new PiccodeUnit();
 		} catch (Exception rte) {

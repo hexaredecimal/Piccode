@@ -38,6 +38,10 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	public void reportError() {
 		report(!ReplState.ACTIVE, "ERROR");
 	}
+	
+	public void reportError(boolean die) {
+		report(die, "ERROR");
+	}
 
 	@Override
 	public void report(boolean die, String kind) {
