@@ -5,8 +5,8 @@ filter :: (xs=[], pred) =
   when xs {
     is [] -> []
     is x:rest -> 
-      if pred(x) { x:filter(rest, pred) }
-      else { filter(rest, pred) }
+      if pred(x) do { x:filter(rest, pred) }
+      else do { filter(rest, pred) }
   }
 
 nums := [1,2,3,4]
