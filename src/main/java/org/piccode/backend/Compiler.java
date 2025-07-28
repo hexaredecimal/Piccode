@@ -19,6 +19,7 @@ import org.piccode.ast.ModuleAst;
 import org.piccode.ast.PiccodeVisitor;
 import org.piccode.ast.ReturnAst;
 import org.piccode.ast.StatementList;
+import org.piccode.piccodescript.ErrorAsciiKind;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeBoolean;
@@ -47,6 +48,7 @@ import org.piccode.rt.modules.PiccodeVirtualModule;
  */
 public class Compiler {
 	public static PrintStream out = System.out;
+	public static ErrorAsciiKind errorKind = ErrorAsciiKind.GLEAM_STYLE;
 	public static boolean exitOnError = true;
 	private static List<Runnable> nativeFunctions = new ArrayList<>();
 	
@@ -97,7 +99,6 @@ public class Compiler {
 				Context.top.dropStackFrame();
 			}
 			//Context.top.dropStackFrame();
-			e.out = out;
 			e.reportError(exitOnError);
 			//e.printStackTrace();
 			return new PiccodeUnit();
@@ -136,7 +137,6 @@ public class Compiler {
 			if (Context.top.getFramesCount() > 0) {
 				Context.top.dropStackFrame();
 			}
-			e.out = out;
 			e.reportError();
 			return nodes;
 		} catch (Exception rte) {
