@@ -1,7 +1,7 @@
 
 import std.io
 import std.list
-import std.proc.loops 
+import std.proc.loop
 
 range := List::fromRange(1, 50)
 
