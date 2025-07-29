@@ -1,0 +1,15 @@
+
+IO  :: import std.io
+Fs :: import std.fs
+Error :: import std.errors
+
+getContents :: ({fileName: path}) = 
+ let 
+   file := Fs::readToString(path)
+   result := file catch return Error::error("Failed to read file: {err}")
+ in Error::success(result)
+
+result := getContents({fileName: "main.pics"}) catch err
+IO::println(result)
+
+
