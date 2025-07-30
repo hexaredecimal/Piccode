@@ -213,18 +213,6 @@ Math :: module {
   radToDeg :: (rad=0) = rad * (180 / 3.141592653589793)
 
 
-  // Function: factorial
-  // Computes the factorial of a number
-  //
-  // Parameters:
-  //   n - The number to compute factorial from
-  //
-  // Returns:
-  //   The factorial of `n`
-  factorial :: (n=0) =
-    if n <= 1 do { 1 }
-    else do { n * factorial(n - 1) } 
-
   // Variable: E
   // The double value that is closer than any other to e, the base of the natural logarithms.
   E := 2.718281828459045
