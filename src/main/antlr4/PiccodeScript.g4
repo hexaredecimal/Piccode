@@ -55,6 +55,7 @@ expr_stmt: expr;
 	// parser rules
 expr
 	: expr LPAREN call_expr_list? RPAREN
+	| expr LBRACKET expr ? RBRACKET
 	| var_decl
 	| let_decl
 	| closure_decl

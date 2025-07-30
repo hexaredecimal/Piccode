@@ -63,7 +63,7 @@ public class WhenAst extends Ast {
 		}
 
 		if (else_case == null) {
-			var err = new PiccodeException(file, line, column, "Inexhaustive when expression: no pattern matched: when " + cond + " { ... }");
+			var err = new PiccodeException(file, line, column, "Inexhaustive when expression: no pattern matched: when " + cond + " { ... } " + this.toString() + " " + cond_value);
 			err.frame = frame;
 			throw err;
 		}

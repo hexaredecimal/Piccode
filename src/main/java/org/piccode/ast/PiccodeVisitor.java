@@ -27,7 +27,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitLet_decl(Let_declContext ctx) {
 		var tok = ctx.getStart();
 		List<Ast> vars = new ArrayList<>();
-		for (var decl: ctx.var_decl()) {
+		for (var decl : ctx.var_decl()) {
 			vars.add(visitVar_decl(decl));
 		}
 		var expr = visitExpr(ctx.expr());
@@ -47,7 +47,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			result.file = fileName;
 			return finalizeAstNode(result, tok);
 		}
-		
+
 		var result = new IdentifierAst(name);
 		result.file = fileName;
 		return finalizeAstNode(result, tok);
@@ -86,7 +86,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var body = visitExpr(ctx.expr());
 
 		if (args.isEmpty()) {
-			var result = new FunctionAst(null, null, body);
+			var result = new FunctionAst(null, List.of(), body);
 			return finalizeAstNode(result, tok);
 		}
 
@@ -156,7 +156,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public Ast visitDeclaration(DeclarationContext ctx) {
 		var annotations = new ArrayList<String>();
 		if (ctx.annotations() != null) {
-			for (var id: ctx.annotations().ID()) {
+			for (var id : ctx.annotations().ID()) {
 				annotations.add(id.getText());
 			}
 		}
@@ -167,7 +167,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			func.name = id;
 			func.annotations = annotations;
 			return func;
-		} 
+		}
 
 		if (ctx.module() != null) {
 			var mod = (ModuleAst) visitModule(ctx.module());
@@ -181,7 +181,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			var result = new ImportModuleCreateAst(id, mod);
 			return finalizeAstNode(result, tok);
 		}
-		
+
 		var tok = ctx.getStart();
 		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid declaration node");
 	}
@@ -192,7 +192,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var tok = ctx.getStart();
 		if (module_path != null) {
 			var arr = new ArrayList<String>();
-			for (var path: module_path.ID()) {
+			for (var path : module_path.ID()) {
 				tok = path.getSymbol();
 				arr.add(path.getText());
 			}
@@ -204,7 +204,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 				var nodes = visitSymbollift(module_path.symbol_lift());
 				return finalizeAstNode(new ImportAst(path, nodes), tok);
 			}
-			
+
 			return finalizeAstNode(new ImportAst(path), tok);
 		}
 
@@ -215,7 +215,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 
 	public List<Ast> visitSymbollift(Symbol_liftContext ctx) {
 		var nodes = new ArrayList<Ast>();
-		for (var entry: ctx.symbol_entry()) {
+		for (var entry : ctx.symbol_entry()) {
 			if (entry.symbol_lift() != null) {
 				var _nodes = visitSymbollift(entry.symbol_lift());
 				var symbol = entry.ID().getSymbol();
@@ -229,7 +229,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		}
 		return nodes;
 	}
-	
+
 	@Override
 	public Ast visitModule(ModuleContext ctx) {
 		if (ctx.module_stmts() != null) {
@@ -315,11 +315,11 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			var result = finalizeAstNode(visitCatch(expr), tok);
 			return result;
 		}
-		
+
 		if (expr.ADD() != null) {
 			var tok = expr.ADD().getSymbol();
 			var result = finalizeAstNode(visitBinOp("+", expr), tok);
-			
+
 			return result;
 		}
 
@@ -471,6 +471,14 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return new UnitAst();
 		}
 
+		if (expr.LBRACKET() != null && expr.RBRACKET() != null && expr.expr() != null && !expr.expr().isEmpty() && expr.expr().size() == 2 && expr.call_expr_list() == null) {
+			var tok = expr.getStart();
+			var lhs = visitExpr(expr.expr().getFirst());
+			var rhs = visitExpr(expr.expr().getLast());
+			var dot = new DotOperationAst(lhs, rhs);
+			return finalizeAstNode(dot, tok);
+		}
+
 		if (expr.LPAREN() != null && expr.RPAREN() != null && expr.expr() != null && !expr.expr().isEmpty() && expr.expr().size() == 1 && expr.call_expr_list() == null) {
 			var lp = expr.getChild(0).getText();
 			var rp = expr.getChild(expr.getChildCount() - 1).getText();
@@ -489,6 +497,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitCall(expr.expr().getFirst(), expr.call_expr_list());
 		}
 
+		
 		//TODO: Remove this dirty hack and actually figure out the bug
 		if (expr.getText().equals("()")) {
 			return new UnitAst();
@@ -533,41 +542,40 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		if (ctx.EXCLAIM() != null) {
 			var tok = ctx.EXCLAIM().getSymbol();
 			var result = finalizeAstNode(
-				new UnaryAst("!", visitExpr(ctx.expr())),
-				tok);
+							new UnaryAst("!", visitExpr(ctx.expr())),
+							tok);
 			return result;
 		}
 
 		if (ctx.BAND() != null) {
 			var tok = ctx.BAND().getSymbol();
 			var result = finalizeAstNode(
-				new UnaryAst("&", visitExpr(ctx.expr())),
-				tok);
+							new UnaryAst("&", visitExpr(ctx.expr())),
+							tok);
 			return result;
 		}
 
 		if (ctx.SUB() != null) {
 			var tok = ctx.SUB().getSymbol();
 			var result = finalizeAstNode(
-				new UnaryAst("-", visitExpr(ctx.expr())),
-				tok);
+							new UnaryAst("-", visitExpr(ctx.expr())),
+							tok);
 			return result;
 		}
 
 		if (ctx.TILDE() != null) {
 			var tok = ctx.TILDE().getSymbol();
 			var result = finalizeAstNode(
-				new UnaryAst("~", visitExpr(ctx.expr())),
-				tok);
+							new UnaryAst("~", visitExpr(ctx.expr())),
+							tok);
 			return result;
 		}
-
 
 		if (ctx.RETURN_TOK() != null) {
 			var tok = ctx.RETURN_TOK().getSymbol();
 			var result = finalizeAstNode(
-				new ReturnAst(visitExpr(ctx.expr())),
-				tok);
+							new ReturnAst(visitExpr(ctx.expr())),
+							tok);
 			return result;
 		}
 
@@ -605,16 +613,16 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			var id = ctx.ID().getText();
 			var value = visitExpr(ctx.expr());
 			var result = finalizeAstNode(
-				new NamedCallArg(id, value),
-				tok);
+							new NamedCallArg(id, value),
+							tok);
 			return result;
 		}
 
 		if (ctx.ASSIGN() == null && ctx.ID() != null) {
 			var tok = ctx.ID().getSymbol();
 			var result = finalizeAstNode(
-				new IdentifierAst(ctx.ID().getText()),
-				tok);
+							new IdentifierAst(ctx.ID().getText()),
+							tok);
 			return result;
 		}
 
@@ -644,7 +652,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 				var tok = key_val_pairs.getStart();
 				throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Missing expression in object literal");
 			}
-			
+
 			obj.put(id.getText(), visitExpr(expr));
 		}
 		return obj;
@@ -701,6 +709,7 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	}
 
 	private Ast visitDotOperation(ExprContext expr) {
+		var tok = expr.getStart();
 		var lhs = visitExpr(expr.expr().getFirst());
 		var rhs = visitExpr(expr.expr().getLast());
 		return new DotOperationAst(lhs, rhs);
