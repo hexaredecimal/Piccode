@@ -4,23 +4,24 @@ Args  :: import std.args
 List :: import std.list
 Virtual :: import std.virtual
 
-#[Virtual]
-getUser :: (0) = 
+getUser :: (0) = Virtual::task(|_| -> do { 
   let
     userId := "Admin:{id}"
   in do {
     Virtual::sleep(100 * id)
     {user: userId, id: id, root: true}
   }
+})
 
-#[Virtual]
-getUser :: (id) = 
+
+getUser :: (id) = Virtual::task(|_| -> do {
   let
     userId := "User:{id}"
   in do {
     Virtual::sleep(100 * id)
     {user: userId, id: id}
   }
+})
 
 getUsers :: (end=1) = 
   let

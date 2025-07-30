@@ -9,7 +9,7 @@ getContents :: ({fileName: path}) =
    result := file catch return Error::error("Failed to read file: {err}")
  in Error::success(result)
 
-result := getContents({fileName: "main.pics"}) catch err
+result := getContents({fileName: "pom.xmlz"}) catch err
 IO::println(result)
 
 

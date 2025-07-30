@@ -11,12 +11,15 @@ song := "Feel good Inc"
 
 // Arrays
 numbers := [1,2,3]
-first := numbers.0
+first := numbers[0]
 joined := first:numbers
+
+IO::println(first)
 
 // Tuples
 numbers := (1,2,3)
 first := numbers[0]
+IO::println(first)
 
 
 
