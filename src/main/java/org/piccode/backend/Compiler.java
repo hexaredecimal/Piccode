@@ -190,6 +190,7 @@ public class Compiler {
 		scope_id.column = 0;
 		scope_id.line = 1;
 		scope_id.file = file;
+		Context.top.resetContext();
 		Context.top.pushStackFrame(scope_id);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false"));

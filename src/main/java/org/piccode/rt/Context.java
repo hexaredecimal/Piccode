@@ -43,6 +43,15 @@ public class Context {
 		call_frames = new Stack<>();
 	}
 
+	public void resetContext() {
+		annotations.clear();
+		modules.clear();
+		threadContexts.clear();
+		futureMap.clear();
+		objectPool.clear();
+		call_frames.clear();
+	}
+	
 	public static int makeThreadContext(Context base) {
 		int index = threadContexts.size();
 		var context = new Context();
