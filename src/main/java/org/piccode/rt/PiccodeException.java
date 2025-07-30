@@ -90,6 +90,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			for (int i = 0; i < list.size(); i++) {
 				var _frame = list.get(i);
 				var callSite = _frame.caller;
+				if (callSite == null) continue;
 				var _str = String.format(
 								"[%s:%d:%d]: %s", callSite.file,
 								callSite.line, callSite.column + 1,
