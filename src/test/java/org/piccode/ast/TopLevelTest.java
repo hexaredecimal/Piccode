@@ -8,10 +8,10 @@ import org.piccode.backend.Compiler;
  *
  * @author hexaredecimal
  */
-public class TopLevel {
+public class TopLevelTest {
 	@Test
 	public void function() {
-		var code = "function add(x, y) = x + y";
+		var code = "add :: (x, y) = x + y";
 		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
@@ -26,7 +26,7 @@ public class TopLevel {
 
 	@Test
 	public void variable() {
-		var code = "let foo = 1";
+		var code = "foo := 1";
 		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
@@ -42,8 +42,8 @@ public class TopLevel {
 	public void module() {
 		var code = 
 		"""
-  module Foo {
-		function bar () = ()
+  Foo :: module {
+	  bar :: () = ()
   }
     """;
 		var ast = Compiler.program("test", code);

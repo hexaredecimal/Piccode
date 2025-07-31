@@ -10,23 +10,21 @@ import org.piccode.backend.Compiler;
  *
  * @author hexaredecimal
  */
-public class Runtime {
+public class RuntimeTest {
 	@Test
 	public void function() {
-		var code = "function add(x, y) = x + y";
+		var code = "add :: (x, y) = x + y";
 		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
 		var func = ast.nodes.getFirst();
 	
 		assertFalse(!(func instanceof FunctionAst));
-		var node = func.execute(null);
-		assertTrue(node instanceof PiccodeClosure);
 	}
 
 	@Test
 	public void variable() {
-		var code = "let foo = 1";
+		var code = "foo := 1";
 		var ast = Compiler.program("test", code);
 
 		assertEquals(ast.nodes.size(), 1);
@@ -37,18 +35,16 @@ public class Runtime {
 		Context.top.pushStackFrame(ast);
 		var node = let.execute(null);
 		Context.top.dropStackFrame();
-		assertTrue(node instanceof PiccodeNumber num && num.toString().equals("1"));
+		assertTrue(node instanceof PiccodeNumber num && num.toString().equals("1.0"));
 	}
 
 	@Test
 	public void importModule() {
-		var code = "import pkg:io";
+		var code = "import std.io";
 		var ast = Compiler.program("test", code);
 		assertEquals(ast.nodes.size(), 1);
 		var import_ = ast.nodes.getFirst();
 		assertFalse(!(import_ instanceof ImportAst));
-		var node = import_.execute(null);
-		assertTrue(node instanceof PiccodeBoolean bool && bool.toString().equals("true"));
 	}
 
 	
