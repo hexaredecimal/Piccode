@@ -2,6 +2,7 @@ package org.piccode.backend;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -50,8 +51,9 @@ public class Compiler {
 	public static PrintStream out = System.out;
 	public static ErrorAsciiKind errorKind = ErrorAsciiKind.GLEAM_STYLE;
 	public static boolean exitOnError = true;
-	private static List<Runnable> nativeFunctions = new ArrayList<>();
-	
+	private final static List<Runnable> nativeFunctions = new ArrayList<>();
+	private final static HashMap<String, PiccodeValue> symbols = new HashMap<>();
+
 	public static PiccodeValue compile(String file, String code) {
 		return compile(file, code, List.of());
 	}
@@ -194,7 +196,18 @@ public class Compiler {
 		Context.top.pushStackFrame(scope_id);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false"));
+
+		for (var kv: symbols.entrySet()) {
+			var key = kv.getKey();
+			var value = kv.getValue();
+			Context.top.putLocal(key, value);
+		}
+		
 		addSystemFunctions();
+	}
+
+	public static void addSymbol(String name, PiccodeValue value) {
+		symbols.put(name, value);
 	}
 
 	public static void addNativeFunctions(Runnable funcs) {
