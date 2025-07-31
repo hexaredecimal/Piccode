@@ -141,7 +141,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 		out.println(gap2 + "╰" + tick);
 		if (line + 1 < lines.length) {
 			line_fmt = String.format(" %d │", line + 1);
-			System.out.println(line_fmt);
+			out.println(line_fmt);
 		}
 	}
 
@@ -176,7 +176,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 		out.println(gap2 + " " + tick2);
 		if (line + 1 < lines.length) {
 			line_fmt = String.format(" %d │", line + 1);
-			System.out.println(line_fmt);
+			out.println(line_fmt);
 		}
 	}
 	
