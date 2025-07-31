@@ -196,14 +196,18 @@ public class Compiler {
 		Context.top.pushStackFrame(scope_id);
 		Context.top.putLocal("true", new PiccodeBoolean("true"));
 		Context.top.putLocal("false", new PiccodeBoolean("false"));
+		addSystemFunctions();
+		
+		for (var func: nativeFunctions) {
+			func.run();
+		}
 
 		for (var kv: symbols.entrySet()) {
 			var key = kv.getKey();
 			var value = kv.getValue();
 			Context.top.putLocal(key, value);
 		}
-		
-		addSystemFunctions();
+
 	}
 
 	public static void addSymbol(String name, PiccodeValue value) {
@@ -211,8 +215,9 @@ public class Compiler {
 	}
 
 	public static void addNativeFunctions(Runnable funcs) {
-		funcs.run();
+		nativeFunctions.add(funcs);
 	}
+
 	private static void addSystemFunctions() {
 		addNativeFunctions(PiccodeIOModule::addFunctions);
 		addNativeFunctions(PiccodeArrayModule::addFunctions);
