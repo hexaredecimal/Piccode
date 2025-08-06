@@ -45,7 +45,6 @@ public class Context {
 
 	public void resetContext() {
 		annotations.clear();
-		modules.clear();
 		threadContexts.clear();
 		futureMap.clear();
 		objectPool.clear();

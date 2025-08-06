@@ -149,7 +149,56 @@ public class Compiler {
 			return nodes;
 		}
 	}
+	public static PiccodeValue execute(List<Ast> nodes) {
+		try {
+			PiccodeValue res = new PiccodeUnit();
+			var has_main = false;
+			for (var stmt : nodes) {
+				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
+					has_main = true;
+				}
 
+				if (stmt instanceof ReturnAst ret) {
+					res = ret.expr.execute(null);
+					break;
+				}
+				try {
+					res = stmt.execute(null);
+				} catch (PiccodeReturnException pre) {
+					res = pre.value;
+				} catch (Exception e) {
+					throw e;
+				}
+			}
+
+			if (has_main) {
+				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
+				return _result;
+			}
+
+			Context.top.dropStackFrame();
+			return res;
+		} catch (PiccodeReturnException ret) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			return ret.value;
+		} catch (PiccodeException e) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			//Context.top.dropStackFrame();
+			e.reportError(exitOnError);
+			//e.printStackTrace();
+			return new PiccodeUnit();
+		} catch (Exception rte) {
+			if (Context.top.getFramesCount() > 0) {
+				Context.top.dropStackFrame();
+			}
+			rte.printStackTrace();
+			return new PiccodeUnit();
+		}
+	}
 	
 	public static List<Ast> parse(String file, String code) {
 		return program(file, code).nodes;
