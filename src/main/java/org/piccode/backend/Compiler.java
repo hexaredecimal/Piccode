@@ -16,6 +16,7 @@ import org.piccode.ast.CallAst;
 import org.piccode.ast.FunctionAst;
 import org.piccode.ast.IdentifierAst;
 import org.piccode.ast.ImportAst;
+import org.piccode.ast.ImportModuleCreateAst;
 import org.piccode.ast.ModuleAst;
 import org.piccode.ast.PiccodeVisitor;
 import org.piccode.ast.ReturnAst;
@@ -121,10 +122,13 @@ public class Compiler {
 			prepareGlobalScope(file);
 
 			for (var stmt : result.nodes) {
-				if ((stmt instanceof ImportAst) || (stmt instanceof ModuleAst) || (stmt instanceof FunctionAst)) {
+				if ((stmt instanceof ImportAst)) {
 					stmt.execute(null);
-				} else {
+				} else if (stmt instanceof ImportModuleCreateAst){
+					stmt.execute(null);
 					nodes.add(stmt);
+				} else {
+					stmt.execute(null);
 				}
 			}
 
@@ -149,7 +153,7 @@ public class Compiler {
 			return nodes;
 		}
 	}
-	public static PiccodeValue execute(List<Ast> nodes) {
+	public static PiccodeValue execute(List<Ast> nodes, Boolean hasError) {
 		try {
 			PiccodeValue res = new PiccodeUnit();
 			var has_main = false;
@@ -172,16 +176,17 @@ public class Compiler {
 			}
 
 			if (has_main) {
-				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
-				return _result;
+				res = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
 			}
 
 			Context.top.dropStackFrame();
+			hasError = false;
 			return res;
 		} catch (PiccodeReturnException ret) {
 			if (Context.top.getFramesCount() > 0) {
 				Context.top.dropStackFrame();
 			}
+			hasError = false;
 			return ret.value;
 		} catch (PiccodeException e) {
 			if (Context.top.getFramesCount() > 0) {
@@ -189,6 +194,7 @@ public class Compiler {
 			}
 			//Context.top.dropStackFrame();
 			e.reportError(exitOnError);
+			hasError = true;
 			//e.printStackTrace();
 			return new PiccodeUnit();
 		} catch (Exception rte) {
@@ -196,6 +202,7 @@ public class Compiler {
 				Context.top.dropStackFrame();
 			}
 			rte.printStackTrace();
+			hasError = true;
 			return new PiccodeUnit();
 		}
 	}
