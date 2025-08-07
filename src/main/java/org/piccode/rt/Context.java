@@ -44,13 +44,22 @@ public class Context {
 	}
 
 	public void resetContext() {
-		annotations.clear();
-		threadContexts.clear();
-		futureMap.clear();
-		objectPool.clear();
-		call_frames.clear();
+		resetContext(false);
 	}
 	
+	public void resetContext(boolean removeImports) {
+		synchronized (this) {
+			annotations.clear();
+			threadContexts.clear();
+			futureMap.clear();
+			objectPool.clear();
+			call_frames.clear();
+			if (removeImports) {
+				import_cache.clear();
+			}
+		}
+	}
+
 	public static int makeThreadContext(Context base) {
 		int index = threadContexts.size();
 		var context = new Context();
@@ -131,7 +140,7 @@ public class Context {
 			return objectPool.get(id);
 		}
 	}
-	
+
 	public static void removeObject(int id) {
 		objectPool.remove(id);
 	}
