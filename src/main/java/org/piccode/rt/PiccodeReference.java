@@ -7,28 +7,35 @@ import java.util.Objects;
  *
  * @author hexaredecimal
  */
-public class PiccodeString implements PiccodeValue {
+public class PiccodeReference implements PiccodeValue {
 	public static final Type TYPE = Type.STRING;
-	private String string;
+	private Object ref;
 
-	public PiccodeString(String str) {
-		this.string = str;
+	public PiccodeReference(Object ref) {
+		this.ref = ref;
 	}
 	
 	@Override
 	public Object raw() {
-		return string;
+		return this;
 	}
 
+	public Object deref() {
+		return ref;
+	}
+
+	public void setRef(Object value) {
+		this.ref = value;
+	}
 	@Override
 	public String toString() {
-		return string;
+		return "&Ref<" + ref + ">";
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 5;
-		hash = 47 * hash + Objects.hashCode(this.string);
+		hash = 47 * hash + Objects.hashCode(this.ref);
 		return hash;
 	}
 
@@ -43,8 +50,8 @@ public class PiccodeString implements PiccodeValue {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final PiccodeString other = (PiccodeString) obj;
-		return Objects.equals(this.string, other.string);
+		final PiccodeReference other = (PiccodeReference) obj;
+		return Objects.equals(this.ref, other.ref);
 	}
 
 	@Override

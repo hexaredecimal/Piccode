@@ -54,6 +54,7 @@ public interface PiccodeValue {
 		ARRAY,
 		TYPLE,
 		OBJECT,
+		REFERENCE,
 		CLOSURE,
 		MODULE,
 		UNIT,
@@ -69,6 +70,7 @@ public interface PiccodeValue {
 			if (value instanceof PiccodeArray  ) return ARRAY;
 			if (value instanceof PiccodeClosure) return CLOSURE;
 			if (value instanceof PiccodeUnit   ) return UNIT;
+			if (value instanceof PiccodeReference) return REFERENCE;
 			if (value instanceof NativeFunction) return NATIVEFUNCTION;
 
 			System.out.println(value + " : " + value.getClass());

@@ -6,6 +6,7 @@ import java.util.List;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
 import org.piccode.rt.PiccodeNumber;
+import org.piccode.rt.PiccodeReference;
 import org.piccode.rt.PiccodeTuple;
 import org.piccode.rt.PiccodeValue;
 import org.piccode.rt.PiccodeValue.Type;
@@ -15,34 +16,25 @@ import org.piccode.rt.PiccodeValue.Type;
  *
  * @author hexaredecimal
  */
-public class PiccodeTupleModule {
+public class PiccodeRefModule {
 	public static void addFunctions() {
 		
-		NativeFunctionFactory.create("tuplesize", List.of("tuple"), (args, namedArgs, frame) -> {
+		NativeFunctionFactory.create("set_ref", List.of("ref", "value"), (args, namedArgs, frame) -> {
 				var ctx = frame == null ? 
 						Context.top
 						: Context.getContextAt(frame);
 				var caller = ctx.getTopFrame().caller;
 				
-				var tup = namedArgs.get("tuple");
-				PiccodeValue.verifyType(caller, tup, Type.TYPLE);
-				var arr = ((PiccodeTuple) tup).array().length;
-				return new PiccodeNumber("" + arr);
+				var ref = namedArgs.get("ref");
+				var value = namedArgs.get("value");
+				PiccodeValue.verifyType(caller, ref, Type.REFERENCE);
+				
+				var obj = (PiccodeReference) ref;
+				obj.setRef(value);
+					
+				return obj;
 		}, null);
 		
-		NativeFunctionFactory.create("tupletoarray", List.of("tuple"), (args, namedArgs, frame) -> {
-				var ctx = frame == null ? 
-						Context.top
-						: Context.getContextAt(frame);
-				var caller = ctx.getTopFrame().caller;
-				
-				var tup = namedArgs.get("tuple");
-				PiccodeValue.verifyType(caller, tup, Type.TYPLE);
-				var arr = ((PiccodeTuple) tup).array();
-				var list = new ArrayList<PiccodeValue>();
-				list.addAll(Arrays.asList(arr));
-				return new PiccodeArray(list);
-		}, null);
 		
 	}
 }
