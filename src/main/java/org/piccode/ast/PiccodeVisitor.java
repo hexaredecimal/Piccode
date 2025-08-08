@@ -555,6 +555,13 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return result;
 		}
 
+		if (ctx.MUL() != null) {
+			var tok = ctx.MUL().getSymbol();
+			var result = finalizeAstNode(
+							new UnaryAst("*", visitExpr(ctx.expr())),
+							tok);
+			return result;
+		}
 		if (ctx.SUB() != null) {
 			var tok = ctx.SUB().getSymbol();
 			var result = finalizeAstNode(

@@ -4,6 +4,7 @@ import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.PiccodeBoolean;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeNumber;
+import org.piccode.rt.PiccodeReference;
 import org.piccode.rt.PiccodeValue;
 
 /**
@@ -56,6 +57,28 @@ public class UnaryAst extends Ast{
 			var bool = (boolean) result.raw();
 			return new PiccodeBoolean(String.valueOf(!bool));
 		}
+
+		if (op.equals("&")) {
+			return new PiccodeReference(result);
+		}
+
+		if (op.equals("*")) {
+			if (!(result instanceof PiccodeReference)) {
+				var err = new PiccodeException(file, line, column,"Cannot dereference a value that is not a Referebce. expression: " + expr + " results to value " + result);
+				err.frame = frame;
+				throw err;
+			}
+			var value = ((PiccodeReference)result).deref();
+			if (!(value instanceof PiccodeValue)) {
+				var err = new PiccodeException(file, line, column,"Cannot dereference a native reference. expression: " + expr + " results to value " + value);
+				err.frame = frame;
+				throw err;
+			}
+
+			return (PiccodeValue) value;
+		}
+
+
 		
 		var err = new PiccodeException(file, line, column,"Not supported yet: " + op);
 		err.frame = frame;
