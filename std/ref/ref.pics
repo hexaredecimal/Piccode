@@ -1,7 +1,39 @@
 
+// Module: Ref
+// Contains functions for working with references
 Ref :: module {
+
+  // Function: new
+  // Creates a new reference from a value
+  //
+  // Parameters:
+  //   value - The value to create a reference from
+  //
+  // Returns:
+  //   A reference value
   new :: (value) = &value
+  
+
+  // Function: deref
+  // Dereferences a reference value
+  //
+  // Parameters:
+  //   ref - A reference value
+  //
+  // Returns:
+  //   A value stored in the reference
   deref :: (ref) = *value
+
+
+  // Function: set
+  // Updates the value stored in a reference
+  //
+  // Parameters:
+  //   ref - A reference value
+  //   value - The value to update with
+  //
+  // Returns:
+  //   The updated reference, which is actually the ref parameter
   set :: (ref, value) = pic_nat_set_ref(ref, value)
 }
 
