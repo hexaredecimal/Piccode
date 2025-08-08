@@ -101,7 +101,8 @@ unary:
 	| SUB expr
 	| RETURN_TOK expr
 	| TILDE expr
-	| BAND expr;
+	| BAND expr
+	| MUL expr;
 
 if_expr:
 	IF expr expr (ELSE expr)?;
