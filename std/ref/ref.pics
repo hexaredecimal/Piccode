@@ -1,0 +1,8 @@
+
+Ref :: module {
+  new :: (value) = &value
+  deref :: (ref) = *value
+  set :: (ref, value) = pic_nat_set_ref(ref, value)
+}
+
+
