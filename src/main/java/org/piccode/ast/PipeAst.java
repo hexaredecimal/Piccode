@@ -72,7 +72,7 @@ public class PipeAst extends Ast {
 			}
 
 			var call = (CallAst) rhs;
-			newArgs.addAll(call.nodes);
+			call.nodes.forEach(node -> newArgs.addLast(node));
 			var _call = new CallAst(call, newArgs);
 			return _call.execute(frame);
 		});
