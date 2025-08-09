@@ -34,35 +34,36 @@ public class PipeAst extends Ast {
 				throw err;
 			}
 
+			var newArgs = new ArrayList<Ast>();
+			newArgs.add(lhs);
 			if (rhs instanceof IdentifierAst id) {
-				var call = new CallAst(id, new ArrayList<>());
-				call.nodes.addFirst(lhs);
+				var call = new CallAst(id, newArgs);
 				var node = Ast.finalizeNode(call, id);
 				return node.execute(frame);
 			}
 
 			if (rhs instanceof ClosureAst closure) {
-				var call = new CallAst(closure, new ArrayList<>());
-				call.nodes.addFirst(lhs);
+				var call = new CallAst(closure, newArgs);
 				var node = Ast.finalizeNode(call, closure);
 				return node.execute(frame);
 			}
 
 			if (rhs instanceof CCOperationAst dot) {
 				if (dot.rhs instanceof CallAst call) {
-					if (call.nodes == null) {
-						call.nodes = new ArrayList<>();
+					if (call.nodes != null) {
+						newArgs.addAll(call.nodes);
 					}
-					call.nodes.addFirst(lhs);
-					return rhs.execute(frame);
+					var _call = new CallAst(call.expr, newArgs);
+					var nd = new CCOperationAst(dot.lhs, _call);
+					var node = Ast.finalizeNode(nd, rhs);
+					return node.execute(frame);
 				}
 
 				if (dot.rhs instanceof IdentifierAst id) {
-					var args = new ArrayList<Ast>();
-					args.addFirst(lhs);
-					var call = new CallAst(id, args);
-					dot.rhs = Ast.finalizeNode(call, id);
-					return rhs.execute(frame);
+					var call = new CallAst(id, newArgs);
+					var nd = new CCOperationAst(dot.lhs, call);
+					var node = Ast.finalizeNode(nd, id);
+					return node.execute(frame);
 				}
 
 				var err = new PiccodeException(file, line, column, "Invalid expression at the right side of |> : " + dot.rhs);
@@ -71,8 +72,9 @@ public class PipeAst extends Ast {
 			}
 
 			var call = (CallAst) rhs;
-			call.nodes.addFirst(lhs);
-			return call.execute(frame);
+			newArgs.addAll(call.nodes);
+			var _call = new CallAst(call, newArgs);
+			return _call.execute(frame);
 		});
 	}
 
