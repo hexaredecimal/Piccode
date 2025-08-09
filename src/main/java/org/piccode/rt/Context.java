@@ -194,6 +194,12 @@ public class Context {
 		frame.putLocal(name, value);
 	}
 
+	public void deleteLocal(String name) {
+		var frame = call_frames.peek();
+		frame.deleteLocal(name);
+	}
+
+
 	public PiccodeValue getValue(String name) {
 		if (call_frames.isEmpty()) {
 			return global_scope.get(name);

@@ -78,4 +78,9 @@ public class StackFrame {
 		}
 	}
 
+	void deleteLocal(String name) {
+		var frame = scope_stack.peek();
+		frame.remove(name);
+	}
+
 }
