@@ -63,7 +63,7 @@ public class PiccodeWarning implements PiccodeInfo {
 		}
 
 		if (!notes.isEmpty()) {
-			System.out.println((Chalk.on(".").yellow() + "\n").repeat(2));
+			out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note : notes) {
 				note.report(false, "INFO");
 			}

@@ -1,6 +1,7 @@
 package org.piccode.rt;
 
 import com.github.tomaslanger.chalk.Chalk;
+import org.piccode.backend.Compiler;
 
 /**
  *
@@ -15,6 +16,6 @@ public class PiccodeSimpleNote implements PiccodeInfo {
 	
 	@Override
 	public void report(boolean die, String kind) {
-		System.out.println(Chalk.on("[NOTE]: ").bold().yellow() + message);
+		Compiler.out.println(Chalk.on("[NOTE]: ").bold().yellow() + message);
 	}
 }
