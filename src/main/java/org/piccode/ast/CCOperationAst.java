@@ -6,6 +6,7 @@ import java.util.function.Function;
 import org.piccode.piccodescript.TargetEnvironment;
 import org.piccode.rt.Context;
 import org.piccode.rt.PiccodeArray;
+import org.piccode.rt.PiccodeClosure;
 import org.piccode.rt.PiccodeException;
 import org.piccode.rt.PiccodeModule;
 import org.piccode.rt.PiccodeNumber;
@@ -129,10 +130,18 @@ public class CCOperationAst extends Ast {
 				return result;
 			}
 			if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-				var result = Ast.safeExecute(frame, func, (expr) -> {
-					node.execute(frame);
-					return call.execute(frame);
-				});
+				PiccodeValue result = null;
+				if (func.rtObject == null) {
+					result = Ast.safeExecute(frame, func, (expr) -> {
+						func.setRtObject((PiccodeClosure) node.execute(frame));
+						return call.execute(frame);
+					});
+				} else {
+					result = Ast.safeExecute(frame, func, (expr) -> {
+						ctx.putLocal(func.name, func.rtObject);
+						return call.execute(frame);
+					});
+				}
 				ctx.deleteLocal(func.name);
 				return result;
 			}

@@ -22,11 +22,16 @@ public class FunctionAst extends Ast {
 	public Ast body;
 	public List<ClauseAst> clauses = new ArrayList<>();
 	public List<String> annotations = new ArrayList<>();
+	public PiccodeClosure rtObject = null;
 
 	public FunctionAst(String name, List<Ast> arg, Ast body) {
 		this.name = name;
 		this.arg = arg;
 		this.body = body;
+	}
+
+	public void setRtObject(PiccodeClosure value) {
+		rtObject = value;
 	}
 
 	@Override
