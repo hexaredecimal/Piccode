@@ -81,11 +81,14 @@ public class CCOperationAst extends Ast {
 		if (rhs instanceof IdentifierAst _id) {
 			for (var node : mod.nodes) {
 				if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
-					return node.execute(frame);
+					var result = node.execute(frame);
+					ctx.deleteLocal(vd.name);
+					return result;
 				}
 				if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
 					node.execute(frame);
 					var result = ctx.getValue(_id.text);
+					ctx.deleteLocal(func.name);
 					if (result == null) {
 						var err = new PiccodeException(func.file, func.line, func.column, "Function `" + Chalk.on(_id.text).red() + "` is not defined");
 						err.frame = frame;
@@ -99,7 +102,9 @@ public class CCOperationAst extends Ast {
 					return result;
 				}
 				if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
-					return node.execute(frame);
+					var result = node.execute(frame);
+					ctx.deleteLocal(_mod.name);
+					return result;
 				}
 			}
 
@@ -119,17 +124,23 @@ public class CCOperationAst extends Ast {
 		var _id = (IdentifierAst) call.expr;
 		for (var node : mod.nodes) {
 			if (node instanceof VarDecl vd && vd.name.equals(_id.text)) {
-				return node.execute(frame);
+				var result = node.execute(frame);
+				ctx.deleteLocal(vd.name);
+				return result;
 			}
 			if (node instanceof FunctionAst func && func.name.equals(_id.text)) {
-				return Ast.safeExecute(frame, func, (expr) -> {
+				var result = Ast.safeExecute(frame, func, (expr) -> {
 					node.execute(frame);
 					return call.execute(frame);
 				});
+				ctx.deleteLocal(func.name);
+				return result;
 			}
 			if (node instanceof ModuleAst _mod && _mod.name.equals(_id.text)) {
 				node.execute(frame);
-				return ctx.getValue(_id.text);
+				var result = ctx.getValue(_id.text);
+				ctx.deleteLocal(_id.text);
+				return result;
 			}
 		}
 
