@@ -56,6 +56,9 @@ public class PiccodeClosure implements PiccodeValue {
 		computeStableClause();
 		if (!clauses.isEmpty() || hasPatternParam(params)) {
 			createWhenExpression(frame);
+			if (creator instanceof FunctionAst func) {
+				func.rtObject = this;
+			}
 		}
 		Map<String, PiccodeValue> newArgs = new HashMap<>(appliedArgs);
 		if (params.get(positionalIndex) instanceof Arg _arg) {
@@ -336,27 +339,28 @@ public class PiccodeClosure implements PiccodeValue {
 		for (int i = 0; i < params.size(); i++) {
 			var param = params.get(i);
 			if (!(param instanceof Arg)) {
-					var arg = new Arg("$_PLACEHOLDER_ID_" + i + "__$");
-					arg.file = file;
-					arg.line = line;
-					arg.column = column;
-					newList.addLast(arg);
+				var arg = new Arg("$_PLACEHOLDER_ID_" + i + "__$");
+				arg.file = file;
+				arg.line = line;
+				arg.column = column;
+				newList.addLast(arg);
 			} else {
 				newList.add(param);
 			}
 		}
 		return newList;
 	}
+
 	private List<Ast> getStableIds(List<Ast> params) {
 		var newList = new ArrayList<Ast>();
 		for (int i = 0; i < params.size(); i++) {
 			var param = params.get(i);
 			if (!(param instanceof Arg)) {
-					var arg = new IdentifierAst("$_PLACEHOLDER_ID_" + i + "__$");
-					arg.file = file;
-					arg.line = line;
-					arg.column = column;
-					newList.addLast(arg);
+				var arg = new IdentifierAst("$_PLACEHOLDER_ID_" + i + "__$");
+				arg.file = file;
+				arg.line = line;
+				arg.column = column;
+				newList.addLast(arg);
 			} else {
 				newList.add(param);
 			}
