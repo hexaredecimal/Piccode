@@ -40,16 +40,21 @@ public class CCOperationAst extends Ast {
 	public PiccodeValue execute(Integer frame) {
 		return Ast.safeExecute(frame, this, (expr) -> {
 			if (lhs instanceof CCOperationAst op) {
-				var mod = (PiccodeModule) op.execute(frame);
-				if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
-					throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + Chalk.on(mod.name).green());
+				var result =  op.execute(frame);
+				if (result instanceof PiccodeModule mod) {
+					if (!(rhs instanceof CallAst) && !(rhs instanceof IdentifierAst)) {
+						throw new PiccodeException(file, line, column, "No node " + rhs + " found in module " + Chalk.on(mod.name).green());
+					}
+
+					var id = new IdentifierAst(mod.name);
+					id.file = file;
+					id.line = line;
+					id.column = column;
+					return process(id, mod, frame);
+				} else {
+					return result;
 				}
 
-				var id = new IdentifierAst(mod.name);
-				id.file = file;
-				id.line = line;
-				id.column = column;
-				return process(id, mod, frame);
 			}
 
 			if (lhs instanceof IdentifierAst id && Context.top.getValue(id.text) != null) {
