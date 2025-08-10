@@ -1,0 +1,30 @@
+
+IO :: import std.io
+
+Person :: module {
+  new :: (name, age) = {name: name, age: age}
+}
+
+
+Animal :: module {
+  new :: ("Woof") = {name: "Dog"}
+  new :: (name) = {name: name}
+}
+
+person := Person::new("Vincent", 23)
+IO::println(person)
+
+test :: (value) = value
+
+
+cat := Animal::new("cat")
+cat 
+|> test
+|> IO::println()
+
+cat := Animal::new("Woof")
+cat 
+|> test
+|> IO::println()
+
+

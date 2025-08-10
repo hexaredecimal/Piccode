@@ -1,0 +1,8 @@
+
+IO  :: import std.io
+Ref :: import std.ref
+
+ref := &5
+IO::println(ref)
+Ref::set(ref, "Hello")
+IO::println(ref)
