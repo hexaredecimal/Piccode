@@ -110,15 +110,15 @@ public class BinOpAst extends Ast {
 
 		if (left instanceof PiccodeBoolean lf && right instanceof PiccodeBoolean rh) {
 			if (op.equals("&&")){
-				var left = (boolean) lf.raw();
-				var right = (boolean) rh.raw();
-				return new PiccodeBoolean(String.valueof(left && right));
+				var _left = (boolean) lf.raw();
+				var _right = (boolean) rh.raw();
+				return new PiccodeBoolean(String.valueOf(_left && _right));
 			}
 
 			if (op.equals("||")) {
-				var left = (boolean) lf.raw();
-				var right = (boolean) rh.raw();
-				return new PiccodeBoolean(String.valueof(left || right));
+				var _left = (boolean) lf.raw();
+				var _right = (boolean) rh.raw();
+				return new PiccodeBoolean(String.valueOf(_left || _right));
 			}
 		}
 
