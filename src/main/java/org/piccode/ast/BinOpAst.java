@@ -107,6 +107,21 @@ public class BinOpAst extends Ast {
 			return new PiccodeBoolean(left.equals(right) ? "true" : "false");
 		}
 
+
+		if (left instanceof PiccodeBoolean lf && right instanceof PiccodeBoolean rh) {
+			if (op.equals("&&")){
+				var left = (boolean) lf.raw();
+				var right = (boolean) rh.raw();
+				return new PiccodeBoolean(String.valueof(left && right));
+			}
+
+			if (op.equals("||")) {
+				var left = (boolean) lf.raw();
+				var right = (boolean) rh.raw();
+				return new PiccodeBoolean(String.valueof(left || right));
+			}
+		}
+
 		var err =  new PiccodeException(file, line, column,"Operator `" + Chalk.on(op).blue() + "`  cannot be used with types " 
 			+ Chalk.on(left.type()).red()
 			+ " and " + Chalk.on(right.type()).red());
