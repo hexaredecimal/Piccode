@@ -12,212 +12,72 @@ import org.antlr.v4.runtime.Recognizer;
 import org.piccode.antlr4.PiccodeScriptLexer;
 import org.piccode.antlr4.PiccodeScriptParser;
 import org.piccode.ast.Ast;
-import org.piccode.ast.CallAst;
-import org.piccode.ast.FunctionAst;
-import org.piccode.ast.IdentifierAst;
-import org.piccode.ast.ImportAst;
-import org.piccode.ast.ImportModuleCreateAst;
-import org.piccode.ast.ModuleAst;
 import org.piccode.ast.PiccodeVisitor;
-import org.piccode.ast.ReturnAst;
 import org.piccode.ast.StatementList;
+import org.piccode.ast.TypedFunction;
+import org.piccode.ast.types.TypeDeclaration;
 import org.piccode.piccodescript.ErrorAsciiKind;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeArray;
-import org.piccode.rt.PiccodeBoolean;
-import org.piccode.rt.PiccodeException;
-import org.piccode.rt.PiccodeReturnException;
-import org.piccode.rt.PiccodeUnit;
-import org.piccode.rt.PiccodeValue;
-import org.piccode.rt.PiccodeWarning;
-import org.piccode.rt.modules.PiccodeArrayModule;
-import org.piccode.rt.modules.PiccodeFileModule;
-import org.piccode.rt.modules.PiccodeFsModule;
-import org.piccode.rt.modules.PiccodeIOModule;
-import org.piccode.rt.modules.PiccodeMathModule;
-import org.piccode.rt.modules.PiccodeObjectModule;
-import org.piccode.rt.modules.PiccodeProcModule;
-import org.piccode.rt.modules.PiccodeRefModule;
-import org.piccode.rt.modules.PiccodeStringModule;
-import org.piccode.rt.modules.PiccodeSystemModule;
-import org.piccode.rt.modules.PiccodeTimeModule;
-import org.piccode.rt.modules.PiccodeTupleModule;
-import org.piccode.rt.modules.PiccodeTypesModule;
-import org.piccode.rt.modules.PiccodeVirtualModule;
+import org.piccode.errors.PiccodeException;
+import org.piccode.typechecker.Context;
+import org.piccode.typechecker.type.BooleanType;
+import org.piccode.typechecker.type.NumberType;
+import org.piccode.typechecker.type.StringType;
+import org.piccode.typechecker.type.UnitType;
 
 /**
  *
  * @author hexaredecimal
  */
 public class Compiler {
+
 	public static PrintStream out = System.out;
 	public static ErrorAsciiKind errorKind = ErrorAsciiKind.GLEAM_STYLE;
 	public static boolean exitOnError = true;
-	private final static List<Runnable> nativeFunctions = new ArrayList<>();
-	private final static HashMap<String, PiccodeValue> symbols = new HashMap<>();
 
-	public static PiccodeValue compile(String file, String code) {
-		return compile(file, code, List.of());
-	}
 
-	public static PiccodeValue compile(String file, String code, List<PiccodeValue> args) {
+	public static void compile(String file, String code) {
 		try {
 			var result = program(file, code);
-			prepareGlobalScope(file);
-			Context.top.putLocal("pic_nat_user_args", new PiccodeArray(args));
-
-			PiccodeValue res = new PiccodeUnit();
-			var has_main = false;
+			List<TypeDeclaration> typeDeclarations = new ArrayList<>();
+			List<TypedFunction> typedFunctions = new ArrayList<>();
 			for (var stmt : result.nodes) {
-				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
-					has_main = true;
-				}
-
-				if (stmt instanceof ReturnAst ret) {
-					res = ret.expr.execute(null);
-					break;
-				}
-				try {
-					res = stmt.execute(null);
-				} catch (PiccodeReturnException pre) {
-					res = pre.value;
-				} catch (Exception e) {
-					throw e;
+				switch (stmt) {
+					case TypeDeclaration td -> typeDeclarations.add(td);
+					case TypedFunction tf -> typedFunctions.add(tf);
+					default -> {}
 				}
 			}
 
-			if (has_main) {
-				var _result = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
-				return _result;
-			}
+			var ctx = new Context();
+			var typeTable = ctx.getTypeTable();
+			typeTable.putSymbol("Number", new NumberType(result));
+			typeTable.putSymbol("String", new StringType(result));
+			typeTable.putSymbol("Boolean", new BooleanType(result));
+			typeTable.putSymbol("Unit", new UnitType(result));
+			
+			typeDeclarations.forEach(typeDecl -> typeDecl.typeCheck(ctx));
 
-			Context.top.dropStackFrame();
-			return res;
-		} catch (PiccodeReturnException ret) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			return ret.value;
+			typedFunctions.forEach(func -> func.typeCheckHeader(ctx));
+			typedFunctions.forEach(func -> func.typeCheck(ctx));
+
+			var functonTable = ctx.getFunctionTable();
+			System.out.println(typeTable);
+			System.out.println(functonTable);
+			
 		} catch (PiccodeException e) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			//Context.top.dropStackFrame();
 			e.reportError(exitOnError);
-			//e.printStackTrace();
-			return new PiccodeUnit();
 		} catch (Exception rte) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
 			rte.printStackTrace();
-			return new PiccodeUnit();
 		}
 	}
 
 
-	public static List<Ast> compileDeclarationsAndGetExpressions(String file, String code, List<PiccodeValue> args) {
-		List<Ast> nodes = new ArrayList<>();
-		try {
-			var result = program(file, code);
-			prepareGlobalScope(file);
 
-			for (var stmt : result.nodes) {
-				if ((stmt instanceof ImportAst)) {
-					stmt.execute(null);
-				} else if (stmt instanceof ImportModuleCreateAst){
-					stmt.execute(null);
-					nodes.add(stmt);
-				} else {
-					stmt.execute(null);
-				}
-			}
-
-			Context.top.dropStackFrame();
-			return nodes;
-		} catch (PiccodeReturnException ret) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			return nodes;
-		} catch (PiccodeException e) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			e.reportError();
-			return nodes;
-		} catch (Exception rte) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			rte.printStackTrace();
-			return nodes;
-		}
-	}
-	public static PiccodeValue execute(List<Ast> nodes, Boolean hasError) {
-		try {
-			PiccodeValue res = new PiccodeUnit();
-			var has_main = false;
-			for (var stmt : nodes) {
-				if (stmt instanceof FunctionAst func && func.name.equals("main") && (func.arg == null || func.arg.isEmpty())) {
-					has_main = true;
-				}
-
-				if (stmt instanceof ReturnAst ret) {
-					res = ret.expr.execute(null);
-					break;
-				}
-				try {
-					res = stmt.execute(null);
-				} catch (PiccodeReturnException pre) {
-					res = pre.value;
-				} catch (Exception e) {
-					throw e;
-				}
-			}
-
-			if (has_main) {
-				res = new CallAst(new IdentifierAst("main"), List.of()).execute(null);
-			}
-
-			Context.top.dropStackFrame();
-			hasError = false;
-			return res;
-		} catch (PiccodeReturnException ret) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			hasError = false;
-			return ret.value;
-		} catch (PiccodeException e) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			//Context.top.dropStackFrame();
-			e.reportError(exitOnError);
-			hasError = true;
-			//e.printStackTrace();
-			return new PiccodeUnit();
-		} catch (Exception rte) {
-			if (Context.top.getFramesCount() > 0) {
-				Context.top.dropStackFrame();
-			}
-			rte.printStackTrace();
-			hasError = true;
-			return new PiccodeUnit();
-		}
-	}
-	
 	public static List<Ast> parse(String file, String code) {
 		return program(file, code).nodes;
 	}
 
 	public static StatementList program(String file, String code) {
-
-		if (code.startsWith("#!/")) {
-			code = sanitizeSourceFile(code);
-		}
-
 		var err = new SyntaxError(file);
 
 		var lexer = new PiccodeScriptLexer(CharStreams.fromString(code));
@@ -234,69 +94,6 @@ public class Compiler {
 		return result;
 	}
 
-	private static String sanitizeSourceFile(String code) {
-		var lines = new ArrayList<>(code.lines().toList());
-		lines.removeFirst();
-		return String.join("\n", lines);
-	}
-
-	public static void prepareGlobalScope(String file) {
-		prepareGlobalScope(file, "globalScope");
-	}
-
-	public static void prepareGlobalScope(String file, String globalScopeName) {
-		var scope_id = new IdentifierAst(globalScopeName);
-		scope_id.column = 0;
-		scope_id.line = 1;
-		scope_id.file = file;
-		Context.top.resetContext();
-		Context.top.pushStackFrame(scope_id);
-		Context.top.putLocal("true", new PiccodeBoolean("true"));
-		Context.top.putLocal("false", new PiccodeBoolean("false"));
-		addSystemFunctions();
-		
-		for (var func: nativeFunctions) {
-			func.run();
-		}
-
-		for (var kv: symbols.entrySet()) {
-			var key = kv.getKey();
-			var value = kv.getValue();
-			Context.top.putLocal(key, value);
-		}
-
-	}
-
-	public static void addSymbol(String name, PiccodeValue value) {
-		symbols.put(name, value);
-	}
-
-	public static void addNativeFunctions(Runnable funcs) {
-		nativeFunctions.add(funcs);
-	}
-
-	private static void addSystemFunctions() {
-		addNativeFunctions(PiccodeIOModule::addFunctions);
-		addNativeFunctions(PiccodeArrayModule::addFunctions);
-		addNativeFunctions(PiccodeStringModule::addFunctions);
-		addNativeFunctions(PiccodeTupleModule::addFunctions);
-		addNativeFunctions(PiccodeMathModule::addFunctions);
-		addNativeFunctions(PiccodeSystemModule::addFunctions);
-		addNativeFunctions(PiccodeTimeModule::addFunctions);
-		addNativeFunctions(PiccodeTypesModule::addFunctions);
-		addNativeFunctions(PiccodeVirtualModule::addFunctions);
-		addNativeFunctions(PiccodeFileModule::addFunctions);
-		addNativeFunctions(PiccodeFsModule::addFunctions);
-		addNativeFunctions(PiccodeObjectModule::addFunctions);
-		addNativeFunctions(PiccodeProcModule::addFunctions);
-		addNativeFunctions(PiccodeRefModule::addFunctions);
-
-		Context.addAnnotation("Deprecated", (frame, node) -> {
-			var warning = new PiccodeWarning(node.file, node.line, node.column, "Invocation of a deprecated function");
-			warning.report();
-			return node.execute(frame);
-		});
-	}
 
 	private static class SyntaxError extends BaseErrorListener {
 

@@ -1,37 +1,26 @@
 package org.piccode.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeClosure;
-import org.piccode.rt.PiccodeException;
-import org.piccode.rt.PiccodeValue;
+import org.piccode.typechecker.Context;
+import org.piccode.typechecker.TypeCheckable;
+import org.piccode.typechecker.type.Type;
 
 /**
  *
  * @author hexaredecimal
  */
-public class FunctionAst extends Ast {
+public class FunctionAst extends Ast implements TypeCheckable {
 
 	public String name;
 	public List<Ast> arg;
 	public Ast body;
-	public List<ClauseAst> clauses = new ArrayList<>();
 	public List<String> annotations = new ArrayList<>();
-	public PiccodeClosure rtObject = null;
 
 	public FunctionAst(String name, List<Ast> arg, Ast body) {
 		this.name = name;
 		this.arg = arg;
 		this.body = body;
-	}
-
-	public void setRtObject(PiccodeClosure value) {
-		rtObject = value;
 	}
 
 	@Override
@@ -61,70 +50,28 @@ public class FunctionAst extends Ast {
 	}
 
 	@Override
-	public PiccodeValue execute(Integer frame) {
-		var ctx = frame == null
-						? Context.top
-						: Context.getContextAt(frame);
+	public Type getType(Context ctx) {
+		var localTable = ctx.getLocalTable();
+		var functionTable = ctx.getFunctionTable();
+		var functionType= functionTable.getValueForSymbol(name);
+		
+		var count = arg.size();
+		for (int i = 0; i < count; ++i) {
+			var topArg = (Arg) arg.get(i);
+			var topType = functionType.args.get(i);
+			localTable.putSymbol(topArg.name, topType);
+		}
 
-		Map<String, PiccodeValue> newArgs = new HashMap<>();
-		var cl = new PiccodeClosure(arg, newArgs, 0, body);
-		cl.creator = this;
-		cl.frame = frame;
-		cl.callSite = new Ast.Location(line, column);
-		cl.callSiteFile = file;
-		cl.file = file;
-		cl.column = column;
-		cl.line = line;
-		cl.annotations = annotations;
-		var value = ctx.getValue(name);
-		if (value == null) {
-			if (!clauses.isEmpty()) {
-				for (var clause : clauses) {
-					cl.clauses.add(clause);
-				}
-				clauses.clear();
-			}
-			ctx.putLocal(name, cl);
-			return cl;
-		} else if (!(value instanceof PiccodeClosure)) {
-			throw new PiccodeException(file, line, column, "Symbol `" + name + "` already exists. ");
-		}
-		var closure = (PiccodeClosure) value;
-		if (closure.params.size() != arg.size()) {
-			var exprected = closure.params.size();
-			throw new PiccodeException(file, line, column, "Clause declaration for `" + name + "` has too many parameteres. Only " + exprected + " parameters expected");
-		}
-		if (!clauses.isEmpty()) {
-			for (var clause : clauses) {
-				cl.clauses.add(clause);
-			}
-			clauses.clear();
-		}
-		if (closure.annotations.isEmpty()) {
-			closure.annotations = annotations;
-		} else {
-			for (var anot: annotations) {
-				if (!closure.annotations.contains(anot)) {
-					closure.annotations.add(anot);
-				}
-			}
-		}
-		closure.clauses.add(new ClauseAst(arg, body));
-		return closure;
+
+		var typedBody = (TypeCheckable)body;
+		var returnedType = typedBody.getType(ctx);
+		
+		System.out.println("" + returnedType);
+		localTable.clear();
+		return null;
 	}
 
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS ->
-				codeGenJSFunction(target);
-			default ->
-				"todo";
-		};
-	}
 
-	private String codeGenJSFunction(TargetEnvironment env) {
-		return "";
-	}
+
 
 }

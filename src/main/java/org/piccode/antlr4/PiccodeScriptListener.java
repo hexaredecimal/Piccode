@@ -1,4 +1,4 @@
-// Generated from PiccodeScript.g4 by ANTLR 4.13.1
+// Generated from PiccodeScript.g4 by ANTLR 4.13.2
 
 	package org.piccode.antlr4;
 
@@ -29,6 +29,76 @@ public interface PiccodeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStmt(PiccodeScriptParser.StmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#typeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeDecl(PiccodeScriptParser.TypeDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#typeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeDecl(PiccodeScriptParser.TypeDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#typeLVal}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeLVal(PiccodeScriptParser.TypeLValContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#typeLVal}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeLVal(PiccodeScriptParser.TypeLValContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * @param ctx the parse tree
+	 */
+	void enterGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * @param ctx the parse tree
+	 */
+	void exitGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#typeRVal}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeRVal(PiccodeScriptParser.TypeRValContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#typeRVal}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeRVal(PiccodeScriptParser.TypeRValContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#record}.
+	 * @param ctx the parse tree
+	 */
+	void enterRecord(PiccodeScriptParser.RecordContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#record}.
+	 * @param ctx the parse tree
+	 */
+	void exitRecord(PiccodeScriptParser.RecordContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#recordField}.
+	 * @param ctx the parse tree
+	 */
+	void enterRecordField(PiccodeScriptParser.RecordFieldContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#recordField}.
+	 * @param ctx the parse tree
+	 */
+	void exitRecordField(PiccodeScriptParser.RecordFieldContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#usableType}.
+	 * @param ctx the parse tree
+	 */
+	void enterUsableType(PiccodeScriptParser.UsableTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#usableType}.
+	 * @param ctx the parse tree
+	 */
+	void exitUsableType(PiccodeScriptParser.UsableTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PiccodeScriptParser#import_module}.
 	 * @param ctx the parse tree
@@ -79,6 +149,36 @@ public interface PiccodeScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDeclaration(PiccodeScriptParser.DeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#typedFunctionDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypedFunctionDecl(PiccodeScriptParser.TypedFunctionDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#typedFunctionDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypedFunctionDecl(PiccodeScriptParser.TypedFunctionDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#funcDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncDef(PiccodeScriptParser.FuncDefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#funcDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncDef(PiccodeScriptParser.FuncDefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#functionTypeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionTypeDecl(PiccodeScriptParser.FunctionTypeDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#functionTypeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionTypeDecl(PiccodeScriptParser.FunctionTypeDeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PiccodeScriptParser#module}.
 	 * @param ctx the parse tree

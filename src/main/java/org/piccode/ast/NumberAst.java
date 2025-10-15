@@ -1,14 +1,15 @@
 package org.piccode.ast;
 
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.PiccodeNumber;
-import org.piccode.rt.PiccodeValue;
+import org.piccode.typechecker.Context;
+import org.piccode.typechecker.TypeCheckable;
+import org.piccode.typechecker.type.NumberType;
+import org.piccode.typechecker.type.Type;
 
 /**
  *
  * @author hexaredecimal
  */
-public class NumberAst extends  Ast {
+public class NumberAst extends  Ast implements TypeCheckable {
 	public String text; 
 
 	public NumberAst(String text) {
@@ -52,13 +53,7 @@ public class NumberAst extends  Ast {
 	}
 
 	@Override
-	public PiccodeValue execute(Integer frame) {
-		return new PiccodeNumber(text);
+	public Type getType(Context ctx) {
+		return new NumberType(this);
 	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return text;
-	}
-
 }

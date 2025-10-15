@@ -13,8 +13,27 @@ stmts: stmt*
 
 stmt:
 	import_module
-	| declaration
+	| typeDecl
+	| typedFunctionDecl	
 	| expr_stmt;
+
+typeDecl: TYPE typeLVal ASSIGN typeRVal;
+
+typeLVal:
+ID (LT genericParam (COMMA genericParam)* GT)?;
+
+	genericParam: typeLVal;
+
+typeRVal:
+	record
+	| ID;
+
+record: RECORD LBRACE recordField (recordField)* RBRACE;
+
+recordField: ID COLON usableType;
+usableType: typeLVal;
+
+
 
 import_module:
 	IMPORT module_path; 
@@ -28,8 +47,13 @@ symbol_lift
 symbol_entry
 : ID (symbol_lift)? ;
 
-declaration: (annotations)? ID CC (module | func | import_module);
-	
+declaration: (annotations)? ID CC (module | func | import_module | functionTypeDecl);
+
+typedFunctionDecl: ID CC functionTypeDecl (funcDef)*;
+funcDef: ID CC func;
+
+functionTypeDecl: usableType (ARROW usableType)*;
+
 module: 
 	MODULE LBRACE module_stmts RBRACE;
 
@@ -187,6 +211,10 @@ RETURN_TOK: 'return';
 CATCH_TOK: 'catch';
 LET: 'let';
 IN: 'in';
+
+RECORD: 'record';
+ENUM : 'enum';
+TYPE: 'type';
 
 NUMBER
     :   HEX_LITERAL

@@ -8,47 +8,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.sound.midi.SysexMessage;
-import javax.xml.crypto.Data;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import static net.sourceforge.argparse4j.impl.Arguments.storeTrue;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import org.piccode.backend.Compiler;
-import org.piccode.rt.PiccodeString;
-import org.piccode.rt.PiccodeValue;
 
 import org.jline.reader.*;
-import org.jline.reader.impl.*;
 import org.jline.terminal.*;
-import org.jline.terminal.impl.*;
-import org.jline.utils.AttributedString;
-import org.jline.utils.AttributedStringBuilder;
-import org.jline.utils.AttributedStyle;
-import org.piccode.ast.IdentifierAst;
 import org.piccode.platf.Platforms;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeException;
-import org.piccode.rt.ReplState;
 
 /**
  *
@@ -218,41 +195,21 @@ public class Piccode {
 						return;
 					}
 					
-					if (env == TargetEnvironment.Ast) {
-						var code = readFile(input);
-						Compiler
-										.parse(input, code)
-										.forEach(System.out::println);
-					}
 
-					if (env == TargetEnvironment.JS) {
-						var code = readFile(input);
-						var out = Compiler
-										.program(code, code).codeGen(env);
-						System.out.println(out);
-					}
 				}
 				return;
 			} else if ("dump".equals(command)) {
 				System.out.println("==> dump:");
 				System.out.println("TC arg: " + res.getString("tc"));
 			} else if ("run".equals(command)) {
-				List<PiccodeValue> user_args = makeUserArgs(res.getList("extra_args"));
 				String input = res.getString("file");
 				boolean repl = res.getBoolean("repl");
-				if (repl) {
-					repl(user_args);
-				} else {
-					if (input == null && isProject()) {
-						System.out.println("Project run");
-						return;
-					} else if (input == null) {
+					if (input == null) {
 						System.out.println("No input file to run");
 						return;
 					}
 					var code = readFile(input);
-					Compiler.compile(input, code, user_args);
-				}
+					Compiler.compile(input, code);
 			} else if ("help".equals(command)) {
 				String topic = res.getString("topic");
 				parser.parseArgs(new String[]{topic, "--help"});
@@ -288,141 +245,7 @@ public class Piccode {
 		return fp.exists();
 	}
 
-	private static void repl(List<PiccodeValue> user_args) {
-		var fmt = String.format(
-				"Welcome to the REPL for PiccodeScript" 
-				+ Chalk.on(" v%s.").green() 
-				+ " Running on " 
-				+ Chalk.on("%s").blue()
-				+ " "
-				+ Chalk.on("%s").gray(), 
-				VERSION, 
-				Platforms.getName(),
-				Platforms.getArch());
 
-		var bands = Chalk.on("| ").yellow();
-		System.out.println();
-		System.out.println(bands);
-		System.out.println(bands + fmt);
-		System.out.println(bands);
-		System.out.println();
-		// Create a terminal
-		try (Terminal terminal = TerminalBuilder.builder()
-						.system(true)
-						.build();) {
-
-
-			var piccodeScriptHighlighter = new Highlighter() {
-				// Pattern to match SQL keywords (case insensitive)
-				private final Pattern PICCODE_KEYWORDS = Pattern.compile(
-								"\\b(module|when|is|if|else|import)\\b");
-
-				@Override
-				public AttributedString highlight(LineReader reader, String buffer) {
-					AttributedStringBuilder builder = new AttributedStringBuilder();
-
-					Matcher matcher = PICCODE_KEYWORDS.matcher(buffer);
-					int lastEnd = 0;
-
-					while (matcher.find()) {
-						// Add text before the keyword with default style
-						builder.append(buffer.substring(lastEnd, matcher.start()));
-
-						// Add the keyword with bold blue style
-						builder.styled(
-										AttributedStyle.BOLD.foreground(AttributedStyle.BLUE),
-										buffer.substring(matcher.start(), matcher.end()));
-
-						lastEnd = matcher.end();
-					}
-
-					// Add any remaining text
-					if (lastEnd < buffer.length()) {
-						builder.append(buffer.substring(lastEnd));
-					}
-
-					return builder.toAttributedString();
-				}
-			};
-
-
-			
-			LineReader reader = LineReaderBuilder.builder()
-							.terminal(terminal)
-							.appName("PiccodeScript REPL")
-							.highlighter(piccodeScriptHighlighter)
-							.build();
-
-			var prompt = new AttributedString("λ ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
-			var inner_prompt = new AttributedString(">>> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
-
-			var is_inner = false;
-			ReplState.ACTIVE = true;
-
-			Compiler.prepareGlobalScope("repl", "REPL");
-			outer:
-			while (true) {
-				StringBuilder inputBlock = new StringBuilder();
-				while (true) {
-					String line = reader.readLine(is_inner ? inner_prompt.toAnsi() : prompt.toAnsi());
-					if (line.trim().isEmpty()) {
-						is_inner = false;
-						break; // empty or just whitespace — end of block
-					}
-
-
-					var last = line.charAt(line.length() - 1);
-					inputBlock.append(line).append("\n");
-					if (last != '{'){
-						if (is_inner && last != '}') {
-							continue;
-						}
-						is_inner = false;
-						break;
-					} 
-					is_inner = true;
-				}
-				String code = inputBlock.toString();
-				ReplState.CODE = code;
-				if ("exit".equalsIgnoreCase(code.trim())) {
-					break outer;
-				}
-				if (code.trim().isEmpty()) {
-					continue;
-				}
-
-				var result = Compiler.program("repl", code);
-				PiccodeValue res = null;
-				try {
-					for (var stmt : result.nodes) {
-						res = stmt.execute(null);
-					}
-
-					terminal.writer().println(res + " : " + res.type());
-					terminal.flush();
-				} catch (PiccodeException e) {
-					e.reportError();
-					var stack_size = Context.top.getFramesCount();
-					if (stack_size > 1) {
-						Context.top.dropStackFrame();
-					}
-				}
-			}
-
-			Context.top.dropStackFrame();
-			ReplState.ACTIVE = false;
-			terminal.writer().println("Exiting REPL");
-		} catch (IOException | EndOfFileException | UserInterruptException e) {
-			ReplState.ACTIVE = false;
-			System.out.println("Exiting REPL");
-		}
-	}
-
-	private static List<PiccodeValue> makeUserArgs(List<Object> list) {
-		var args = new ArrayList<PiccodeValue>();
-		list.forEach(item -> args.add(new PiccodeString(item.toString())));
-		return args;
-	}
 
 	private static void createNewProject() {
 		try (Terminal terminal = TerminalBuilder.builder()
@@ -517,8 +340,6 @@ public class Piccode {
 		}
 	}
 
-
-	
 	private static void printLib(String path) {
 		File jarPath = new File(path);
 		try (JarFile jarFile = new JarFile(jarPath)) {

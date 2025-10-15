@@ -1,10 +1,6 @@
 package org.piccode.ast;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.PiccodeTuple;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -33,18 +29,5 @@ public class TupleAst extends Ast {
 		return sb.toString();
 	}
 
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		var list = new ArrayList<PiccodeValue>();
-		for (var node: nodes) {
-			list.add(node.execute(frame));
-		}
-		return new PiccodeTuple(list);
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-	}
 
 }

@@ -1,7 +1,5 @@
 package org.piccode.ast;
 
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -13,16 +11,4 @@ public class ImportId extends Ast{
 	public ImportId(String text) {
 		this.text = text;
 	}
-
-	
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-	}
-	
 }

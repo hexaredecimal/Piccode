@@ -1,4 +1,4 @@
-package org.piccode.rt;
+package org.piccode.errors;
 
 /**
  *

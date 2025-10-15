@@ -1,15 +1,6 @@
 package org.piccode.ast;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeBoolean;
-import org.piccode.rt.PiccodeException;
-import org.piccode.rt.PiccodeReturnException;
-import org.piccode.rt.PiccodeUnit;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -37,28 +28,4 @@ public class LetInExprAst extends Ast {
 		return sb.toString();
 	}
 
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		return Ast.safeExecute(frame, this, (func) -> {
-			for (var decl : vars) {
-				decl.execute(frame);
-			}
-			return Ast.safeExecute(frame, () -> expr.execute(frame));
-		});
-	}
-
-	
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS ->
-				codeGenJSDoExpr(target);
-			default ->
-				"todo";
-		};
-	}
-
-	private String codeGenJSDoExpr(TargetEnvironment env) {
-		return null;
-	}
 }

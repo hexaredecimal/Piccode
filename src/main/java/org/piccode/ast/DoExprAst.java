@@ -1,10 +1,6 @@
 package org.piccode.ast;
 
 import java.util.List;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeBoolean;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -25,41 +21,6 @@ public class DoExprAst extends Ast {
 			sb.append(nodes.get(i));
 			sb.append("\n");
 		}
-		return sb.toString();
-	}
-
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		PiccodeValue result = null;
-		var ctx = frame == null
-			? Context.top
-			: Context.getContextAt(frame);
-		
-		ctx.pushScope();
-		for (var stmt: nodes) {
-			result = stmt.execute(frame);
-		}
-		ctx.dropScope();
-		return result;
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS -> codeGenJSDoExpr(target);
-			default -> "todo";
-		};
-	}
-
-	private String codeGenJSDoExpr(TargetEnvironment env) {
-		var sb = new StringBuilder()
-		.append("() => {\n");
-
-		nodes.forEach(node -> {
-			sb.append(node.codeGen(env)).append(";");
-		});
-		
-		sb.append("};\n");
 		return sb.toString();
 	}
 }

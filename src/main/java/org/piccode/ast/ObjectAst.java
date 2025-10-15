@@ -1,11 +1,6 @@
 package org.piccode.ast;
 
 import java.util.HashMap;
-import java.util.List;
-import org.piccode.piccodescript.TargetEnvironment;
-import static org.piccode.piccodescript.TargetEnvironment.JS;
-import org.piccode.rt.PiccodeObject;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -40,44 +35,4 @@ public class ObjectAst extends Ast {
 		return sb.toString();
 	}
 
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		HashMap<String, PiccodeValue> obj = new HashMap<>();
-		
-		for (var kv: objs.entrySet()) {
-			obj.put(kv.getKey(), kv.getValue().execute(frame));
-		}
-
-		return new PiccodeObject(obj);
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS -> codeGenJsObject(target);
-			default ->
-				"todo";
-		};
-	}
-
-	private String codeGenJsObject(TargetEnvironment env) {
-		var sb = new StringBuilder()
-			.append("{");
-
-		var kvs = objs.entrySet();
-		var size = kvs.size();
-		var index  = 0;
-		for (var kv: kvs) {
-			sb
-				.append(kv.getKey())
-				.append(":")
-				.append(sb);
-
-			if (index < size - 1) {
-				sb.append(", ");
-			}
-		}
-		sb.append("}");
-		return sb.toString();
-	}
 }

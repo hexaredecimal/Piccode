@@ -9,7 +9,8 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.piccode.antlr4.PiccodeScriptBaseVisitor;
 import org.piccode.antlr4.PiccodeScriptParser.*;
-import org.piccode.rt.PiccodeException;
+import org.piccode.errors.PiccodeException;
+import org.piccode.ast.types.*;
 
 /**
  *
@@ -22,6 +23,88 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 	public PiccodeVisitor(String file) {
 		fileName = file;
 	}
+
+
+	@Override
+	public Ast visitTypeDecl(TypeDeclContext ctx) {
+		var token = ctx.getStart();
+		var typeLValue = visitTypeLVal(ctx.typeLVal());
+		var typeRValue = visitTypeRVal(ctx.typeRVal());
+		return finalizeAstNode(new TypeDeclaration(typeLValue, typeRValue), token);
+	}
+
+	@Override
+	public Ast visitTypeLVal(TypeLValContext ctx) {
+		var idToken = ctx.ID().getSymbol();
+		var typeName = ctx.ID().getText();
+
+		if (ctx.LT() != null && ctx.GT() != null) {
+			var genericTypes = new ArrayList<Ast>();
+			for (var param : ctx.genericParam()) {
+				var genericParam = visitGenericParam(param);
+				genericTypes.add(genericParam);
+			}
+			return finalizeAstNode(new TypeLValue(typeName, genericTypes), idToken);
+		}
+
+		return finalizeAstNode(new IdentifierAst(typeName), idToken);
+	}
+
+	@Override
+	public Ast visitGenericParam(GenericParamContext ctx) {
+		return visitTypeLVal(ctx.typeLVal());
+	}
+
+	@Override
+	public Ast visitTypeRVal(TypeRValContext ctx) {
+
+		if (ctx.record() != null) {
+			return visitRecord(ctx.record());
+		}
+
+		if (ctx.ID() != null) {
+			return visitId(ctx.ID());
+		}
+
+		var tok = ctx.getStart();
+		return finalizeAstNode(new UnitTypeDeclaration(), tok);
+	}
+
+	@Override
+	public Ast visitRecord(RecordContext ctx) {
+		var recordFields = new ArrayList<StructureField>();
+		for (var field : ctx.recordField()) {
+			var recordField = (StructureField) visitRecordField(field);
+			recordFields.add(recordField);
+		}
+
+		var start = ctx.getStart();
+		return finalizeAstNode(new RecordTypeDeclaration(recordFields), start);
+	}
+
+	@Override
+	public Ast visitRecordField(RecordFieldContext ctx) {
+		var idToken = ctx.ID().getSymbol();
+		var idText = ctx.ID().getText();
+
+		var fieldType = visitUsableType(ctx.usableType());
+		return finalizeAstNode(new StructureField(idText, fieldType), idToken);
+	}
+
+
+
+
+	@Override
+	public Ast visitUsableType(UsableTypeContext ctx) {
+		if (ctx.typeLVal() != null) {
+			return visitTypeLVal(ctx.typeLVal());
+		} 
+
+		var tok = ctx.getStart();
+		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "TODO: Finish");
+	}
+
+
 
 	@Override
 	public Ast visitLet_decl(Let_declContext ctx) {
@@ -138,6 +221,11 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitExpr(ctx.expr_stmt().expr());
 		}
 
+		if (ctx.typedFunctionDecl() != null) {
+			return visitTypedFunctionDecl(ctx.typedFunctionDecl());
+		}
+
+		/*
 		if (ctx.declaration() != null) {
 			return visitDeclaration(ctx.declaration());
 		}
@@ -146,12 +234,39 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return visitImport_module(ctx.import_module());
 		}
 
+*/
+
+		if (ctx.typeDecl() != null) {
+			return visitTypeDecl(ctx.typeDecl());
+		}
+
 		var tok = ctx.getStart();
-		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid literal expression");
+		var err = new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid declaration");
 		err.frame = null;
 		throw err;
 	}
 
+
+	@Override
+	public Ast visitTypedFunctionDecl(TypedFunctionDeclContext ctx) {
+		var tok = ctx.getStart();
+		var id = ctx.ID().getText();
+		var result = (FunctionTypeDeclAst) visitFunctionTypeDecl(ctx.functionTypeDecl());
+		result.name = id;
+
+		var funcs = new ArrayList<FunctionAst>();
+		for (var func: ctx.funcDef()) {
+			var funcTok = func.getStart();
+			var funcName = func.ID().getText();
+			var function = (FunctionAst) visitFunc(func.func());
+			function.name = funcName;
+			funcs.add((FunctionAst) finalizeAstNode(function, funcTok));
+		}
+
+		var typedFunc = new TypedFunction(result, funcs);
+		return finalizeAstNode(typedFunc, tok);
+	}
+	
 	@Override
 	public Ast visitDeclaration(DeclarationContext ctx) {
 		var annotations = new ArrayList<String>();
@@ -182,10 +297,29 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 			return finalizeAstNode(result, tok);
 		}
 
+		if (ctx.functionTypeDecl() != null) {
+			var result = (FunctionTypeDeclAst) visitFunctionTypeDecl(ctx.functionTypeDecl());
+			result.name = id;
+			return result;
+		}
+
 		var tok = ctx.getStart();
 		throw new PiccodeException(fileName, tok.getLine(), tok.getCharPositionInLine(), "Invalid declaration node");
 	}
 
+	@Override
+	public Ast visitFunctionTypeDecl(FunctionTypeDeclContext ctx) {
+		var types = new ArrayList<Ast>();
+		for (var type: ctx.usableType()) {
+			types.add(visitUsableType(type));
+		}
+
+		var tok = ctx.getStart();
+		var retType = types.removeLast();
+		var result = new FunctionTypeDeclAst(null, types, retType);
+		return finalizeAstNode(result, tok);
+	}
+	
 	@Override
 	public Ast visitImport_module(Import_moduleContext ctx) {
 		var module_path = ctx.module_path();

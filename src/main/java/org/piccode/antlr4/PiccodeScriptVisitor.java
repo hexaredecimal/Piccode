@@ -1,4 +1,4 @@
-// Generated from PiccodeScript.g4 by ANTLR 4.13.1
+// Generated from PiccodeScript.g4 by ANTLR 4.13.2
 
 	package org.piccode.antlr4;
 
@@ -24,6 +24,48 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStmt(PiccodeScriptParser.StmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#typeDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDecl(PiccodeScriptParser.TypeDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#typeLVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeLVal(PiccodeScriptParser.TypeLValContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#typeRVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeRVal(PiccodeScriptParser.TypeRValContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#record}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRecord(PiccodeScriptParser.RecordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#recordField}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRecordField(PiccodeScriptParser.RecordFieldContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#usableType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUsableType(PiccodeScriptParser.UsableTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#import_module}.
 	 * @param ctx the parse tree
@@ -54,6 +96,24 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDeclaration(PiccodeScriptParser.DeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#typedFunctionDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypedFunctionDecl(PiccodeScriptParser.TypedFunctionDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#funcDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncDef(PiccodeScriptParser.FuncDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#functionTypeDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionTypeDecl(PiccodeScriptParser.FunctionTypeDeclContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#module}.
 	 * @param ctx the parse tree

@@ -1,10 +1,5 @@
 package org.piccode.ast;
 
-import org.piccode.piccodescript.TargetEnvironment;
-import static org.piccode.piccodescript.TargetEnvironment.JS;
-import org.piccode.rt.PiccodeBoolean;
-import org.piccode.rt.PiccodeValue;
-
 /**
  *
  * @author hexaredecimal
@@ -29,32 +24,5 @@ public class IfExpression extends Ast{
 		sb.append("}");
 
 		return sb.toString();
-	}
-
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		var _cond = cond.execute(frame).raw().toString();
-		if (_cond.equals("true")) {
-			return then.execute(frame);
-		} 
-
-		return elze.execute(frame);
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS ->
-				codeGenJsIfExpr(target);
-			default ->
-				"todo";
-		};
-	}
-	
-	private String codeGenJsIfExpr(TargetEnvironment env) {
-		var c = cond.codeGen(env);
-		var t = then.codeGen(env);
-		var e = elze.codeGen(env);
-		return String.format("%s ? %s : %s", c, t, e);
 	}
 }

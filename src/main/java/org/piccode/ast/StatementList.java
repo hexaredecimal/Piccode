@@ -1,9 +1,6 @@
 package org.piccode.ast;
 
 import java.util.List;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.PiccodeBoolean;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -26,24 +23,4 @@ public class StatementList extends Ast {
 		}
 		return sb.toString();
 	}
-
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		PiccodeValue result = null;
-		for (var stmt: nodes) {
-			result = stmt.execute(frame);
-		}
-		return result;
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		var sb = new StringBuilder();
-		for (var node: nodes) {
-			sb.append(node.codeGen(target)).append("\n");
-		}
-
-		return sb.toString();
-	}
-
 }

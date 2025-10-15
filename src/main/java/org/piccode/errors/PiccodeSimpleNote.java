@@ -1,5 +1,6 @@
-package org.piccode.rt;
+package org.piccode.errors;
 
+import org.piccode.errors.PiccodeInfo;
 import com.github.tomaslanger.chalk.Chalk;
 import org.piccode.backend.Compiler;
 

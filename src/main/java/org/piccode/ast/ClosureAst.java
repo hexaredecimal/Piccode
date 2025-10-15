@@ -1,13 +1,6 @@
 package org.piccode.ast;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.piccode.piccodescript.TargetEnvironment;
-import org.piccode.rt.Context;
-import org.piccode.rt.PiccodeClosure;
-import org.piccode.rt.PiccodeValue;
 
 /**
  *
@@ -47,30 +40,5 @@ public class ClosureAst extends Ast {
 			}
 		}
 		return sb.toString();
-	}
-
-	@Override
-	public PiccodeValue execute(Integer frame) {
-		Map<String, PiccodeValue> newArgs = new HashMap<>();
-		var result = new PiccodeClosure(args, newArgs, 0, body);
-		result.creator = this;
-		result.callSite = new Ast.Location(line, column);
-		result.callSiteFile = file;
-		result.file = file;
-		result.line = line;
-		result.column = column;
-		return result;
-	}
-
-	@Override
-	public String codeGen(TargetEnvironment target) {
-		return switch (target) {
-			case JS -> codeGenJsClosure(target);
-			default -> "todo";
-		};
-	}
-
-	private String codeGenJsClosure(TargetEnvironment env) {
-		return "";
 	}
 }

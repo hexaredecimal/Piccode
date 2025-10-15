@@ -1,5 +1,6 @@
-package org.piccode.rt;
+package org.piccode.errors;
 
+import org.piccode.errors.PiccodeInfo;
 import com.github.tomaslanger.chalk.Chalk;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,14 +47,9 @@ public class PiccodeWarning implements PiccodeInfo {
 
 		String[] lines = new String[]{};
 		if (file != null) {
-			if (file.equals("repl")) {
-				lines = ReplState.CODE.lines().toList().toArray(String[]::new);
-			} else {
-				fp = new File(file);
-				lines = toLines(fp);
-			}
+			fp = new File(file);
+			lines = toLines(fp);
 		}
-
 
 		var errorKind = Compiler.errorKind;
 		if (errorKind == ErrorAsciiKind.GLEAM_STYLE) {
@@ -81,7 +77,6 @@ public class PiccodeWarning implements PiccodeInfo {
 		}
 		return lines.toArray(String[]::new);
 	}
-
 
 	private void printGleamStyleError(String kind, String[] lines, File fp) {
 		var line_fmt = String.format(" %d │", line);
@@ -155,6 +150,5 @@ public class PiccodeWarning implements PiccodeInfo {
 			out.println(line_fmt);
 		}
 	}
-	
-	
+
 }

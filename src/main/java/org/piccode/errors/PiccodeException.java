@@ -1,4 +1,4 @@
-package org.piccode.rt;
+package org.piccode.errors;
 
 import com.github.tomaslanger.chalk.Chalk;
 import java.io.File;
@@ -38,7 +38,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 	}
 
 	public void reportError() {
-		report(!ReplState.ACTIVE, "ERROR");
+		report(true, "ERROR");
 	}
 
 	public void reportError(boolean die) {
@@ -51,12 +51,8 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 
 		String[] lines = new String[]{};
 		if (file != null) {
-			if (file.equals("repl")) {
-				lines = ReplState.CODE.lines().toList().toArray(String[]::new);
-			} else {
-				fp = new File(file);
-				lines = toLines(fp);
-			}
+			fp = new File(file);
+			lines = toLines(fp);
 		}
 
 		var errorKind = Compiler.errorKind;
@@ -70,35 +66,6 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			out.println((Chalk.on(".").yellow() + "\n").repeat(2));
 			for (var note : notes) {
 				note.report(false, "INFO");
-			}
-		}
-
-		var ctx = frame == null
-						? Context.top
-						: Context.getContextAt(frame);
-
-		if (frame != null) {
-			ctx = Context.getContextAt(frame);
-		}
-		var stack = ctx.getCallStack();
-
-		var list = List.of(stack.toArray(StackFrame[]::new)).reversed();
-
-		if (!list.isEmpty()) {
-			var thread = frame == null ? "" : String.format(".THREAD[%s]", frame);
-			out.println("\n[STACK TRACE]" + thread);
-			for (int i = 0; i < list.size(); i++) {
-				var _frame = list.get(i);
-				var callSite = _frame.caller;
-				if (callSite == null) continue;
-				var _str = String.format(
-								"[%s:%d:%d]: %s", callSite.file,
-								callSite.line, callSite.column + 1,
-								i == 0
-												? Chalk.on(callSite.toString()).red()
-												: callSite.toString());
-
-				out.println(_str);
 			}
 		}
 
@@ -179,8 +146,7 @@ public class PiccodeException extends RuntimeException implements PiccodeInfo {
 			out.println(line_fmt);
 		}
 	}
-	
-	
+
 	private static String[] toLines(File fp) {
 		List<String> lines = new ArrayList<>();
 
