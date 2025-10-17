@@ -30,6 +30,12 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var token = ctx.getStart();
 		var typeLValue = visitTypeLVal(ctx.typeLVal());
 		var typeRValue = visitTypeRVal(ctx.typeRVal());
+
+		if (typeRValue instanceof RecordTypeDeclaration record) {
+			record.typeLValue = typeLValue;
+			return record;
+		}
+		
 		return finalizeAstNode(new TypeDeclaration(typeLValue, typeRValue), token);
 	}
 
@@ -38,37 +44,30 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		var idToken = ctx.ID().getSymbol();
 		var typeName = ctx.ID().getText();
 
-		if (ctx.LT() != null && ctx.GT() != null) {
+		if (ctx.genericBody() != null) {
 			var genericTypes = new ArrayList<Ast>();
-			for (var param : ctx.genericParam()) {
-				var genericParam = visitGenericParam(param);
-				genericTypes.add(genericParam);
+			for (var param : ctx.genericBody().typeLVal()) {
+				genericTypes.add(visitTypeLVal(param));
 			}
 			return finalizeAstNode(new TypeLValue(typeName, genericTypes), idToken);
 		}
-
 		return finalizeAstNode(new IdentifierAst(typeName), idToken);
 	}
 
 	@Override
-	public Ast visitGenericParam(GenericParamContext ctx) {
-		return visitTypeLVal(ctx.typeLVal());
-	}
-
-	@Override
 	public Ast visitTypeRVal(TypeRValContext ctx) {
+		if (ctx.usableType() != null) {
+			return visitUsableType(ctx.usableType());
+		}
 
 		if (ctx.record() != null) {
 			return visitRecord(ctx.record());
 		}
 
-		if (ctx.ID() != null) {
-			return visitId(ctx.ID());
-		}
-
 		var tok = ctx.getStart();
 		return finalizeAstNode(new UnitTypeDeclaration(), tok);
 	}
+	
 
 	@Override
 	public Ast visitRecord(RecordContext ctx) {
@@ -245,6 +244,8 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		err.frame = null;
 		throw err;
 	}
+
+
 
 
 	@Override
@@ -526,18 +527,6 @@ public class PiccodeVisitor extends PiccodeScriptBaseVisitor<Ast> {
 		if (expr.OR() != null) {
 			var tok = expr.OR().getSymbol();
 			var result = finalizeAstNode(visitBinOp("||", expr), tok);
-			return result;
-		}
-
-		if (expr.SHL() != null) {
-			var tok = expr.SHL().getSymbol();
-			var result = finalizeAstNode(visitBinOp("<<", expr), tok);
-			return result;
-		}
-
-		if (expr.SHR() != null) {
-			var tok = expr.SHR().getSymbol();
-			var result = finalizeAstNode(visitBinOp(">>", expr), tok);
 			return result;
 		}
 
