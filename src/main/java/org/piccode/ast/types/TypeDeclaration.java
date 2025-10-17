@@ -5,6 +5,7 @@ import org.piccode.ast.IdentifierAst;
 import org.piccode.errors.PiccodeException;
 import org.piccode.typechecker.Context;
 import org.piccode.typechecker.TypeCheckable;
+import org.piccode.typechecker.type.RecordType;
 import org.piccode.typechecker.type.TypeAlias;
 /**
  *
@@ -48,6 +49,19 @@ public class TypeDeclaration extends Ast {
 			typeTable.putSymbol(id.text, new TypeAlias(id.text, declaredType, id));
 			return;
 		}
+
+		var lvalue = (TypeLValue) typeRValue;
+		var declaredType = typeTable.getValueForSymbol(lvalue.name);
+		if (declaredType == null) {
+			throw new PiccodeException(lvalue.file, lvalue.line, lvalue.column, "Type `" + lvalue.name + "` is not defined`");
+		}
+
+		if (declaredType instanceof RecordType record) {
+			var specializedType = record.specialize(ctx, lvalue);
+			typeTable.putSymbol(id.text, specializedType);
+			return;
+		}
+		
 		
 		var typedNode = (TypeCheckable) typeRValue;
 		typeTable.putSymbol(id.text, typedNode.getType(ctx));
