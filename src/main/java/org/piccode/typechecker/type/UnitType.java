@@ -15,11 +15,17 @@ public class UnitType implements Type {
 
 	@Override
 	public String name() {
-		return "Boolean";
+		return "Unit";
 	}
 
 	@Override
 	public Ast getDeclaringNode() {
 		return node;
 	}
+
+	@Override
+	public String toString() {
+		return "Unit";
+	}
+	
 }

@@ -22,4 +22,9 @@ public class BooleanType implements Type {
 	public Ast getDeclaringNode() {
 		return node;
 	}
+
+	@Override
+	public String toString() {
+		return "Boolean";
+	}
 }

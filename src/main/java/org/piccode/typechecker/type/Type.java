@@ -1,6 +1,7 @@
 package org.piccode.typechecker.type;
 
 import org.piccode.ast.Ast;
+import org.piccode.ast.types.TypeLValue;
 
 /**
  *
@@ -38,7 +39,21 @@ public interface Type {
 		}
 
 		if (left instanceof UserType lhs && right instanceof UserType rhs) {
-			return lhs.name.equals(rhs.name);
+			if (!lhs.name.equals(rhs.name)) {
+				return false;
+			}
+
+			var expected = lhs.genericParams.size();
+			var found = rhs.genericParams.size();
+			if (expected != found) {
+				return false;
+			}
+
+			for (int i = 0; i < expected; ++i) {
+				if (!Type.compare(lhs.genericParams.get(i), rhs.genericParams.get(i))) return false;
+			}
+
+			return true;
 		}
 
 		if (left instanceof TupleType lhs && right instanceof TupleType rhs) {
@@ -70,5 +85,6 @@ public interface Type {
 
 		return false;
 	}
+
 
 }

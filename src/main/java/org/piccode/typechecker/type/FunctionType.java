@@ -42,4 +42,21 @@ public class FunctionType implements Type {
 	public Ast getDeclaringNode() {
 		return node;
 	}
+
+	
+	@Override
+	public String toString() {
+		var sb = new StringBuilder();
+		sb.append(name).append(" :: ");
+		
+		int size = args.size();
+		for (int i = 0; i < size; ++i) {
+			sb.append(args.get(i));
+			if (i < size - 1) {
+				sb.append(" -> ");
+			}
+		}
+		
+		return sb.toString();
+	}
 }
