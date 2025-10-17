@@ -17,18 +17,15 @@ stmt:
 	| typedFunctionDecl	
 	| expr_stmt;
 
-typeDecl: TYPE typeLVal ASSIGN typeRVal;
+typeDecl: TYPE typeLVal CC typeRVal;
 
 typeLVal:
-ID (LT genericParam (COMMA genericParam)* GT)?;
+ID genericBody?;
+genericBody: LT typeLVal (COMMA typeLVal )* GT;
 
-	genericParam: typeLVal;
+typeRVal: usableType | record ;
 
-typeRVal:
-	record
-	| ID;
-
-record: RECORD LBRACE recordField (recordField)* RBRACE;
+record: LBRACE recordField (COMMA recordField)* RBRACE;
 
 recordField: ID COLON usableType;
 usableType: typeLVal;
@@ -102,8 +99,6 @@ expr
 	| expr LE expr           
 	| expr GT expr           
 	| expr GE expr          
-	| expr SHL expr          
-	| expr SHR expr          
 	| expr BOR expr          
 	| expr BAND expr         
 	| LPAREN expr? RPAREN
@@ -175,8 +170,6 @@ NE: '!=';
 AND: '&&';
 OR: '||';
 
-SHL: '>>';
-SHR: '<<';
 BAND: '&';
 BOR: '|';
 EXCLAIM : '!';

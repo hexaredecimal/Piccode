@@ -50,15 +50,15 @@ public interface PiccodeScriptListener extends ParseTreeListener {
 	 */
 	void exitTypeLVal(PiccodeScriptParser.TypeLValContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * Enter a parse tree produced by {@link PiccodeScriptParser#genericBody}.
 	 * @param ctx the parse tree
 	 */
-	void enterGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	void enterGenericBody(PiccodeScriptParser.GenericBodyContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * Exit a parse tree produced by {@link PiccodeScriptParser#genericBody}.
 	 * @param ctx the parse tree
 	 */
-	void exitGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	void exitGenericBody(PiccodeScriptParser.GenericBodyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PiccodeScriptParser#typeRVal}.
 	 * @param ctx the parse tree

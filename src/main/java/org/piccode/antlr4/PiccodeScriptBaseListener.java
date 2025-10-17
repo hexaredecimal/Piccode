@@ -67,13 +67,13 @@ public class PiccodeScriptBaseListener implements PiccodeScriptListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGenericParam(PiccodeScriptParser.GenericParamContext ctx) { }
+	@Override public void enterGenericBody(PiccodeScriptParser.GenericBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGenericParam(PiccodeScriptParser.GenericParamContext ctx) { }
+	@Override public void exitGenericBody(PiccodeScriptParser.GenericBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -48,7 +48,7 @@ public class PiccodeScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> imp
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGenericParam(PiccodeScriptParser.GenericParamContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGenericBody(PiccodeScriptParser.GenericBodyContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

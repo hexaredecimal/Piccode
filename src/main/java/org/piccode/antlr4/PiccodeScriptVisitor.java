@@ -37,11 +37,11 @@ public interface PiccodeScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeLVal(PiccodeScriptParser.TypeLValContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PiccodeScriptParser#genericParam}.
+	 * Visit a parse tree produced by {@link PiccodeScriptParser#genericBody}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGenericParam(PiccodeScriptParser.GenericParamContext ctx);
+	T visitGenericBody(PiccodeScriptParser.GenericBodyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PiccodeScriptParser#typeRVal}.
 	 * @param ctx the parse tree
