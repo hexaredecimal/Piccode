@@ -15,6 +15,7 @@ import org.piccode.ast.Ast;
 import org.piccode.ast.PiccodeVisitor;
 import org.piccode.ast.StatementList;
 import org.piccode.ast.TypedFunction;
+import org.piccode.ast.types.RecordTypeDeclaration;
 import org.piccode.ast.types.TypeDeclaration;
 import org.piccode.piccodescript.ErrorAsciiKind;
 import org.piccode.errors.PiccodeException;
@@ -38,16 +39,6 @@ public class Compiler {
 	public static void compile(String file, String code) {
 		try {
 			var result = program(file, code);
-			List<TypeDeclaration> typeDeclarations = new ArrayList<>();
-			List<TypedFunction> typedFunctions = new ArrayList<>();
-			for (var stmt : result.nodes) {
-				switch (stmt) {
-					case TypeDeclaration td -> typeDeclarations.add(td);
-					case TypedFunction tf -> typedFunctions.add(tf);
-					default -> {}
-				}
-			}
-
 			var ctx = new Context();
 			var typeTable = ctx.getTypeTable();
 			typeTable.putSymbol("Number", new NumberType(result));
@@ -55,7 +46,17 @@ public class Compiler {
 			typeTable.putSymbol("Boolean", new BooleanType(result));
 			typeTable.putSymbol("Unit", new UnitType(result));
 			
-			typeDeclarations.forEach(typeDecl -> typeDecl.typeCheck(ctx));
+			List<TypedFunction> typedFunctions = new ArrayList<>();
+			for (var stmt : result.nodes) {
+				switch (stmt) {
+					case TypeDeclaration td -> td.typeCheck(ctx);
+					case TypedFunction tf -> typedFunctions.add(tf);
+					case RecordTypeDeclaration rc -> rc.typeCheck(ctx);
+					default -> {}
+				}
+			}
+
+			
 
 			typedFunctions.forEach(func -> func.typeCheckHeader(ctx));
 			typedFunctions.forEach(func -> func.typeCheck(ctx));
